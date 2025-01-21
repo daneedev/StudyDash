@@ -1,0 +1,30 @@
+{
+  "name": "studydash",
+  "version": "1.0.0",
+  "description": "A web dash for students",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "csswatch": "npx tailwindcss -i ./src/public/css/input.css -o ./src/public/css/style.css --watch",
+    "dev": "ts-node-dev src/index.ts"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/daneedev/StudyDash.git"
+  },
+  "author": "Danee, MHDManiak, Richard Kobza",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/daneedev/StudyDash/issues"
+  },
+  "homepage": "https://github.com/daneedev/StudyDash#readme",
+  "devDependencies": {
+    "@types/express": "^5.0.0",
+    "tailwindcss": "^3.4.17",
+    "typescript": "^5.7.3"
+  },
+  "dependencies": {
+    "express": "^4.21.2",
+    "ts-node-dev": "^2.0.0"
+  }
+}
