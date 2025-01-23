@@ -1,4 +1,4 @@
 node_modules/
 .env
 dist/
-public/css/style.css
+src/public/css/style.css
