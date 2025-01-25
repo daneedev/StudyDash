@@ -6,17 +6,17 @@
     
     <link rel="stylesheet" href="/css/style.css">
     <link rel="stylesheet" href="https://api.ssps.cajthaml.eu/file/64d9f18f79dad891e8a07c73">
+
     <title>Login</title>
 </head>
 <body  class="flex justify-center items-center bg-cover bg-center bg-no-repeat h-screen bg-[url(/img/background.svg)] ">
-    <main class = "flex flex-col justify-center items-center h-1/2 w-1/3  text-white  bg-darkgray rounded-4xl font-mono" >
-        <h1>Welcome to StudyDash !</h1>
-        <form class = " flex flex-col justify-center items-center" action="/login_data" method="post">
+    <main class = "flex flex-col justify-evenly items-center h-1/2 w-1/3  text-text  bg-darkgray rounded-4xl text-4xl font-mono shadow-2xl" >
+        <h1 style="font-size: 2.8rem;" class = "text-center ">Welcome to StudyDash !</h1>
+        <form class = " flex flex-col justify-center items-center gap-5" action="/login_data" method="post">
+            <input class = "bg-lightgray rounded-xl text-3xl ring ring-background px-3" type="text" name="username" id="username" required placeholder="username">
             
-            <input type="text" name="username" id="username" required placeholder="username">
-            
-            <input type="password" name="password" id="password" required placeholder="password">
-            <button type="submit">Login</button>
+            <input class = "bg-lightgray rounded-xl text-3xl ring ring-background px-3" type="password" name="password" id="password" required placeholder="password">
+            <button class = "mt-20 bg-background py-3 px-8 rounded-4xl shadow-md hover:scale-105 transition-all"type="submit">Login</button>
         </form>
     </main>
 </body>
