@@ -1,8 +1,9 @@
 @import "tailwindcss";
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
 
 @theme {
 
-    --font-display: "Satoshi", "sans-serif";
+    --font-montserrat: 'Montserrat', sans-serif;
 
     --color-primary: #FFCD1F;
     --color-background: #0A092D;
