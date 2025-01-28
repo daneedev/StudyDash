@@ -3,6 +3,7 @@ import express from 'express';
 import { createServer } from 'http';
 import nunjucks from 'nunjucks';
 import path from 'path';
+import Logger from './utils/logger';
 dotenv.config();
 
 const app = express();
@@ -14,6 +15,10 @@ nunjucks.configure('src/views', {
   watch: true
 });
 
+// DATABASE
+import { connect } from './db';
+connect();
+
 app.use("/", express.static(path.join(__dirname, 'public')));
 
 app.get("/:file", function (req, res) {
@@ -21,5 +26,5 @@ app.get("/:file", function (req, res) {
 })
 
 server.listen(process.env.PORT, () => {
-  console.log(`Server is running on http://localhost:${process.env.PORT}`);
+  Logger.logInfo(`Server is running on http://localhost:${process.env.PORT}`);
 });
