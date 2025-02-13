@@ -8,11 +8,11 @@
     <title>StudyDash | Dashboard</title>
 
 </head>
-<body class = "flex h-full  w-screen bg-background font-montserrat">
+<body class = "flex h-full  w-screen bg-background font-montserrat flex-col">
     <header class = "flex w-screen  bg-background justify-between items-center p-5  ">
         <div class = "flex items-center justify-center gap-x-10">
             <div class ="w-16 h-16 hover:bg-darkgray transition-colors rounded-full flex items-center justify-center">
-                <i class="fa-solid fa-bars  text-5xl text-text "></i>
+                <i class="fa-solid fa-bars  text-4xl text-text "></i>
                 
             </div>
             <img src="/img/logo.svg" alt="" class = "w-20 h-20  ">
@@ -29,8 +29,34 @@
           </form>
         <button class = "bg-primary py-3 px-6 rounded-xl shadow-md hover:scale-95 transition-all text-2x text-black font-bold" type="button">Log Out</button>
     </header>
-    <main></main>
-    <aside></aside>
+    <main class = "flex justify-center items-center "> 
+        <aside class = "flex flex-col justify-start items-start w-auto border border-green-600 min-h-screen">
+            <div class="flex flex-col justify-start items-start text-text text-2xl m-5 w-full w-full ">
+                <div class ="flex justify-start items-center gap-5 hover:scale-95 hover:bg-darkgray transition-all rounded-xl p-5">
+                    <i class="fa-regular fa-user text-3xl text-text"></i>  
+                    <p>Profile</p> 
+                </div>
+                <div class ="flex justify-start items-center gap-5 hover:scale-95 hover:bg-darkgray transition-all rounded-xl p-5">
+                    <i class="fa-solid fa-gear text-3xl text-text"></i>
+                    <p>Settings</p> 
+                </div>
+                <div class ="flex justify-start items-center gap-5 hover:scale-95 hover:bg-darkgray transition-all rounded-xl p-5">
+                    <i class="fa-brands fa-github text-3xl text-text"></i>
+                    <p>Github</p> 
+                </div>
+                <div class ="flex justify-start items-center gap-5 hover:scale-95 hover:bg-darkgray transition-all rounded-xl p-5">
+                    <i class="fa-solid fa-arrow-right-from-bracket text-3xl text-text"></i>
+                    <p>Logout</p> 
+                </div>
+                
+            </div>
+              
+        </aside>
+        <article class = "flex justify center items center w-full border border-red-600 min-h-screen">
+            
+        </article>
+    </main>
+    
     <footer></footer>
 
 </body>
