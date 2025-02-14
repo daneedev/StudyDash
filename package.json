@@ -21,6 +21,7 @@
   "devDependencies": {
     "@types/bcrypt": "^5.0.2",
     "@types/express": "^5.0.0",
+    "@types/express-session": "^1.18.1",
     "@types/nunjucks": "^3.2.6",
     "@types/passport": "^1.0.17",
     "@types/passport-local": "^1.0.38",
@@ -32,6 +33,7 @@
     "colors": "^1.4.0",
     "dotenv": "^16.4.7",
     "express": "^4.21.2",
+    "express-session": "^1.18.1",
     "mariadb": "^3.4.0",
     "nunjucks": "^3.2.4",
     "passport": "^0.7.0",
