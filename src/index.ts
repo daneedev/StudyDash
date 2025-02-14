@@ -10,7 +10,7 @@ import crypto from 'crypto';
 import fs from 'fs';
 import passport from 'passport';
 dotenv.config();
-console.log(process.env.DB_NAME, process.env.DB_USER, process.env.DB_PASS);
+import authRoutes from './routes/auth.routes';
 
 const app = express();
 const server = createServer(app);
@@ -49,6 +49,8 @@ import { connect } from './db';
 connect();
 
 app.use("/", express.static(path.join(__dirname, 'public')));
+
+app.use("/auth", authRoutes)
 
 app.get("/:file", function (req, res) {
   res.render(req.params.file);

@@ -7,8 +7,6 @@ class User extends Model {
     declare username: string;
     declare email: string;
     declare password: string;
-    declare role: string;
-    declare lolusername: string;
 
     declare readonly createdAt: Date;
     declare readonly updatedAt: Date;
