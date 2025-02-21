@@ -9,8 +9,11 @@ import session from 'express-session';
 import crypto from 'crypto';
 import fs from 'fs';
 import passport from 'passport';
+import connectSessionSequelize from 'connect-session-sequelize';
+import flash from 'connect-flash';
 dotenv.config();
 import authRoutes from './routes/auth.routes';
+import { connect, db } from './db';
 
 const app = express();
 const server = createServer(app);
@@ -28,6 +31,8 @@ if (!process.env.SESSION_SECRET) {
   process.env.SESSION_SECRET = SESSION_SECRET;
 }
 
+const SequelizeStore = connectSessionSequelize(session.Store);
+
 app.use(session({
   secret: process.env.SESSION_SECRET,
   resave: false,
@@ -39,13 +44,15 @@ app.use(session({
   },
 }));
 
+app.use(flash());
+app.use(express.urlencoded({ extended: false }));
+
 // PASSPORT
 app.use(passport.initialize());
 app.use(passport.session());
 loadPassport();
 
 // DATABASE
-import { connect } from './db';
 connect();
 
 app.use("/", express.static(path.join(__dirname, 'public')));
