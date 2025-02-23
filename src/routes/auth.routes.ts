@@ -2,6 +2,7 @@ import express, { Request, Response } from 'express';
 import passport from 'passport';
 import User from '../models/User';
 const router = express.Router();
+import logger from '../utils/logger';
 
 router.get("/login", function (req: Request, res: Response) {
     res.render("login.html");
@@ -49,6 +50,15 @@ router.post("/register", async (req: Request, res: Response) => {
         res.status(500).json({ error: "Internal Server Error" });
     }
 });
+
+router.get("/logout", function (req: Request, res: Response) {
+    req.logOut(function (err)  {
+        if (err) {
+            logger.logError(err);
+        }
+        res.redirect('/');
+    })
+})
 
 
 export default router;
