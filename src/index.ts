@@ -12,6 +12,8 @@ import passport from 'passport';
 import connectSessionSequelize from 'connect-session-sequelize';
 import flash from 'connect-flash';
 dotenv.config();
+
+import dashRoutes from './routes/dash.routes';
 import authRoutes from './routes/auth.routes';
 import { connect, db } from './db';
 
@@ -58,6 +60,12 @@ connect();
 app.use("/", express.static(path.join(__dirname, 'public')));
 
 app.use("/auth", authRoutes)
+
+app.use("/dash", dashRoutes)
+
+app.get("/", function (req, res) {
+  res.render("index.html");
+})
 
 app.get("/:file", function (req, res) {
   res.render(req.params.file);
