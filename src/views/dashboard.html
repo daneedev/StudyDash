@@ -17,20 +17,20 @@
             </div>
             <img src="/img/logo.svg" alt="" class = "w-20 h-20  ">
         </div>
-        <form action="/action_page.php" class = "relative">
+        <form action="/search" class = "relative">
             <div class = "">
                 <i class="fa-solid fa-magnifying-glass text-xl absolute left-4 top-1/2 transform -translate-y-1/2 text-text pointer-events-none "></i>
                 
                 <input type="text" placeholder="Search.." name="search" class="bg-darkgray placeholder-lightgray text-text rounded-xl py-3 pl-10 pr-50  font-bold">
             </div>
             
-    
-            
-          </form>
-        <button class = "bg-primary py-3 px-6 rounded-xl shadow-md hover:scale-95 transition-all text-2x text-black font-bold" type="button">Log Out</button>
+        </form>
+        <form action="/auth/logout" method="get">
+            <button class = "bg-primary py-3 px-6 rounded-xl shadow-md hover:scale-95 transition-all text-2x text-black font-bold" type="submit">Log Out</button>
+        </form>
     </header>
     <main class = "flex justify-center items-center "> 
-        <aside class = "flex flex-col justify-start items-start w-auto border border-green-600 min-h-screen">
+        <aside class = "flex flex-col justify-start items-start w-auto">
             <div class="flex flex-col justify-start items-start text-text text-2xl m-5 w-full  ">
                 <div class ="flex justify-start items-start gap-5 hover:scale-95 hover:bg-darkgray transition-all rounded-xl p-5">
                     <i class="fa-regular fa-user text-3xl text-text"></i>  
@@ -52,7 +52,7 @@
             </div>
               
         </aside>
-        <article class = "flex justify center items center w-full border border-red-600 min-h-screen">
+        <article class = "flex justify center items center w-full">
             
         </article>
     </main>
