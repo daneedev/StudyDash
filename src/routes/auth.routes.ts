@@ -3,22 +3,23 @@ import passport from 'passport';
 import User from '../models/User';
 const router = express.Router();
 import logger from '../utils/logger';
+import { checkAuth, checkNotAuth } from '../utils/checkAuth';
 
-router.get("/login", function (req: Request, res: Response) {
-    res.render("login.html");
+router.get("/login", checkNotAuth, function (req: Request, res: Response) {
+    res.render("auth/login.html");
 })
 
-router.post("/login", passport.authenticate('local', {
+router.post("/login", checkNotAuth, passport.authenticate('local', {
     successRedirect: '/dash',
-    failureRedirect: '/login',
+    failureRedirect: '/auth/login',
     failureFlash: true
 }))
 
-router.get("/register", function (req: Request, res: Response) {
-    res.render("register.html");
+router.get("/register", checkNotAuth, function (req: Request, res: Response) {
+    res.render("auth/register.html");
 })
 
-router.post("/register", async (req: Request, res: Response) => {
+router.post("/register", checkNotAuth, async (req: Request, res: Response) => {
     try {
         const { username, email, password } = req.body;
         const checkUsername = await User.findOne({ where: { username: username } });
@@ -51,7 +52,7 @@ router.post("/register", async (req: Request, res: Response) => {
     }
 });
 
-router.get("/logout", function (req: Request, res: Response) {
+router.get("/logout", checkAuth, function (req: Request, res: Response) {
     req.logOut(function (err)  {
         if (err) {
             logger.logError(err);
