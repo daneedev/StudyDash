@@ -1,0 +1,14 @@
+{%extends "auth/template.html"%}
+
+{%block header%}
+<title>StudyDash | Register</title>
+{%endblock%}
+
+{%block content%}
+<form class = " flex flex-col justify-center items-center gap-3" action="/auth/register" method="post">
+    <input class = "bg-lightgray rounded-xl text-xl ring ring-background py-2 text-center" type="text" name="username" id="username" required placeholder="Username">
+    <input class = "bg-lightgray rounded-xl text-xl ring ring-background py-2 text-center" type="email" name="email" id="email" required placeholder="Email">
+    <input class = "bg-lightgray rounded-xl text-xl ring ring-background py-2 text-center" type="password" name="password" id="password" required placeholder="Password">
+    <button class = "bg-background py-3 px-6 rounded-xl shadow-md hover:scale-95 transition-all text-2xl"type="submit">Register</button>
+</form>
+{%endblock%}
