@@ -20,6 +20,11 @@ app.get("/:file", function (req, res) {
   res.render(req.params.file);
 })
 
+if (process.env.PORT === undefined) {
+  console.error('PORT must be provided');
+  process.exit(1);
+}
+
 server.listen(process.env.PORT, () => {
   console.log(`Server is running on http://localhost:${process.env.PORT}`);
 });
