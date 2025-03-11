@@ -43,8 +43,9 @@ app.use(session({
   cookie: {
     maxAge: 1000 * 60 * 60,
     httpOnly: true,
-    secure: process.env.NODE_ENV === 'production'
+    secure: process.env.NODE_ENV === 'production',
   },
+  store: new SequelizeStore({ db: db }),
 }));
 
 app.use(flash());
@@ -56,6 +57,7 @@ app.use(passport.session());
 loadPassport();
 
 // DATABASE
+db.sync()
 connect();
 
 app.use("/", express.static(path.join(__dirname, 'public')));
