@@ -1,6 +1,6 @@
 import { db } from '../db';
 import { Model, DataTypes } from 'sequelize';
-import bcrypt from 'bcrypt';
+import crypto from 'crypto';
 
 class Class extends Model {
     declare id: number;
@@ -25,7 +25,9 @@ Class.init({
     },
     inviteCode: {
         type: DataTypes.STRING(128),
-        allowNull: false
+        allowNull: false,
+        unique: true,
+        defaultValue: () => crypto.randomBytes(8).toString('hex')
     }
 
    

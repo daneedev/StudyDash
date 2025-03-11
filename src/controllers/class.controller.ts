@@ -6,22 +6,22 @@ import User from '../models/User';
 function createClass(req: Request, res: Response) {
     const { name } = req.body;
     const user = req.user as User;
-    Class.create({ name, inviteLink: Math.random().toString(36).substring(7) }).then((classInstance) => {
+    Class.create({ name: name}).then((classInstance) => {
         ClassUser.create({ classId: classInstance.id, userId: user.id, role: 'admin' });
     })
     res.status(200).json({ message: 'Class created' });
 }
 
 async function deleteClass(req: Request, res: Response) {
-    const { classId } = req.body;
+    const { id } = req.body;
     const user = req.user as User;
-    const classuser = await ClassUser.findOne({ where: { classId, userId: user.id } });
+    const classuser = await ClassUser.findOne({ where: { classId: id, userId: user.id } });
     if (!classuser || classuser.role !== 'admin') {
         res.status(403).json({ message: 'User not authorized' });
         return
     }
 
-    Class.destroy({ where: { id: classId } });
+    Class.destroy({ where: { id: id } });
     res.status(200).json({ message: 'Class deleted' });
 }
 

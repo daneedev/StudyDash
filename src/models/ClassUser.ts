@@ -10,6 +10,11 @@ class ClassUser extends Model {
 }
 
 ClassUser.init({
+    id: {
+        type: DataTypes.INTEGER.UNSIGNED,
+        autoIncrement: true,
+        primaryKey: true
+    },
     classId: {
         type: DataTypes.INTEGER.UNSIGNED,
         allowNull: false,
@@ -35,6 +40,9 @@ ClassUser.init({
     tableName: 'class_users',
     sequelize: db
 });
+
+ClassUser.sync();
+
 Class.belongsToMany(User, { through: ClassUser, foreignKey: 'classId' });
 User.belongsToMany(Class, { through: ClassUser, foreignKey: 'userId' });
 
