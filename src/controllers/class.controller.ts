@@ -22,32 +22,40 @@ async function deleteClass(req: Request, res: Response) {
     }
 
     Class.destroy({ where: { id: id } });
+    ClassUser.destroy({ where: { classId: id } });
     res.status(200).json({ message: 'Class deleted' });
 }
 
 async function joinClass(req: Request, res: Response) {
-    const { inviteLink, userId } = req.body;
+    const { inviteCode } = req.body;
+    const user = req.user as User;
 
-    const classInstance = await Class.findOne({ where: { inviteLink } });
+    const classInstance = await Class.findOne({ where: { inviteCode: inviteCode } });
     if (!classInstance) {
         res.status(404).json({ message: 'Class does not exist' });
         return
     }
 
-    const existingEntry = await ClassUser.findOne({ where: { classId: classInstance.id, userId: userId } });
+    const existingEntry = await ClassUser.findOne({ where: { classId: classInstance.id, userId: user.id } });
     if (existingEntry) {
         res.status(400).json({ message: 'User already in class' });
         return
     }
 
-    await ClassUser.create({ classId: classInstance.id, userId, role: 'student' });
+    await ClassUser.create({ classId: classInstance.id, userId: user.id, role: 'student' });
     res.status(200).json({ message: 'User joined class' });
 }
 
-function leaveClass(req: Request, res: Response) {
-    const { classId, userId } = req.body;
+async function leaveClass(req: Request, res: Response) {
+    const { id } = req.body;
+    const user = req.user as User;
+    const classAdmins = await ClassUser.findAll({ where: { classId: id, role: 'admin' } });
+    if (classAdmins.length === 1 && classAdmins[0].userId === user.id) {
+        res.status(400).json({ message: 'Cannot leave class with only one admin' });
+        return
+    }
 
-    ClassUser.destroy({ where: { classId, userId } });
+    ClassUser.destroy({ where: { classId: id, userId: user.id } });
     res.status(200).json({ message: 'User left class' });
 }
 
