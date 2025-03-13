@@ -26,7 +26,7 @@
     "@types/nunjucks": "^3.2.6",
     "@types/passport": "^1.0.17",
     "@types/passport-local": "^1.0.38",
-    "tailwindcss": "^4.0.0",
+    "tailwindcss": "^4.0.14",
     "typescript": "^5.8.2"
   },
   "dependencies": {
