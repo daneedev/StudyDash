@@ -17,6 +17,7 @@ import dashRoutes from './routes/dash.routes';
 import authRoutes from './routes/auth.routes';
 import classRoutes from './routes/class.routes';
 import { connect, db } from './db';
+import rateLimits from './utils/rateLimits';
 
 const app = express();
 const server = createServer(app);
@@ -50,6 +51,9 @@ app.use(session({
 
 app.use(flash());
 app.use(express.urlencoded({ extended: false }));
+
+// RATE LIMIT
+app.use(rateLimits.globalLimiter);
 
 // PASSPORT
 app.use(passport.initialize());
