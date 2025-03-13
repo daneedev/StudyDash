@@ -4,6 +4,7 @@ import User from './User';
 import Class from './Class';
 
 class ClassUser extends Model {
+    declare id: number;
     declare classId: number;
     declare userId: number;
     declare role: 'admin' | 'student';
