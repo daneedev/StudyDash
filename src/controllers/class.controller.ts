@@ -59,4 +59,15 @@ async function leaveClass(req: Request, res: Response) {
     res.status(200).json({ message: 'User left class' });
 }
 
-export default { createClass, deleteClass, joinClass, leaveClass };
+async function getClassPage(req: Request, res: Response) {
+    const { id } = req.params;
+    const classInstance = await Class.findOne({ where: { id: id } });
+    if (!classInstance) {
+        res.status(404).json({ message: 'Class does not exist' });
+        return
+    }
+    const classMembers = await ClassUser.findAll({ where: { classId: id } });
+    res.render('class.html', { classId: id, classMembers: classMembers });
+}
+
+export default { createClass, deleteClass, joinClass, leaveClass, getClassPage };
