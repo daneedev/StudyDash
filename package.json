@@ -41,7 +41,7 @@
     "nunjucks": "^3.2.4",
     "passport": "^0.7.0",
     "passport-local": "^1.0.0",
-    "sequelize": "^6.37.5",
+    "sequelize": "^6.37.6",
     "ts-node-dev": "^2.0.0"
   }
 }
