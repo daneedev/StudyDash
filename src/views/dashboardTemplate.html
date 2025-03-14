@@ -10,8 +10,8 @@
     {% endblock %}
 
 </head>
-<body class = "flex h-full min-h-screen  w-screen bg-background font-montserrat flex-col">
-    <header class = "flex w-screen  bg-background justify-between items-center p-5  ">
+<body class = "flex h-full min-h-full  w-full bg-background font-montserrat flex-col">
+    <header class = "flex w-full  bg-background justify-between items-center p-5  ">
         <div class = "flex items-center justify-center gap-x-10">
             <div class ="w-16 h-16 hover:bg-darkgray transition-colors rounded-full flex items-center justify-center">
                 <i class="fa-solid fa-bars  text-4xl text-text "></i>
@@ -57,11 +57,32 @@
             </div>          
               
         </aside>
-        <article class="grid grid-cols-2 md:grid-cols-5 gap-6 w-full p-15 box-border text-text text-xl">
-            {% block content %}
+        <article class = "w-full flex flex-col box-border max-w-full text-text ">
+            <section class = "">
 
-            {% endblock %}
+                <div class = "flex justify-start items-center gap-5 pl-15 text-xl">
+                    <p>Created classes</p>
+                    <i class = "fa-solid fa-caret-down"></i>
+                </div>
+                <div class="grid grid-cols-2 md:grid-cols-5 gap-6 max-w-full  p-15 box-border text-text text-xl">
+                    {% block content %}
+        
+                    {% endblock %}
+                </div>
+            </section>
+            <section>
+                <div class = "flex justify-start items-center gap-5 pl-15 text-xl">
+                    <p>Joined classes</p>
+                    <i class = "fa-solid fa-caret-down"></i>
+                </div>
+                <div class="grid grid-cols-2 md:grid-cols-5 gap-6 max-w-full p-15 box-border text-text text-xl">
+                    {% block content2 %}
+        
+                    {% endblock %}
+                </div>
+            </section>
         </article>
+        
     </main>
     
     <footer></footer>
