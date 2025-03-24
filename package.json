@@ -21,7 +21,7 @@
   "devDependencies": {
     "@types/bcrypt": "^5.0.2",
     "@types/connect-flash": "^0.0.40",
-    "@types/express": "^5.0.0",
+    "@types/express": "^5.0.1",
     "@types/express-session": "^1.18.1",
     "@types/nunjucks": "^3.2.6",
     "@types/passport": "^1.0.17",
