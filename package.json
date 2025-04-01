@@ -26,10 +26,11 @@
     "@types/nunjucks": "^3.2.6",
     "@types/passport": "^1.0.17",
     "@types/passport-local": "^1.0.38",
-    "tailwindcss": "^4.0.14",
+    "tailwindcss": "^4.0.17",
     "typescript": "^5.8.2"
   },
   "dependencies": {
+    "@tailwindcss/cli": "^4.0.17",
     "bcrypt": "^5.1.1",
     "colors": "^1.4.0",
     "connect-flash": "^0.1.1",
