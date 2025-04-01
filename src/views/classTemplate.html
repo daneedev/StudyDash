@@ -9,3 +9,29 @@
     {%block header %}
         
     {% endblock %}
+
+<body class = "flex h-full min-h-full  w-full bg-background font-montserrat flex-col">
+    <header class = "flex w-full  bg-background justify-between items-center p-5  ">
+        <div class = "flex items-center justify-center gap-x-10">
+            <div class ="w-16 h-16 hover:bg-darkgray transition-colors rounded-full flex items-center justify-center">
+                <i class="fa-solid fa-bars  text-4xl text-text "></i>
+                
+            </div>
+            <a href="dashboard.html">
+                <img src="/img/logo.svg" alt="" class = "w-20 h-20  ">
+            </a>
+            
+        </div>
+        <form action="/search" class = "relative">
+            <div class = "">
+                <i class="fa-solid fa-magnifying-glass text-xl absolute left-4 top-1/2 transform -translate-y-1/2 text-text pointer-events-none "></i>
+                
+                <input type="text" placeholder="Search.." name="search" class="bg-darkgray placeholder-lightgray text-text rounded-xl py-3 pl-10 pr-50  font-bold">
+            </div>
+            
+        </form>
+        <form action="/auth/logout" method="get">
+            <button class = "bg-primary py-3 px-6 rounded-xl shadow-md hover:scale-95 transition-all text-2x text-black font-bold" type="submit">Log Out</button>
+        </form>
+    </header>
+</body>
