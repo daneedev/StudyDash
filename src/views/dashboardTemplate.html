@@ -37,7 +37,7 @@
         </form>
     </header>
     <main class = "flex justify-center items-start box-border w-full "> 
-        <aside id = "sideBar" class = " hidden flex flex-col justify-start items-start w-auto transition-all duration-300 ease-in-out">
+        <aside id = "sideBar" class = "flex flex-col justify-start items-start w-auto transition-all duration-300 ease-in-out hidden">
             <div class="flex flex-col justify-start items-start text-text text-2xl m-5 w-full  ">
                 <div class ="flex justify-start items-start gap-5 hover:scale-95 hover:bg-darkgray transition-all rounded-xl p-5 w-full">
                     <i class="fa-regular fa-user text-3xl text-text"></i>  
@@ -63,10 +63,13 @@
             <section class = "">
 
                 <div class = "flex justify-start items-center gap-5 pl-15 text-xl">
-                    <p>Created classes</p>
-                    <i class = "fa-solid fa-caret-down"></i>
+                    <span id = "createdClassesToggle" class = "flex flex-row justify-center items-center gap-5  cursor-pointer">
+                        <p>Created classes</p>
+                        <i class = "fa-solid fa-caret-down"></i>
+                    </span>
+                    
                 </div>
-                <div class="grid grid-cols-2 md:grid-cols-5 gap-6 max-w-full  p-15 box-border text-text text-xl">
+                <div id = "createdClassesGrid" class="grid grid-cols-2 md:grid-cols-5 gap-6 max-w-full  p-15 box-border text-text text-xl">
                     {% block content %}
         
                     {% endblock %}
@@ -74,10 +77,13 @@
             </section>
             <section>
                 <div class = "flex justify-start items-center gap-5 pl-15 text-xl">
-                    <p>Joined classes</p>
-                    <i class = "fa-solid fa-caret-down"></i>
+                    <span id = "joinedClassesToggle" class = "flex flex-row justify-center items-center gap-5 cursor-pointer">
+                        <p>Joined classes</p>
+                        <i class = "fa-solid fa-caret-down"></i>
+                    </span>
+                    
                 </div>
-                <div class="grid grid-cols-2 md:grid-cols-5 gap-6 max-w-full p-15 box-border text-text text-xl">
+                <div id = "joinedClassesGrid" class="grid grid-cols-2 md:grid-cols-5 gap-6 max-w-full p-15 box-border text-text text-xl">
                     {% block content2 %}
         
                     {% endblock %}
