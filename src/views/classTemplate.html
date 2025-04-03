@@ -10,13 +10,10 @@
         
     {% endblock %}
 
-<body class = "flex h-full min-h-full  w-full bg-background font-montserrat flex-col">
+<body class = "flex h-100vh  w-full bg-background font-montserrat flex-col">
     <header class = "flex w-full  bg-background justify-between items-center p-5  ">
         <div class = "flex items-center justify-center gap-x-10">
-            <div class ="w-16 h-16 hover:bg-darkgray transition-colors rounded-full flex items-center justify-center">
-                <i class="fa-solid fa-bars  text-4xl text-text "></i>
-                
-            </div>
+            
             <a href="dashboard.html">
                 <img src="/img/logo.svg" alt="" class = "w-20 h-20  ">
             </a>
@@ -34,4 +31,21 @@
             <button class = "bg-primary py-3 px-6 rounded-xl shadow-md hover:scale-95 transition-all text-2x text-black font-bold" type="submit">Log Out</button>
         </form>
     </header>
+    <aside class = "flex flex-col justify-start items-start w-auto transition-all duration-300 ease-in-out box-border h-full">
+        <div class="flex flex-col justify-start items-start text-text text-2xl m-5 max-w-auto">
+            <div class ="flex justify-start items-start gap-5 hover:scale-95 hover:bg-darkgray transition-all rounded-xl p-5 w-auto">
+                <i class="fa-regular fa-square-check text-3xl text-text"></i>  
+                 
+            </div>
+            
+            
+            <div class ="flex justify-start items-start gap-5 hover:scale-95 hover:bg-darkgray transition-all rounded-xl p-5 w-auto">
+                <i class="fa-solid fa-bullhorn text-text text-3xl"></i>
+                     
+                
+            </div>
+            
+        </div>
+        
+    </aside>
 </body>
