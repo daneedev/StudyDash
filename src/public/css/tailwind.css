@@ -5,9 +5,15 @@
 
     --font-montserrat: 'Montserrat', sans-serif;
 
-    --color-primary: #FFCD1F;
+    --color-primary: #F5C518;
+    --color-background: #030712;
+    --color-text: #F6F7FB;
+    --color-darkgray: #343539;
+    --color-lightgray: #292a2D;
+
+    /* --color-primary: #FFCD1F;
     --color-background: #0A092D;
     --color-text: #F6F7FB;
     --color-darkgray: #2E3856;
-    --color-lightgray: #586380;
+    --color-lightgray: #586380; */
 }
