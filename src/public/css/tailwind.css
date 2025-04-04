@@ -6,7 +6,7 @@
     --font-montserrat: 'Montserrat', sans-serif;
 
     --color-primary: #F5C518;
-    --color-background: #030712;
+    --color-background: #1C1C1C;
     --color-text: #F6F7FB;
     --color-darkgray: #292a2D;
     --color-lightgray:#343539;
@@ -15,5 +15,7 @@
     --color-background: #0A092D;
     --color-text: #F6F7FB;
     --color-darkgray: #2E3856;
-    --color-lightgray: #586380; */
+    --color-lightgray: #586380;
+    #030712 */
+
 }
