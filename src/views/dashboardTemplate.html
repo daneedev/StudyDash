@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="icon" type="image/x-icon" href="/img/logo.svg">
+    
+    {%block header %}
+        
+    {% endblock %}
+
+</head>
+<body class = "flex h-full min-h-full  w-full bg-background font-montserrat flex-col">
+    <header class = "flex w-full  bg-background justify-between items-center p-5  ">
+        <div class = "flex items-center justify-center gap-x-10">
+            <button id = "menuToggle" class ="w-16 h-16 hover:bg-darkgray transition-colors rounded-full flex items-center justify-center cursor-pointer">
+                <i class="fa-solid fa-bars text-4xl text-text "></i>
+                
+            </button>
+            <a href="dashboard.html">
+                <img src="/img/logo.svg" alt="" class = "w-20 h-20  ">
+            </a>
+            
+        </div>
+        <form action="/search" class = "relative">
+            <div class = "">
+                <i class="fa-solid fa-magnifying-glass text-xl absolute left-4 top-1/2 transform -translate-y-1/2 text-text pointer-events-none "></i>
+                
+                <input type="text" placeholder="Search.." name="search" class="bg-darkgray placeholder-lightgray text-text rounded-xl py-3 pl-10 pr-50  font-bold">
+            </div>
+            
+        </form>
+        <form action="/auth/logout" method="get">
+            <button class = "bg-primary py-3 px-6 rounded-xl shadow-md hover:scale-95 transition-all text-2x text-black font-bold" type="submit">Log Out</button>
+        </form>
+    </header>
+    <main class = "flex justify-center items-start box-border w-full "> 
+        <aside id = "sideBar" class = "flex flex-col justify-start items-start w-auto transition-all duration-300 ease-in-out hidden">
+            <div class="flex flex-col justify-start items-start text-text text-2xl m-5 w-full  ">
+                <div class ="flex justify-start items-start gap-5 hover:scale-95 hover:bg-darkgray transition-all rounded-xl p-5 w-full">
+                    <i class="fa-regular fa-user text-3xl text-text"></i>  
+                    <p class = "flex-1">Profile</p> 
+                </div>
+                <div class ="flex justify-start items-start gap-5 hover:scale-95 hover:bg-darkgray transition-all rounded-xl p-5 w-full">
+                    <i class="fa-solid fa-gear text-3xl text-text"></i>
+                    <p class = "flex-1">Settings</p> 
+                </div>
+                <div class ="flex justify-start items-start gap-5 hover:scale-95 hover:bg-darkgray transition-all rounded-xl p-5 w-full">
+                    <i class="fa-brands fa-github text-3xl text-text"></i>
+                    <p class = "flex-1">Github</p> 
+                </div>
+                <div class ="flex justify-start items-start gap-5 hover:scale-95 hover:bg-darkgray transition-all rounded-xl p-5 w-full">
+                    <i class="fa-solid fa-arrow-right-from-bracket text-3xl text-text"></i>
+                    <p class = "flex-1">Logout</p> 
+                </div>
+                
+            </div>          
+              
+        </aside>
+        <article class = "w-full flex flex-col box-border max-w-full text-text ">
+            <section class = "">
+
+                <div class = "flex justify-start items-center gap-5 ml-15 text-xl hover:bg-darkgray transition-all rounded-xl p-5 w-min text-nowrap cursor-pointer">
+                    <span id = "createdClassesToggle" class = "flex flex-row justify-center items-center gap-5  ">
+                        <p>Created classes</p>
+                        <i class = "fa-solid fa-caret-down"></i>
+                    </span>
+                    
+                </div>
+                <div id = "createdClassesGrid" class="grid grid-cols-2 md:grid-cols-5 gap-6 max-w-full  p-15 box-border text-text text-xl">
+                    {% block content %}
+        
+                    {% endblock %}
+                </div>
+            </section>
+            <section>
+                <div class = "flex justify-start items-center gap-5 ml-15 text-xl text-nowrap cursor-pointer hover:bg-darkgray transition-all rounded-xl w-min p-5">
+                    <span id = "joinedClassesToggle" class = "flex flex-row justify-center items-center gap-5">
+                        <p>Joined classes</p>
+                        <i class = "fa-solid fa-caret-down"></i>
+                    </span>
+                    
+                </div>
+                <div id = "joinedClassesGrid" class="grid grid-cols-2 md:grid-cols-5 gap-6 max-w-full p-15 box-border text-text text-xl">
+                    {% block content2 %}
+        
+                    {% endblock %}
+                </div>
+            </section>
+        </article>
+        
+    </main>
+    
+    <footer></footer>
+    <script src="/js/dashboard.js"></script>
+</body>
+</html>

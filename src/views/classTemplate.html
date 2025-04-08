@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="icon" type="image/x-icon" href="/img/logo.svg">
+    {%block header %}
+        
+    {% endblock %}
+
+<body class = "flex min-h-screen  w-full bg-background font-montserrat flex-col ">
+    
+    <nav class = "flex flex-1">
+        <aside class = "flex flex-col justify-between items-center  transition-all duration-300 ease-in-out box-border min-h-full bg-darkgray ">
+            
+            
+            <div class="flex flex-col justify-start items-center text-text text-2xl m-5 max-w-auto">
+
+                <div class = "flex items-center justify-center gap-x-10">
+            
+                    <a href="dashboard.html">
+                        <img src="/img/logo.svg" alt="" class = "w-15 h-15">
+                    </a>
+                    
+                </div>
+                <div class ="flex justify-center items-center gap-5 hover:scale-95 hover:bg-lightgray transition-all rounded-xl p-5 w-auto">
+                    <i class="fa-regular fa-square-check text-3xl text-text"></i>  
+                    
+                </div>
+                
+                
+                <div class ="flex justify-center items-center gap-5 hover:scale-95 hover:bg-lightgray transition-all rounded-xl p-5 w-auto">
+                    <i class="fa-solid fa-bullhorn text-text text-3xl"></i>
+                        
+                    
+                </div>
+                
+            </div>
+            <div class="flex flex-col justify-center items-center text-text text-2xl m-5 max-w-auto">
+                <div class ="flex justify-start items-start gap-5 hover:scale-95 hover:bg-lightgray transition-all rounded-xl p-5 w-auto">
+                    <i class="fa-solid fa-gear text-3xl text-text"></i>  
+                    
+                </div>
+                
+                
+                <div class ="flex justify-center items-center gap-5 hover:scale-95 hover:bg-lightgray transition-all rounded-xl p-5 w-auto">
+                    <i class="fa-regular fa-user text-text text-3xl"></i>
+                        
+                    
+                </div>
+                
+            </div>
+            
+        </aside>
+    </nav>
+</body>
