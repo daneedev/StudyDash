@@ -39,7 +39,7 @@
     "express-rate-limit": "^7.5.0",
     "express": "^5.1.0",
     "express-session": "^1.18.1",
-    "mariadb": "^3.4.0",
+    "mariadb": "^3.4.1",
     "nunjucks": "^3.2.4",
     "passport": "^0.7.0",
     "passport-local": "^1.0.0",
