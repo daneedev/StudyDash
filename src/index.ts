@@ -15,7 +15,9 @@ dotenv.config();
 
 import dashRoutes from './routes/dash.routes';
 import authRoutes from './routes/auth.routes';
+import classRoutes from './routes/class.routes';
 import { connect, db } from './db';
+import rateLimits from './utils/rateLimits';
 
 const app = express();
 const server = createServer(app);
@@ -42,12 +44,16 @@ app.use(session({
   cookie: {
     maxAge: 1000 * 60 * 60,
     httpOnly: true,
-    secure: process.env.NODE_ENV === 'production'
+    secure: process.env.NODE_ENV === 'production',
   },
+  store: new SequelizeStore({ db: db }),
 }));
 
 app.use(flash());
 app.use(express.urlencoded({ extended: false }));
+
+// RATE LIMIT
+app.use(rateLimits.globalLimiter);
 
 // PASSPORT
 app.use(passport.initialize());
@@ -55,6 +61,7 @@ app.use(passport.session());
 loadPassport();
 
 // DATABASE
+db.sync()
 connect();
 
 app.use("/", express.static(path.join(__dirname, 'public')));
@@ -62,6 +69,8 @@ app.use("/", express.static(path.join(__dirname, 'public')));
 app.use("/auth", authRoutes)
 
 app.use("/dash", dashRoutes)
+
+app.use("/class", classRoutes)
 
 app.get("/", function (req, res) {
   res.render("index.html");
