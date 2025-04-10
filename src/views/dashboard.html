@@ -1,63 +1,168 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="/css/style.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-    <title>StudyDash | Dashboard</title>
+{%extends "dashboardTemplate.html"%}
 
-</head>
-<body class = "flex h-full min-h-screen  w-screen bg-background font-montserrat flex-col">
-    <header class = "flex w-screen  bg-background justify-between items-center p-5  ">
-        <div class = "flex items-center justify-center gap-x-10">
-            <div class ="w-16 h-16 hover:bg-darkgray transition-colors rounded-full flex items-center justify-center">
-                <i class="fa-solid fa-bars  text-4xl text-text "></i>
-                
-            </div>
-            <img src="/img/logo.svg" alt="" class = "w-20 h-20  ">
+{%block header%}
+<title>StudyDash | Dashboard</title>
+{%endblock%}
+
+{% block content %}
+<a href="class.html">
+    <section class=" bg-darkgray aspect-square rounded-lg shadow-md flex justify-center items-center p-6 transition-all duration-200 flex-col gap-8 relative hover:scale-98 ">
+        <div class = "absolute top-3 right-3">
+            <i class="fa-solid fa-ellipsis-vertical text-xl text-text hover:scale-90"></i>
         </div>
-        <form action="/search" class = "relative">
-            <div class = "">
-                <i class="fa-solid fa-magnifying-glass text-xl absolute left-4 top-1/2 transform -translate-y-1/2 text-text pointer-events-none "></i>
-                
-                <input type="text" placeholder="Search.." name="search" class="bg-darkgray placeholder-lightgray text-text rounded-xl py-3 pl-10 pr-50  font-bold">
-            </div>
-            
-        </form>
-        <form action="/auth/logout" method="get">
-            <button class = "bg-primary py-3 px-6 rounded-xl shadow-md hover:scale-95 transition-all text-2x text-black font-bold" type="submit">Log Out</button>
-        </form>
-    </header>
-    <main class = "flex justify-center items-center "> 
-        <aside class = "flex flex-col justify-start items-start w-auto">
-            <div class="flex flex-col justify-start items-start text-text text-2xl m-5 w-full  ">
-                <div class ="flex justify-start items-start gap-5 hover:scale-95 hover:bg-darkgray transition-all rounded-xl p-5">
-                    <i class="fa-regular fa-user text-3xl text-text"></i>  
-                    <p>Profile</p> 
-                </div>
-                <div class ="flex justify-start items-start gap-5 hover:scale-95 hover:bg-darkgray transition-all rounded-xl p-5">
-                    <i class="fa-solid fa-gear text-3xl text-text"></i>
-                    <p>Settings</p> 
-                </div>
-                <div class ="flex justify-start items-start gap-5 hover:scale-95 hover:bg-darkgray transition-all rounded-xl p-5">
-                    <i class="fa-brands fa-github text-3xl text-text"></i>
-                    <p>Github</p> 
-                </div>
-                <div class ="flex justify-start items-start gap-5 hover:scale-95 hover:bg-darkgray transition-all rounded-xl p-5">
-                    <i class="fa-solid fa-arrow-right-from-bracket text-3xl text-text"></i>
-                    <p>Logout</p> 
-                </div>
-                
-            </div>
-              
-        </aside>
-        <article class = "flex justify center items center w-full">
-            
-        </article>
-    </main>
-    
-    <footer></footer>
+        <div class = "w-3/5 h-3/5 bg-white rounded-lg ">
 
-</body>
-</html>
+        </div>
+        <p class = "text-2xl font-bold text-text">
+            2.C
+        </p>
+    </section>
+</a>
+<a href="class.html">
+    <section class=" bg-darkgray aspect-square rounded-lg shadow-md flex justify-center items-center p-6 transition-all duration-200 flex-col gap-8 relative hover:scale-98 ">
+        <div class = "absolute top-3 right-3">
+            <i class="fa-solid fa-ellipsis-vertical text-xl text-text hover:scale-90"></i>
+        </div>
+        <div class = "w-3/5 h-3/5 bg-white rounded-lg ">
+
+        </div>
+        <p class = "text-2xl font-bold text-text">
+            2.C
+        </p>
+    </section>
+</a>
+<a href="class.html">
+    <section class=" bg-darkgray aspect-square rounded-lg shadow-md flex justify-center items-center p-6 transition-all duration-200 flex-col gap-8 relative hover:scale-98 ">
+        <div class = "absolute top-3 right-3">
+            <i class="fa-solid fa-ellipsis-vertical text-xl text-text hover:scale-90"></i>
+        </div>
+        <div class = "w-3/5 h-3/5 bg-white rounded-lg ">
+
+        </div>
+        <p class = "text-2xl font-bold text-text">
+            2.C
+        </p>
+    </section>
+</a>
+<a href="class.html">
+    <section class=" bg-darkgray aspect-square rounded-lg shadow-md flex justify-center items-center p-6 transition-all duration-200 flex-col gap-8 relative hover:scale-98 ">
+        <div class = "absolute top-3 right-3">
+            <i class="fa-solid fa-ellipsis-vertical text-xl text-text hover:scale-90"></i>
+        </div>
+        <div class = "w-3/5 h-3/5 bg-white rounded-lg ">
+
+        </div>
+        <p class = "text-2xl font-bold text-text">
+            2.C
+        </p>
+    </section>
+</a>
+<a href="class.html">
+    <section class=" bg-darkgray aspect-square rounded-lg shadow-md flex justify-center items-center p-6 transition-all duration-200 flex-col gap-8 relative hover:scale-98 ">
+        <div class = "absolute top-3 right-3">
+            <i class="fa-solid fa-ellipsis-vertical text-xl text-text hover:scale-90"></i>
+        </div>
+        <div class = "w-3/5 h-3/5 bg-white rounded-lg ">
+
+        </div>
+        <p class = "text-2xl font-bold text-text">
+            2.C
+        </p>
+    </section>
+</a>
+<a href="class.html">
+    <section class=" bg-darkgray aspect-square rounded-lg shadow-md flex justify-center items-center p-6 transition-all duration-200 flex-col gap-8 relative hover:scale-98 ">
+        <div class = "absolute top-3 right-3">
+            <i class="fa-solid fa-ellipsis-vertical text-xl text-text hover:scale-90"></i>
+        </div>
+        <div class = "w-3/5 h-3/5 bg-white rounded-lg ">
+
+        </div>
+        <p class = "text-2xl font-bold text-text">
+            2.C
+        </p>
+    </section>
+</a>
+{% endblock %}
+
+
+{% block content2 %}
+<a href="class.html">
+    <section class=" bg-darkgray aspect-square rounded-lg shadow-md flex justify-center items-center p-6 transition-all duration-200 flex-col gap-8 relative hover:scale-98 ">
+        <div class = "absolute top-3 right-3">
+            <i class="fa-solid fa-ellipsis-vertical text-xl text-text hover:scale-90"></i>
+        </div>
+        <div class = "w-3/5 h-3/5 bg-white rounded-lg ">
+
+        </div>
+        <p class = "text-2xl font-bold text-text">
+            2.C
+        </p>
+    </section>
+</a>
+<a href="class.html">
+    <section class=" bg-darkgray aspect-square rounded-lg shadow-md flex justify-center items-center p-6 transition-all duration-200 flex-col gap-8 relative hover:scale-98 ">
+        <div class = "absolute top-3 right-3">
+            <i class="fa-solid fa-ellipsis-vertical text-xl text-text hover:scale-90"></i>
+        </div>
+        <div class = "w-3/5 h-3/5 bg-white rounded-lg ">
+
+        </div>
+        <p class = "text-2xl font-bold text-text">
+            2.C
+        </p>
+    </section>
+</a>
+<a href="class.html">
+    <section class=" bg-darkgray aspect-square rounded-lg shadow-md flex justify-center items-center p-6 transition-all duration-200 flex-col gap-8 relative hover:scale-98 ">
+        <div class = "absolute top-3 right-3">
+            <i class="fa-solid fa-ellipsis-vertical text-xl text-text hover:scale-90"></i>
+        </div>
+        <div class = "w-3/5 h-3/5 bg-white rounded-lg ">
+
+        </div>
+        <p class = "text-2xl font-bold text-text">
+            2.C
+        </p>
+    </section>
+</a>
+<a href="class.html">
+    <section class=" bg-darkgray aspect-square rounded-lg shadow-md flex justify-center items-center p-6 transition-all duration-200 flex-col gap-8 relative hover:scale-98 ">
+        <div class = "absolute top-3 right-3">
+            <i class="fa-solid fa-ellipsis-vertical text-xl text-text hover:scale-90"></i>
+        </div>
+        <div class = "w-3/5 h-3/5 bg-white rounded-lg ">
+
+        </div>
+        <p class = "text-2xl font-bold text-text">
+            2.C
+        </p>
+    </section>
+</a>
+<a href="class.html">
+    <section class=" bg-darkgray aspect-square rounded-lg shadow-md flex justify-center items-center p-6 transition-all duration-200 flex-col gap-8 relative hover:scale-98 ">
+        <div class = "absolute top-3 right-3">
+            <i class="fa-solid fa-ellipsis-vertical text-xl text-text hover:scale-90"></i>
+        </div>
+        <div class = "w-3/5 h-3/5 bg-white rounded-lg ">
+
+        </div>
+        <p class = "text-2xl font-bold text-text">
+            2.C
+        </p>
+    </section>
+</a>
+<a href="class.html">
+    <section class=" bg-darkgray aspect-square rounded-lg shadow-md flex justify-center items-center p-6 transition-all duration-200 flex-col gap-8 relative hover:scale-98 ">
+        <div class = "absolute top-3 right-3">
+            <i class="fa-solid fa-ellipsis-vertical text-xl text-text hover:scale-90"></i>
+        </div>
+        <div class = "w-3/5 h-3/5 bg-white rounded-lg ">
+
+        </div>
+        <p class = "text-2xl font-bold text-text">
+            2.C
+        </p>
+    </section>
+</a>
+{% endblock %}
