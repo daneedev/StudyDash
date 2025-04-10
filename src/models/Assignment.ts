@@ -5,7 +5,7 @@ import User from './User';
 
 class Assignment extends Model {
     declare id: number;
-    declare title: string;
+    declare subject: string;
     declare description: string;
     declare dueDate: Date;
     declare classId: number;
@@ -22,7 +22,7 @@ Assignment.init({
         autoIncrement: true,
         primaryKey: true
     },
-    title: {
+    subject: { 
         type: DataTypes.STRING(128),
         allowNull: false
     },
