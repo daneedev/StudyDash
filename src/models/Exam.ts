@@ -43,7 +43,6 @@ Exam.init({
 
 Exam.sync();
 
-Exam.belongsTo(Class, { foreignKey: "classId", as: "class" });
 
 
 export default Exam;
