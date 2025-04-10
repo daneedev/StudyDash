@@ -66,8 +66,12 @@ async function getClassPage(req: Request, res: Response) {
         res.status(404).json({ message: 'Class does not exist' });
         return
     }
-    const classMembers = await ClassUser.findAll({ where: { classId: id } });
-    res.render('class.html', { classId: id, classMembers: classMembers });
+    const classMembers = await ClassUser.findAll({ where: { classId: id }, include: [{
+        model: User,
+        as: 'User',
+        attributes: ['id', 'username', 'email']
+    }] });
+    res.render('class.html', { class: classInstance, classMembers: classMembers });
 }
 
 export default { createClass, deleteClass, joinClass, leaveClass, getClassPage };
