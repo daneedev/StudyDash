@@ -8,6 +8,7 @@ class ClassUser extends Model {
     declare classId: number;
     declare userId: number;
     declare role: 'admin' | 'student';
+    declare user?: User;
 }
 
 ClassUser.init({
