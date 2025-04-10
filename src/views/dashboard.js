@@ -32,12 +32,11 @@ document.addEventListener('DOMContentLoaded', function() {
     const createdClasses = document.getElementById('createdClassesGrid');
     const joinedClasses = document.getElementById('joinedClassesGrid');
 
-    // Initialize classes sections state
-    // Default to false (visible) if no value is stored
+    
     const createdClassesCollapsed = localStorage.getItem('createdClassesCollapsed') === 'true';
     const joinedClassesCollapsed = localStorage.getItem('joinedClassesCollapsed') === 'true';
 
-    // Apply initial state
+    
     if (createdClassesCollapsed) {
         createdClasses.classList.add('hidden');
         createdClassesToggle.querySelector('i').classList.add('rotate-180');
@@ -47,7 +46,7 @@ document.addEventListener('DOMContentLoaded', function() {
         joinedClassesToggle.querySelector('i').classList.add('rotate-180');
     }
 
-    // Toggle created classes
+    
     createdClassesToggle.addEventListener('click', function() {
         createdClasses.classList.toggle('hidden');
         const icon = this.querySelector('i');
@@ -56,7 +55,7 @@ document.addEventListener('DOMContentLoaded', function() {
         localStorage.setItem('createdClassesCollapsed', createdClasses.classList.contains('hidden'));
     });
 
-    // Toggle joined classes
+    
     joinedClassesToggle.addEventListener('click', function() {
         joinedClasses.classList.toggle('hidden');
         const icon = this.querySelector('i');
