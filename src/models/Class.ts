@@ -36,7 +36,6 @@ Class.init({
     sequelize: db,
 });
 
-Class.hasMany(Exam, { foreignKey: "classId", as: "exams" });
 
 Class.sync()
 
