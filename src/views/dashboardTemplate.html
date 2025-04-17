@@ -62,13 +62,18 @@
         <article class = "w-full flex flex-col box-border max-w-full text-text ">
             <section class = "">
 
-                <div class = "flex justify-start items-center gap-5 ml-15 text-xl hover:bg-darkgray transition-all rounded-xl p-5 w-min text-nowrap cursor-pointer">
-                    <span id = "createdClassesToggle" class = "flex flex-row justify-center items-center gap-5  ">
+                <div class = "flex justify-start items-center gap-5 ml-15 text-xl w-min text-nowrap cursor-pointer">
+                    <span id = "createdClassesToggle" class = "flex flex-row justify-center items-center gap-5  hover:bg-darkgray p-5 rounded-xl transition-all">
                         <p>Created classes</p>
                         <i class = "fa-solid fa-caret-down"></i>
                     </span>
+                    <button action="/class/create" method="post" class = "bg-primary py-3 px-4 aspect-square rounded-xl shadow-md hover:scale-95 transition-all text-2x text-black font-bold" type="submit">
+                        <i class="fa-solid fa-plus"></i>
+                    </button>
+                    
                     
                 </div>
+                
                 <div id = "createdClassesGrid" class="grid grid-cols-2 md:grid-cols-5 gap-6 max-w-full  p-15 box-border text-text text-xl">
                     {% block content %}
         
