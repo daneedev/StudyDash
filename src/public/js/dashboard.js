@@ -63,4 +63,25 @@ document.addEventListener('DOMContentLoaded', function() {
         
         localStorage.setItem('joinedClassesCollapsed', joinedClasses.classList.contains('hidden'));
     });
+
+
+
+    const classes = ["1.A", "1.B",]; 
+
+    const container = document.getElementById("createdClassesGrid"); 
+
+    classes.forEach(cls => {
+        const html = `
+            <a href="class.html">
+                <section class="bg-darkgray aspect-square rounded-lg shadow-md flex justify-center items-center p-6 transition-all duration-200 flex-col gap-8 relative hover:scale-98">
+                    <div class="absolute top-3 right-3">
+                        <i class="fa-solid fa-ellipsis-vertical text-xl text-text hover:scale-90"></i>
+                    </div>
+                    <div class="w-3/5 h-3/5 bg-white rounded-lg"></div>
+                    <p class="text-2xl font-bold text-text">${cls}</p>
+                </section>
+            </a>
+        `;
+        container.innerHTML += html;
+});
 });
