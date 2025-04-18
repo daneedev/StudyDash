@@ -89,6 +89,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     <button class="hover:bg-gray-200 rounded px-2 py-1" action = "/class/delete" method = "post">Delete</button>
                     <button class="hover:bg-gray-200 rounded px-2 py-1" action = "/class/leave" method = "post">Leave</button>
                     <button class="hover:bg-gray-200 rounded px-2 py-1">Rename</button>
+                    <button class="hover:bg-gray-200 rounded px-2 py-1">Invite</button>
                 </div>
             </div>
         `;
