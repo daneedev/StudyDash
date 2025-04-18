@@ -64,10 +64,13 @@ document.addEventListener('DOMContentLoaded', function() {
 
 });
 
-const classes = ["1.A", "1.B"]; 
-const container = document.getElementById("createdClassesGrid"); 
+const createdClasses = ["1.A", "1.B"]; 
+const createdClassesContainer = document.getElementById("createdClassesGrid"); 
 
-classes.forEach((cls, index) => {
+const joinedClasses = ["4.C", "3.G", "2.K"]; 
+const joinedClassesContainer = document.getElementById("joinedClassesGrid"); 
+
+createdClasses.forEach((cls, index) => {
     const html = `
         <a href="class.html" class="relative group block">
             <section class="bg-darkgray aspect-square rounded-lg shadow-md flex justify-center items-center p-6 transition-all duration-200 flex-col gap-8 relative hover:scale-98">
@@ -84,7 +87,27 @@ classes.forEach((cls, index) => {
             </div>
         </a>
     `;
-    container.innerHTML += html;
+    createdClassesContainer.innerHTML += html;
+});
+
+joinedClasses.forEach((cls, index) => {
+    const html = `
+        <a href="class.html" class="relative group block">
+            <section class="bg-darkgray aspect-square rounded-lg shadow-md flex justify-center items-center p-6 transition-all duration-200 flex-col gap-8 relative hover:scale-98">
+                <div class="absolute top-3 right-3 m-2">
+                    <i class="fa-solid fa-ellipsis-vertical text-xl text-text hover:scale-90 cursor-pointer" data-menu-id="menu-${index}"></i>
+                </div>
+                <div class="w-3/5 h-3/5 bg-white rounded-lg"></div>
+                <p class="text-2xl font-bold text-text">${cls}</p>
+            </section>
+            <div id="menu-${index}" class="hidden absolute top-10 right-3 bg-white rounded shadow-lg z-50 p-2 flex flex-col gap-2 text-sm text-black">
+                <button class="hover:bg-gray-200 rounded px-2 py-1">Delete</button>
+                <button class="hover:bg-gray-200 rounded px-2 py-1">Leave</button>
+                <button class="hover:bg-gray-200 rounded px-2 py-1">Rename</button>
+            </div>
+        </a>
+    `;
+    joinedClassesContainer.innerHTML += html;
 });
 
 // Add event listeners after creating the elements
