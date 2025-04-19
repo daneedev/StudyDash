@@ -1,7 +1,7 @@
 import { db } from '../db';
 import { Model, DataTypes } from 'sequelize';
 import crypto from 'crypto';
-import Exam from './Exam';
+
 class Class extends Model {
     declare id: number;
     declare name: string;
