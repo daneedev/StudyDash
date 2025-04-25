@@ -6,6 +6,7 @@
     <link rel="stylesheet" href="/css/style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <link rel="icon" type="image/x-icon" href="/img/logo.svg">
+    <script src = "../js/class.js"></script>
     {%block header %}
         
     {% endblock %}
@@ -78,9 +79,18 @@
                 </div>
         
                 
-                <div class="flex justify-center items-center gap-2 hover:scale-95 hover:bg-lightgray transition-all rounded-lg px-4 py-2 cursor-pointer">
-                    <i class="fa-solid fa-plus text-text text-2xl"></i>
-                    
+                <div class="relative">
+                    <!-- Plus Button -->
+                    <div id="plusButton" class="flex justify-center items-center gap-2 hover:scale-95 hover:bg-lightgray transition-all rounded-lg px-4 py-2 cursor-pointer">
+                        <i class="fa-solid fa-plus text-text text-2xl"></i>
+                    </div>
+                
+                    <!-- Dropdown Menu -->
+                    <div id="plusMenu" class="hidden absolute top-full right-0 mt-2 bg-white rounded shadow-lg z-50 p-2 flex flex-col gap-2 text-sm text-black">
+                        <button class="hover:bg-gray-200 rounded px-4 py-2">Homework</button>
+                        <button class="hover:bg-gray-200 rounded px-4 py-2">Test</button>
+                        <button class="hover:bg-gray-200 rounded px-4 py-2">Event</button>
+                    </div>
                 </div>
             </div>
         </nav>
