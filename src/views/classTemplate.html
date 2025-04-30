@@ -6,7 +6,7 @@
     <link rel="stylesheet" href="/css/style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <link rel="icon" type="image/x-icon" href="/img/logo.svg">
-    <script src = "../js/class.js"></script>
+    
     {%block header %}
         
     {% endblock %}
@@ -96,16 +96,13 @@
         </nav>
         <article class = "grid grid-rows-2 grid-cols-3 grow">
             <section class="m-5 rounded-lg border-lightgray border-2 shadow-xl flex justify-center items-center flex-col">
-                <div class="relative w-72 h-48 overflow-hidden flex justify-center items-center">
-                  <div class="absolute top-0 left-1/2 -translate-x-1/2 w-72 h-72 border-20 border-primary rounded-full"></div>
-              
-                  <div class="absolute top-32 flex flex-col items-center text-center">
-                    <h1 class="text-text text-5xl font-semibold mb-2 -translate-y-4">100%</h1>
-                  </div>
+                <div class="w-72 h-72 flex justify-center items-center">
+                  <canvas id="gaugeChart" width="288" height="288"></canvas>
                 </div>
-              </section>
+            </section>
               
-              <section class="m-5 rounded-lg col-span-2 border-lightgray border-2 shadow-xl flex flex-col">
+              
+              <section class="m-5 rounded-lg col-span-2 border-lightgray border-2 shadow-xl flex flex-col hover:-translate-x-1 duration-200">
                 <p class="text-text p-3 font-semibold text-xl opacity-100">Poznámky</p>
                 <div class="grid grid-cols-[1fr_3fr_6fr_8fr] p-3 m-3 rounded-lg gap-y-1">
                     <!-- Headers -->
@@ -155,7 +152,7 @@
                     </div>
                 </div>
             </section>
-            <section class = "m-5  rounded-lg border-lightgray border-2 shadow-xl">
+            <section class = "m-5  rounded-lg border-lightgray border-2 shadow-xl hover:-translate-x-1 duration-200">
                 <p class ="text-text p-3 font-semibold text-xl opacity-70">Úkoly</p>
                 <div class="grid grid-cols-[1fr_3fr_6fr] p-3 m-3 rounded-lg gap-y-1">
                     <!-- Headers -->
@@ -192,7 +189,7 @@
                     </div>
                 </div>
             </section>
-            <section class = "m-5 rounded-lg border-lightgray border-2 shadow-xl">
+            <section class = "m-5 rounded-lg border-lightgray border-2 shadow-xl hover:-translate-x-1 duration-200">
                 <p class ="text-text p-3 font-semibold text-xl opacity-70">Testy</p>
                 <div class="grid grid-cols-[1fr_3fr_6fr] p-3 m-3 rounded-lg gap-y-1">
                     <!-- Headers -->
@@ -230,9 +227,13 @@
                 </div>
             </section>
                 
-            <section class = "m-5  rounded-lg border-lightgray border-2 shadow-xl">
+            <section class = "m-5  rounded-lg border-lightgray border-2 shadow-xl hover:-translate-x-1 duration-200">
                 <p class ="text-text p-3 font-semibold text-xl opacity-70">Oznámení</p>
             </section>
         </article>
     </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2"></script>
+    <script src = "../js/class.js"></script>
 </body>
