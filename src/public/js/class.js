@@ -26,7 +26,7 @@ document.addEventListener('DOMContentLoaded', () => {
             labels: ['Hotovo', 'Zbývá'],
             datasets: [{
                 data: [completion, 100 - completion],
-                backgroundColor: ['#3b82f6', '#e5e7eb'],
+                backgroundColor: ['#F5C518', '#e5e7eb'],
                 borderWidth: 0
             }]
         },
@@ -49,7 +49,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 const { width, height, ctx } = chart;
 
                 ctx.save();
-                const text = `${completion}%`; // ← now shows "80%"
+                const text = `${completion}%`; 
                 ctx.font = 'bold 3rem sans-serif';
                 ctx.textBaseline = 'middle';
                 ctx.textAlign = 'center';
