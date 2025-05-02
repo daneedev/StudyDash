@@ -2,29 +2,38 @@ document.addEventListener('DOMContentLoaded', () => {
     // Menu toggle logic
     const plusButton = document.getElementById('plusButton');
     const plusMenu = document.getElementById('plusMenu');
+    const popup = document.getElementById('popup');
     const closePopup = document.getElementById('closePopup');
-    const popup = document.querySelector('#popup');
+    const homeworkButton = plusMenu?.querySelector('button:nth-child(1)'); // Get the Homework button
 
-
-    plusButton.addEventListener('click', (e) => {
-        e.stopPropagation(); 
-        plusMenu.classList.toggle('hidden');
+    // Plus button click handler
+    plusButton?.addEventListener('click', (e) => {
+        e.stopPropagation();
+        plusMenu?.classList.toggle('hidden');
     });
 
+    // Document click handler to close plus menu
     document.addEventListener('click', () => {
-        plusMenu.classList.add('hidden');
+        plusMenu?.classList.add('hidden');
     });
 
+    // Prevent menu close when clicking inside
+    plusMenu?.addEventListener('click', (e) => {
+        e.stopPropagation();
+    });
+
+    
+    homeworkButton?.addEventListener('click', () => {
+        popup?.classList.remove('hidden'); 
+        plusMenu?.classList.add('hidden'); 
+    });
+
+    
     closePopup?.addEventListener('click', () => {
         popup?.classList.add('hidden');
     });
 
-
-    plusMenu.addEventListener('click', (e) => {
-        e.stopPropagation();
-    });
-
-    // Gauge chart logic
+    // Gauge chart logika
     const ctx = document.getElementById('gaugeChart').getContext('2d');
     const completion = 92;
 
