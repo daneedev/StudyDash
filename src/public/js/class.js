@@ -2,6 +2,9 @@ document.addEventListener('DOMContentLoaded', () => {
     // Menu toggle logic
     const plusButton = document.getElementById('plusButton');
     const plusMenu = document.getElementById('plusMenu');
+    const closePopup = document.getElementById('closePopup');
+    const popup = document.querySelector('#popup');
+
 
     plusButton.addEventListener('click', (e) => {
         e.stopPropagation(); 
@@ -11,6 +14,11 @@ document.addEventListener('DOMContentLoaded', () => {
     document.addEventListener('click', () => {
         plusMenu.classList.add('hidden');
     });
+
+    closePopup?.addEventListener('click', () => {
+        popup?.classList.add('hidden');
+    });
+
 
     plusMenu.addEventListener('click', (e) => {
         e.stopPropagation();

@@ -103,7 +103,10 @@
               
               
               <section class="m-5 rounded-lg col-span-2 border-lightgray border-2 shadow-xl flex flex-col hover:-translate-x-1 duration-200">
-                <p class="text-text p-3 font-semibold text-xl opacity-100">Poznámky</p>
+                <div class="ml-3 mr-3 mt-3 text-text  font-semibold text-xl opacity-100 flex justify-between items-center">
+                    <p class ="text-text font-semibold text-xl p-3">Poznámky</p>
+                    
+                </div>
                 <div class="grid grid-cols-[1fr_3fr_6fr_8fr] p-3 m-3 rounded-lg gap-y-1">
                     <!-- Headers -->
                     <h2 class="text-text font-semibold text-lg opacity-70 p-2">Datum</h2>
@@ -231,7 +234,55 @@
                 <p class ="text-text p-3 font-semibold text-xl opacity-70">Oznámení</p>
             </section>
         </article>
+
+
+        
     </main>
+
+    <article class="w-full h-full max-w-full max-h-full absolute flex justify-center items-center">
+        <section class="w-4/5 h-4/5 bg-darkgray rounded-lg border-lightgray border-2 shadow-xl flex flex-col p-6" id = "popup">
+            <!-- Form Header -->
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-text text-2xl font-semibold">Přidat úkol</h2>
+                <button class="text-text text-xl hover:text-primary transition-colors" id="closePopup">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+    
+            <!-- Form -->
+            <form class="flex flex-col gap-4 flex-grow">
+                <!-- Title Input -->
+                <div class="flex flex-col">
+                    <label for="homeworkTitle" class="text-text text-lg font-semibold mb-2">Nadpis</label>
+                    <input type="text" id="homeworkTitle" name="title" class="p-3 rounded-lg bg-lightgray text-text focus:outline-none focus:ring-2 focus:ring-primary" placeholder="Zadej nadpis" required>
+                </div>
+    
+                <!-- Date Input -->
+                <div class="flex flex-col">
+                    <label for="homeworkDate" class="text-text text-lg font-semibold mb-2">Datum</label>
+                    <input type="date" id="homeworkDate" name="date" class="p-3 rounded-lg bg-lightgray text-text focus:outline-none focus:ring-2 focus:ring-primary" required>
+                </div>
+    
+                <!-- Subject Input -->
+                <div class="flex flex-col">
+                    <label for="homeworkSubject" class="text-text text-lg font-semibold mb-2">Předmět</label>
+                    <input type="text" id="homeworkSubject" name="subject" class="p-3 rounded-lg bg-lightgray text-text focus:outline-none focus:ring-2 focus:ring-primary" placeholder="Zadej zkratku předmětu" required>
+                </div>
+    
+                <!-- Notes Textarea -->
+                <div class="flex flex-col flex-grow">
+                    <label for="homeworkNotes" class="text-text text-lg font-semibold mb-2">Poznámky</label>
+                    <textarea id="homeworkNotes" name="notes" class="p-3 rounded-lg bg-lightgray text-text focus:outline-none focus:ring-2 focus:ring-primary h-full resize-none" placeholder="Přidávej poznámky..." required></textarea>
+                </div>
+    
+                <!-- Submit Button -->
+                <button type="submit" class="mt-4 p-3 bg-primary text-darkgray font-semibold rounded-lg hover:bg-primary/90 transition-all">
+                    Submit
+                </button>
+            </form>
+        </section>
+    </article>
+
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2"></script>
