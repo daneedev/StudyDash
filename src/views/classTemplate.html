@@ -230,8 +230,11 @@
                 </div>
             </section>
                 
-            <section class = "m-5  rounded-lg border-lightgray border-2 shadow-xl hover:-translate-x-1 duration-200">
-                <p class ="text-text p-3 font-semibold text-xl opacity-70">Oznámení</p>
+            <section class = "m-5  rounded-lg border-lightgray border-2 shadow-xl hover:-translate-x-1 duration-200 flex flex-col">
+                <p class ="text-text p-3 font-semibold text-xl opacity-70">Moje třída</p>
+                <div class = " flex-grow flex justify-center items-center">
+                    <p class = "text-text text-9xl font-semibold">3.A</p>
+                </div>
             </section>
         </article>
 
@@ -239,8 +242,8 @@
         
     </main>
 
-    <article class="w-full h-full max-w-full max-h-full absolute flex justify-center items-center">
-        <section class="w-4/5 h-4/5 bg-darkgray rounded-lg border-lightgray border-2 shadow-xl flex flex-col p-6" id = "popup">
+    <article class="w-full h-full max-w-full max-h-full absolute flex justify-center items-center"  id = "popup">
+        <section class="w-4/5 h-4/5 bg-darkgray rounded-lg border-lightgray border-2 shadow-xl flex flex-col p-6">
             <!-- Form Header -->
             <div class="flex justify-between items-center mb-6">
                 <h2 class="text-text text-2xl font-semibold">Přidat úkol</h2>
@@ -276,8 +279,8 @@
                 </div>
     
                 <!-- Submit Button -->
-                <button type="submit" class="mt-4 p-3 bg-primary text-darkgray font-semibold rounded-lg hover:bg-primary/90 transition-all">
-                    Submit
+                <button type="submit" class="mt-4 p-3 bg-primary text-darkgray font-semibold rounded-lg hover:bg-lightgray hover:ring-2 hover:ring-primary hover:text-primary hover:shadow-xl transition-all duration-200">
+                    Přidat
                 </button>
             </form>
         </section>
