@@ -4,7 +4,11 @@ document.addEventListener('DOMContentLoaded', () => {
     const plusMenu = document.getElementById('plusMenu');
     const popup = document.getElementById('popup');
     const closePopup = document.getElementById('closePopup');
-    const homeworkButton = plusMenu?.querySelector('button:nth-child(1)'); // Get the Homework button
+    const notesButton = plusMenu?.querySelector('button:nth-child(1)'); 
+    const homeworkButton = plusMenu?.querySelector('button:nth-child(2)'); 
+    const testButton = plusMenu?.querySelector('button:nth-child(3)'); 
+    const eventButton = plusMenu?.querySelector('button:nth-child(4)'); 
+    const popupTitle = document.getElementById('popupTitle');
 
     // Plus button click handler
     plusButton?.addEventListener('click', (e) => {
@@ -23,9 +27,25 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     
+    notesButton?.addEventListener('click', () => {
+        popup?.classList.remove('hidden'); 
+        plusMenu?.classList.add('hidden'); 
+        popupTitle.innerText = 'Přidat poznámku';
+    });
     homeworkButton?.addEventListener('click', () => {
         popup?.classList.remove('hidden'); 
         plusMenu?.classList.add('hidden'); 
+        popupTitle.innerText = 'Přidat úkol';
+    });
+    testButton?.addEventListener('click', () => {
+        popup?.classList.remove('hidden'); 
+        plusMenu?.classList.add('hidden'); 
+        popupTitle.innerText = 'Přidat test';
+    });
+    eventButton?.addEventListener('click', () => {
+        popup?.classList.remove('hidden'); 
+        plusMenu?.classList.add('hidden'); 
+        popupTitle.innerText = 'Přidat událost';
     });
 
     
