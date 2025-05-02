@@ -96,4 +96,70 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }]
     });
+
+
+
+
+
+    // ...existing code...
+
+const fileUpload = document.getElementById('fileUpload');
+const fileList = document.getElementById('fileList');
+
+fileUpload?.addEventListener('change', (e) => {
+    const files = Array.from(e.target.files || []);
+    
+    files.forEach(file => {
+        // Create file element
+        const fileElement = document.createElement('div');
+        fileElement.className = 'flex items-center gap-2 bg-lightgray rounded-lg p-2';
+        
+        // Create file content
+        fileElement.innerHTML = `
+            <i class="fa-regular fa-file text-text"></i>
+            <span class="text-text text-sm truncate max-w-[200px]">${file.name}</span>
+            <button type="button" class="text-text hover:text-primary transition-colors ml-2">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+        `;
+        
+        // Add remove functionality
+        const removeButton = fileElement.querySelector('button');
+        removeButton?.addEventListener('click', () => {
+            fileElement.remove();
+        });
+        
+        // Add to file list
+        fileList?.appendChild(fileElement);
+    });
+});
+
+// Add drag and drop support
+const dropZone = document.querySelector('label[for="fileUpload"]');
+
+dropZone?.addEventListener('dragover', (e) => {
+    e.preventDefault();
+    dropZone.classList.add('border-primary');
+});
+
+dropZone?.addEventListener('dragleave', () => {
+    dropZone.classList.remove('border-primary');
+});
+
+dropZone?.addEventListener('drop', (e) => {
+    e.preventDefault();
+    dropZone.classList.remove('border-primary');
+    
+    const files = Array.from(e.dataTransfer?.files || []);
+    if (fileUpload) {
+        // Create a new FileList object
+        const dataTransfer = new DataTransfer();
+        files.forEach(file => dataTransfer.items.add(file));
+        fileUpload.files = dataTransfer.files;
+        
+        // Trigger change event
+        const event = new Event('change');
+        fileUpload.dispatchEvent(event);
+    }
+});
 });
