@@ -132,11 +132,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 break;
             case 'Přidat test':
                 targetSection = document.querySelector('.testy');
-                newRow.innerHTML = createStatusRow(formattedDate, subject, title);
+                newRow.innerHTML = createLogRow(formattedDate, subject, title);
                 break;
             case 'Přidat úkol':
                 targetSection = document.querySelector('.ukoly');
-                newRow.innerHTML = createStatusRow(formattedDate, subject, title);
+                newRow.innerHTML = createLogRow(formattedDate, subject, title);
                 break;
             default:
                 return;
@@ -144,6 +144,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Add new row to appropriate section
         targetSection?.appendChild(newRow);
+        
+        // Add click handler to the new row
+        addRowClickHandler(newRow);
 
         // Reset form and close popup
         form.reset();
@@ -160,7 +163,7 @@ document.addEventListener('DOMContentLoaded', () => {
         `;
     }
 
-    function createStatusRow(date, subject, title) {
+    function createLogRow(date, subject, title) {
         return `
             <p class="text-text text-lg p-2 group-hover:bg-lightgray/30 transition-colors duration-200 first:rounded-l-lg">${date}</p>
             <p class="text-text text-lg p-2 group-hover:bg-lightgray/30 transition-colors duration-200">${subject}</p>
@@ -228,6 +231,74 @@ document.addEventListener('DOMContentLoaded', () => {
             // Trigger change event
             const event = new Event('change');
             fileUpload.dispatchEvent(event);
+        }
+    });
+
+    // Get detail popup elements
+    const detailPopup = document.getElementById('detailPopup');
+    const closeDetailPopup = document.getElementById('closeDetailPopup');
+    const detailTitle = document.getElementById('detailTitle');
+    const detailDate = document.getElementById('detailDate');
+    const detailSubject = document.getElementById('detailSubject');
+    const detailStatus = document.getElementById('detailStatus');
+    const detailDescription = document.getElementById('detailDescription');
+    const detailFiles = document.getElementById('detailFiles');
+
+    // Move the click handler logic into a reusable function
+    function addRowClickHandler(row) {
+        row.addEventListener('click', () => {
+            // Get data from row
+            const date = row.querySelector('p:nth-child(1)').textContent;
+            const subject = row.querySelector('p:nth-child(2)').textContent;
+            const title = row.querySelector('p:nth-child(3)').textContent;
+            const description = row.querySelector('p:nth-child(4)').textContent;
+            const hasCheck = row.querySelector('.fa-check') !== null;
+
+            // Determine category based on parent section
+            let category = '';
+            const isNote = row.closest('.poznámky') !== null;
+            if (isNote) {
+                category = 'Poznámka';
+            } else if (row.closest('.ukoly')) {
+                category = 'Úkol';
+            } else if (row.closest('.testy')) {
+                category = 'Test';
+            }
+
+            // Populate detail popup
+            detailTitle.textContent = `${category} - ${title}`;
+            detailDate.textContent = date;
+            detailSubject.textContent = subject;
+            
+            if (isNote) {
+                detailStatus.innerHTML = '';
+                detailStatus.parentElement?.classList.add('hidden');
+            } else {
+                detailStatus.innerHTML = hasCheck ? 
+                    '<i class="fa-solid fa-check text-primary"></i> Hotovo' : 
+                    '<i class="fa-solid fa-clock text-yellow-500"></i> Čeká na splnění';
+                detailStatus.parentElement?.classList.remove('hidden');
+            }
+            
+            detailDescription.textContent = description;
+            detailPopup.classList.remove('hidden');
+        });
+    }
+
+    // Add click handlers to existing rows
+    document.querySelectorAll('.poznámky .group, .ukoly .group, .testy .group').forEach(row => {
+        addRowClickHandler(row);
+    });
+
+    // Close detail popup
+    closeDetailPopup?.addEventListener('click', () => {
+        detailPopup?.classList.add('hidden');
+    });
+
+    // Close popup when clicking outside
+    detailPopup?.addEventListener('click', (e) => {
+        if (e.target === detailPopup) {
+            detailPopup.classList.add('hidden');
         }
     });
 });

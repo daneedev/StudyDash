@@ -336,6 +336,52 @@
         </section>
     </article>
 
+    <article class="w-full h-full max-w-full max-h-full absolute flex justify-center items-center hidden backdrop-blur-sm bg-black/30" id="detailPopup">
+        <section class="w-4/5 h-4/5 bg-darkgray rounded-lg border-lightgray border-2 shadow-xl flex flex-col p-6">
+            <!-- Header -->
+            <div class="flex justify-between items-center pb-4 border-b border-lightgray/30">
+                <h2 class="text-text text-2xl font-semibold" id="detailTitle"></h2>
+                <button class="text-text text-xl hover:text-primary transition-colors" id="closeDetailPopup">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+
+            <!-- Content -->
+            <div class="mt-6 flex-1 overflow-y-auto px-2">
+                <div class="flex flex-col gap-6">
+                    <!-- Info Grid -->
+                    <div class="grid grid-cols-2 gap-4">
+                        <div class="flex flex-col">
+                            <span class="text-text/50 text-sm">Datum</span>
+                            <span class="text-text text-lg" id="detailDate"></span>
+                        </div>
+                        <div class="flex flex-col">
+                            <span class="text-text/50 text-sm">Předmět</span>
+                            <span class="text-text text-lg" id="detailSubject"></span>
+                        </div>
+                        <div class="flex flex-col">
+                            <span class="text-text/50 text-sm">Status</span>
+                            <span class="text-text text-lg" id="detailStatus"></span>
+                        </div>
+                    </div>
+
+                    <!-- Description -->
+                    <div class="flex flex-col gap-2">
+                        <span class="text-text/50 text-sm">Popis</span>
+                        <p class="text-text text-lg bg-lightgray/10 p-4 rounded-lg" id="detailDescription"></p>
+                    </div>
+
+                    <!-- Files -->
+                    <div class="flex flex-col gap-2">
+                        <span class="text-text/50 text-sm">Soubory</span>
+                        <div class="flex flex-wrap gap-2" id="detailFiles">
+                            <!-- Files will be inserted here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </article>
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2"></script>
