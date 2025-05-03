@@ -144,8 +144,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Add new row to appropriate section
         targetSection?.appendChild(newRow);
-        
-        // Add click handler to the new row
+        addStatusToggle(newRow); // Add toggle functionality to new row
         addRowClickHandler(newRow);
 
         // Reset form and close popup
@@ -301,4 +300,37 @@ document.addEventListener('DOMContentLoaded', () => {
             detailPopup.classList.add('hidden');
         }
     });
+
+    // Add toggle functionality to status icons
+    document.querySelectorAll('.ukoly .fa-xmark, .testy .fa-xmark').forEach(icon => {
+        icon.addEventListener('click', (e) => {
+            e.stopPropagation(); // Prevent row click event
+            
+            // Toggle between x-mark and check
+            if (icon.classList.contains('fa-xmark')) {
+                icon.classList.remove('fa-xmark');
+                icon.classList.add('fa-check');
+            } else {
+                icon.classList.remove('fa-check');
+                icon.classList.add('fa-xmark');
+            }
+        });
+    });
+
+    // Add toggle functionality to new rows
+    function addStatusToggle(row) {
+        const statusIcon = row.querySelector('.fa-xmark');
+        if (statusIcon) {
+            statusIcon.addEventListener('click', (e) => {
+                e.stopPropagation();
+                if (statusIcon.classList.contains('fa-xmark')) {
+                    statusIcon.classList.remove('fa-xmark');
+                    statusIcon.classList.add('fa-check');
+                } else {
+                    statusIcon.classList.remove('fa-check');
+                    statusIcon.classList.add('fa-xmark');
+                }
+            });
+        }
+    }
 });
