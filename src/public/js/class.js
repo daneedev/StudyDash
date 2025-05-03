@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', () => {
-    // Menu toggle logic
+    
     const plusButton = document.getElementById('plusButton');
     const plusMenu = document.getElementById('plusMenu');
     const popup = document.getElementById('popup');
@@ -16,18 +16,18 @@ document.addEventListener('DOMContentLoaded', () => {
     const homeworkSubject = document.getElementById('homeworkSubject');
     const homeworkNotes = document.getElementById('homeworkNotes');
 
-    // Plus button click handler
+    
     plusButton?.addEventListener('click', (e) => {
         e.stopPropagation();
         plusMenu?.classList.toggle('hidden');
     });
 
-    // Document click handler to close plus menu
+    
     document.addEventListener('click', () => {
         plusMenu?.classList.add('hidden');
     });
 
-    // Prevent menu close when clicking inside
+    
     plusMenu?.addEventListener('click', (e) => {
         e.stopPropagation();
     });
@@ -169,7 +169,7 @@ document.addEventListener('DOMContentLoaded', () => {
             <p class="text-text text-lg p-2 group-hover:bg-lightgray/30 transition-colors duration-200">${subject}</p>
             <p class="text-text text-lg p-2 group-hover:bg-lightgray/30 transition-colors duration-200">${title}</p>
             <p class="text-text text-lg p-2 group-hover:bg-lightgray/30 transition-colors duration-200 last:rounded-r-lg">
-                <i class="fa-solid fa-check text-primary"></i>
+                <i class="fa-solid fa-xmark text-primary"></i>
             </p>
         `;
     }
@@ -252,7 +252,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const subject = row.querySelector('p:nth-child(2)').textContent;
             const title = row.querySelector('p:nth-child(3)').textContent;
             const description = row.querySelector('p:nth-child(4)').textContent;
-            const hasCheck = row.querySelector('.fa-check') !== null;
+            const hasCheck = row.querySelector('.fa-xmark') !== null;
 
             // Determine category based on parent section
             let category = '';
@@ -275,7 +275,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 detailStatus.parentElement?.classList.add('hidden');
             } else {
                 detailStatus.innerHTML = hasCheck ? 
-                    '<i class="fa-solid fa-check text-primary"></i> Hotovo' : 
+                    '<i class="fa-solid fa-xmark text-primary"></i> Nedokončeno' : 
                     '<i class="fa-solid fa-clock text-yellow-500"></i> Čeká na splnění';
                 detailStatus.parentElement?.classList.remove('hidden');
             }
