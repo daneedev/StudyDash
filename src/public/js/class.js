@@ -200,8 +200,7 @@ document.addEventListener('DOMContentLoaded', () => {
             <p class="text-text text-lg p-2 group-hover:bg-lightgray/30 transition-colors duration-200">${subject}</p>
             <p class="text-text text-lg p-2 group-hover:bg-lightgray/30 transition-colors duration-200">${title}</p>
             <p class="text-text text-lg p-2 group-hover:bg-lightgray/30 transition-colors duration-200 last:rounded-r-lg">
-                <i class="fa-solid fa-xmark text-primary"></i>
-            </p>
+            <i class="fa-solid fa-xmark text-primary p-1 rounded-md hover:bg-lightgray duration-200"></i>
         `;
     }
 
