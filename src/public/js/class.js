@@ -103,7 +103,36 @@ document.addEventListener('DOMContentLoaded', () => {
         }]
     });
 
-    // Form submission handler
+    
+    function updateCompletionPercentage() {
+        const allRows = document.querySelectorAll('.ukoly .group, .testy .group');
+        const completedRows = document.querySelectorAll('.ukoly .fa-check, .testy .fa-check');
+        
+        const totalTasks = allRows.length;
+        const completedTasks = completedRows.length;
+        
+        
+        const completion = totalTasks === 0 ? 0 : Math.round((completedTasks / totalTasks) * 100);
+        
+        if (gaugeChart) {
+            gaugeChart.data.datasets[0].data = [completion, 100 - completion];
+            
+            gaugeChart.config.plugins[0].beforeDraw = function(chart) {
+                const { width, height, ctx } = chart;
+                ctx.save();
+                const text = `${completion}%`;
+                ctx.font = 'bold 3rem sans-serif';
+                ctx.textBaseline = 'middle';
+                ctx.textAlign = 'center';
+                ctx.fillStyle = '#ffffff';
+                ctx.fillText(text, width / 2, height / 1.2);
+                ctx.restore();
+            };
+            gaugeChart.update();
+        }
+    }
+
+    
     const form = document.querySelector('form');
     form?.addEventListener('submit', (e) => {
         e.preventDefault();
@@ -113,17 +142,17 @@ document.addEventListener('DOMContentLoaded', () => {
         const subject = homeworkSubject?.value;
         const notes = homeworkNotes?.value;
         
-        // Create new row
+        
         const newRow = document.createElement('div');
         newRow.className = 'contents group hover:cursor-pointer';
         
-        // Format date to DD.M format
+        
         const formattedDate = new Date(date).toLocaleDateString('cs-CZ', {
             day: 'numeric',
             month: 'numeric'
         });
 
-        // Determine which section to add to based on popup title
+        
         let targetSection;
         switch(popupTitle?.innerText) {
             case 'Přidat poznámku':
@@ -142,17 +171,20 @@ document.addEventListener('DOMContentLoaded', () => {
                 return;
         }
 
-        // Add new row to appropriate section
+        
         targetSection?.appendChild(newRow);
-        addStatusToggle(newRow); // Add toggle functionality to new row
+        addStatusToggle(newRow); 
         addRowClickHandler(newRow);
 
-        // Reset form and close popup
+        
         form.reset();
         popup?.classList.add('hidden');
+
+        
+        updateCompletionPercentage();
     });
 
-    // Helper functions to create different row types
+    
     function createNoteRow(date, subject, title, notes) {
         return `
             <p class="text-text text-lg p-2 group-hover:bg-lightgray/30 transition-colors duration-200 first:rounded-l-lg">${date}</p>
@@ -314,10 +346,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 icon.classList.remove('fa-check');
                 icon.classList.add('fa-xmark');
             }
+            updateCompletionPercentage(); // Update percentage after toggle
         });
     });
 
-    // Add toggle functionality to new rows
+    
     function addStatusToggle(row) {
         const statusIcon = row.querySelector('.fa-xmark');
         if (statusIcon) {
@@ -330,7 +363,11 @@ document.addEventListener('DOMContentLoaded', () => {
                     statusIcon.classList.remove('fa-check');
                     statusIcon.classList.add('fa-xmark');
                 }
+                updateCompletionPercentage(); // Update percentage after toggle
             });
         }
     }
+
+    // Initialize completion percentage
+    updateCompletionPercentage();
 });
