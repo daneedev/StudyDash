@@ -39,22 +39,22 @@
     <main class = "flex justify-center items-start box-border w-full "> 
         <aside id = "sideBar" class = "flex flex-col justify-start items-start w-auto transition-all duration-300 ease-in-out hidden">
             <div class="flex flex-col justify-start items-start text-text text-2xl m-5 w-full  ">
-                <div class ="flex justify-start items-start gap-5 hover:scale-95 hover:bg-darkgray transition-all rounded-xl p-5 w-full">
+                <a class ="flex justify-start items-start gap-5 hover:scale-95 hover:bg-darkgray transition-all rounded-xl p-5 w-full cursor-pointer">
                     <i class="fa-regular fa-user text-3xl text-text"></i>  
                     <p class = "flex-1">Profile</p> 
-                </div>
-                <div class ="flex justify-start items-start gap-5 hover:scale-95 hover:bg-darkgray transition-all rounded-xl p-5 w-full">
+                </a>
+                <a class ="flex justify-start items-start gap-5 hover:scale-95 hover:bg-darkgray transition-all rounded-xl p-5 w-full cursor-pointer">
                     <i class="fa-solid fa-gear text-3xl text-text"></i>
                     <p class = "flex-1">Settings</p> 
-                </div>
-                <div class ="flex justify-start items-start gap-5 hover:scale-95 hover:bg-darkgray transition-all rounded-xl p-5 w-full">
+                </a>
+                <a target= "_blank" href = "https://github.com/daneedev/StudyDash" class ="flex justify-start items-start gap-5 hover:scale-95 hover:bg-darkgray transition-all rounded-xl p-5 w-full cursor-pointer">
                     <i class="fa-brands fa-github text-3xl text-text"></i>
                     <p class = "flex-1">Github</p> 
-                </div>
-                <div class ="flex justify-start items-start gap-5 hover:scale-95 hover:bg-darkgray transition-all rounded-xl p-5 w-full">
+                </a>
+                <a class ="flex justify-start items-start gap-5 hover:scale-95 hover:bg-darkgray transition-all rounded-xl p-5 w-full cursor-pointer">
                     <i class="fa-solid fa-arrow-right-from-bracket text-3xl text-text"></i>
                     <p class = "flex-1">Logout</p> 
-                </div>
+                </a>
                 
             </div>          
               
@@ -62,13 +62,18 @@
         <article class = "w-full flex flex-col box-border max-w-full text-text ">
             <section class = "">
 
-                <div class = "flex justify-start items-center gap-5 ml-15 text-xl hover:bg-darkgray transition-all rounded-xl p-5 w-min text-nowrap cursor-pointer">
-                    <span id = "createdClassesToggle" class = "flex flex-row justify-center items-center gap-5  ">
+                <div class = "flex justify-start items-center gap-5 ml-15 text-xl w-min text-nowrap cursor-pointer">
+                    <span id = "createdClassesToggle" class = "flex flex-row justify-center items-center gap-5  hover:bg-darkgray p-5 rounded-xl transition-all">
                         <p>Created classes</p>
                         <i class = "fa-solid fa-caret-down"></i>
                     </span>
+                    <button action="/class/create" method="post" class = "bg-primary py-3 px-4 aspect-square rounded-xl shadow-md hover:scale-95 transition-all text-2x text-black font-bold" type="submit">
+                        <i class="fa-solid fa-plus"></i>
+                    </button>
+                    
                     
                 </div>
+                
                 <div id = "createdClassesGrid" class="grid grid-cols-2 md:grid-cols-5 gap-6 max-w-full  p-15 box-border text-text text-xl">
                     {% block content %}
         
