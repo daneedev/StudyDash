@@ -22,6 +22,10 @@ Assignment.init({
         autoIncrement: true,
         primaryKey: true
     },
+    title: {
+        type: DataTypes.STRING(128),
+        allowNull: false
+    },
     subject: { 
         type: DataTypes.STRING(128),
         allowNull: false
