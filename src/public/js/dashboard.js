@@ -67,41 +67,14 @@ document.addEventListener('DOMContentLoaded', function() {
 document.addEventListener('DOMContentLoaded', function() {
     // ... (keep your existing sidebar and toggle code) ...
 
-    // Generate class cards with unique IDs
-    const createdClasses = ["1.A", "1.B"]; 
-    const joinedClasses = ["4.C", "3.G", "2.K"]; 
-    
-    // Helper function to create class cards
-    function createClassCard(cls, container, isJoined = false) {
-        const uniqueId = `${isJoined ? 'joined' : 'created'}-${Math.random().toString(36).substr(2, 9)}`;
-        const html = `
-            <div class="relative group">
-                <a href="class.html" class="block">
-                    <section class="bg-darkgray aspect-square rounded-lg shadow-md flex justify-center items-center p-6 transition-all duration-200 flex-col gap-8 relative hover:scale-98">
-                        <div class="absolute top-0 right-0 p-5" data-menu-id="${uniqueId}">
-                            <i class="fa-solid fa-ellipsis-vertical text-xl text-text hover:scale-90 cursor-pointer" ></i>
-                        </div>
-                        <div class="w-3/5 h-3/5 bg-white rounded-lg"></div>
-                        <p class="text-2xl font-bold text-text">${cls}</p>
-                    </section>
-                </a>
-                <div id="${uniqueId}" class="hidden absolute top-12 right-3 bg-white rounded shadow-lg z-50 p-2 flex flex-col gap-2 text-sm text-black">
-                    <button class="hover:bg-gray-200 rounded px-2 py-1" action = "/class/delete" method = "post">Delete</button>
-                    <button class="hover:bg-gray-200 rounded px-2 py-1" action = "/class/leave" method = "post">Leave</button>
-                    <button class="hover:bg-gray-200 rounded px-2 py-1">Rename</button>
-                    <button class="hover:bg-gray-200 rounded px-2 py-1">Invite</button>
-                </div>
-            </div>
-        `;
-        container.innerHTML += html;
-    }
+  
+
 
     // Create cards for both sections
     const createdClassesContainer = document.getElementById("createdClassesGrid");
     const joinedClassesContainer = document.getElementById("joinedClassesGrid");
     
-    createdClasses.forEach(cls => createClassCard(cls, createdClassesContainer));
-    joinedClasses.forEach(cls => createClassCard(cls, joinedClassesContainer, true));
+ 
 
     // Menu handling
     document.querySelectorAll('[data-menu-id]').forEach(icon => {
