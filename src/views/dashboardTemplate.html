@@ -32,9 +32,22 @@
             </div>
             
         </form>
-        <form action="/auth/logout" method="get">
-            <button class = "bg-primary py-3 px-6 rounded-xl shadow-md hover:scale-95 transition-all text-2x text-black font-bold" type="submit">Log Out</button>
-        </form>
+        <div class = "flex items-center gap-3">
+            <form action="/class/create">
+                <button action="/class/create" method="post" class = "bg-primary py-3 px-4 aspect-square rounded-xl shadow-md hover:scale-95 transition-all text-2x text-black font-bold" type="submit">
+                    <i class="fa-solid fa-plus"></i>
+                </button>
+            </form>
+            <form action = "/class/join">
+                <button action="/class/join" method="post" class = "bg-primary py-3 px-4 aspect-square rounded-xl shadow-md hover:scale-95 transition-all text-2x text-black font-bold" type="submit">
+                    <i class="fa-solid fa-link"></i>
+                </button>
+            </form>
+
+            <form action="/auth/logout" method="get">
+                <button class = "bg-primary py-3 px-6 rounded-xl shadow-md hover:scale-95 transition-all text-2x text-black font-bold" type="submit">Log Out</button>
+            </form>
+        </div>
     </header>
     <main class = "flex justify-center items-start box-border w-full "> 
         <aside id = "sideBar" class = "flex flex-col justify-start items-start w-auto transition-all duration-300 ease-in-out hidden">
@@ -67,12 +80,7 @@
                         <p>Created classes</p>
                         <i class = "fa-solid fa-caret-down"></i>
                     </span>
-                    <button action="/class/create" method="post" class = "bg-primary py-3 px-4 aspect-square rounded-xl shadow-md hover:scale-95 transition-all text-2x text-black font-bold" type="submit">
-                        <i class="fa-solid fa-plus"></i>
-                    </button>
-                    <button action="/class/join" method="post" class = "bg-primary py-3 px-4 aspect-square rounded-xl shadow-md hover:scale-95 transition-all text-2x text-black font-bold" type="submit">
-                        <i class="fa-solid fa-link"></i>
-                    </button>
+                    
                     
                     
                 </div>
