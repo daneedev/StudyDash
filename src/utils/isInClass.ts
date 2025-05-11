@@ -3,7 +3,10 @@ import ClassUser from '../models/ClassUser';
 import User from '../models/User';
 
 async function isInClass(req: Request, res: Response, next: NextFunction) {
-    const { id } = req.params;
+    let{ id } = req.params;
+    if (!id) {
+        id = req.body.id;
+    }
     const user = req.user as User;
 
     await ClassUser.findOne({ where: { classId: id, userId: user.id } }).then((classuser) => {
