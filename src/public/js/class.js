@@ -133,7 +133,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     
-    const form = document.querySelector('form');
+   /* const form = document.querySelector('form');
     form?.addEventListener('submit', (e) => {
         e.preventDefault();
         
@@ -233,7 +233,7 @@ document.addEventListener('DOMContentLoaded', () => {
             // Add to file list
             fileList?.appendChild(fileElement);
         });
-    });
+    });*/
 
     // Add drag and drop support
     const dropZone = document.querySelector('label[for="fileUpload"]');
