@@ -4,21 +4,22 @@ import ClassUser from '../models/ClassUser';
 import User from '../models/User';
 
 async function createAssignment(req: Request, res: Response) {
-    const { title, description, dueDate, id, type } = req.body;
+    const { title, description, dueDate, id, type, subject } = req.body;
     const user = req.user as User;
 
-
     try {
-        const assignment = await Assignment.create({
-            title,
-            description,
-            dueDate,
+        await Assignment.create({
+            title: title,
+            description: description,
+            subject: subject,
+            status: 'upcoming',
+            dueDate : dueDate,
             classId: id,
-            type,
+            type: type,
             addedBy: user.id
         });
 
-        res.status(201).json(assignment);
+       res.redirect(`/class/${id}`);
     } catch (error) {
         res.status(500).json({ message: 'Error creating assignment' });
     }
@@ -118,7 +119,7 @@ async function deleteAssignment(req: Request, res: Response) {
         }
 
         await assignment.destroy();
-        res.status(200).json({ message: 'Assignment deleted successfully' });
+        res.redirect(`/class/${assignment.classId}`);
     } catch (error) {
         res.status(500).json({ message: 'Error deleting assignment' });
     }

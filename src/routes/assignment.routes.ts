@@ -11,6 +11,6 @@ router.get('/:id', checkAuth, isInClass, assignmentController.getClassAssignment
 
 router.put('/update/:id', checkAuth, assignmentController.updateAssignment);
 
-router.delete('/delete/:id', checkAuth, assignmentController.deleteAssignment);
+router.post('/delete/:id', checkAuth, assignmentController.deleteAssignment);
 
 export default router; 

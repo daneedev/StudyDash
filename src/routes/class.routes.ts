@@ -8,10 +8,10 @@ router.get("/:id", checkAuth, isInClass, classController.getClassPage);
 
 router.post("/create", checkAuth, classController.createClass);
 
-router.post("/delete", checkAuth, classController.deleteClass);
+router.post("/delete/:id", checkAuth, classController.deleteClass);
 
 router.post("/join", checkAuth, classController.joinClass);
 
-router.post("/leave", checkAuth, classController.leaveClass);
+router.post("/leave/:id", checkAuth, classController.leaveClass);
 
 export default router;
