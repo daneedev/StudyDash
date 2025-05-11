@@ -17,6 +17,7 @@ import dashRoutes from './routes/dash.routes';
 import authRoutes from './routes/auth.routes';
 import classRoutes from './routes/class.routes';
 import assignmentRoutes from './routes/assignment.routes';
+import noteRoutes from './routes/note.routes';
 import { connect, db } from './db';
 import rateLimits from './utils/rateLimits';
 
@@ -74,6 +75,8 @@ app.use("/dash", dashRoutes)
 app.use("/class", classRoutes)
 
 app.use("/assignments", assignmentRoutes)
+
+app.use("/notes", noteRoutes)
 
 app.get("/", function (req, res) {
   res.render("index.html");
