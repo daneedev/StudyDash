@@ -1,8 +1,5 @@
 import { Model, DataTypes } from 'sequelize';
 import { db } from '../db';
-import Class from './Class';
-import User from './User';
-
 class Assignment extends Model {
     declare id: number;
     declare title: string;
@@ -13,8 +10,6 @@ class Assignment extends Model {
     declare type: 'exam' | 'homework';
     declare status: 'upcoming' | 'completed' | 'cancelled';
     declare addedBy: number;
-    declare Class?: Class;
-    declare User?: User;
 }
 
 Assignment.init({
@@ -42,10 +37,6 @@ Assignment.init({
     classId: {
         type: DataTypes.INTEGER.UNSIGNED,
         allowNull: false,
-        references: {
-            model: Class,
-            key: 'id'
-        }
     },
     type: {
         type: DataTypes.ENUM('exam', 'homework'),
@@ -59,10 +50,6 @@ Assignment.init({
     addedBy: {
         type: DataTypes.INTEGER.UNSIGNED,
         allowNull: false,
-        references: {
-            model: User,
-            key: 'id'
-        }
     }
 }, {
     tableName: 'assignments',

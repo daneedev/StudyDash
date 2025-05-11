@@ -35,18 +35,10 @@ Note.init({
     classId: {
         type: DataTypes.INTEGER.UNSIGNED,
         allowNull: false,
-        references: {
-            model: Class,
-            key: 'id'
-        }
     },
     addedBy: {
         type: DataTypes.INTEGER.UNSIGNED,
         allowNull: false,
-        references: {
-            model: User,
-            key: 'id'
-        }
     },
     filePath: {
         type: DataTypes.STRING(255),
