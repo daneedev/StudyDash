@@ -289,32 +289,7 @@ document.addEventListener('DOMContentLoaded', function() {
         // Create the new class card
         const createdClassesContainer = document.getElementById("createdClassesGrid");
         if (createdClassesContainer) {
-            const uniqueId = `created-${Math.random().toString(36).substr(2, 9)}`;
-            const html = `
-                <div class="relative group">
-                    <a href="class.html" class="block">
-                        <section class="bg-darkgray aspect-square rounded-lg shadow-md flex justify-center items-center p-6 transition-all duration-200 flex-col gap-8 relative hover:scale-98">
-                            <div class="absolute top-0 right-0 p-5" data-menu-id="${uniqueId}">
-                                <i class="fa-solid fa-ellipsis-vertical text-xl text-text hover:scale-90 cursor-pointer"></i>
-                            </div>
-                            <div class="w-3/5 h-3/5 bg-white rounded-lg">
-                                ${classPhotoInput.files.length > 0 ? 
-                                    `<img src="${URL.createObjectURL(classPhotoInput.files[0])}" class="w-full h-full object-cover rounded-lg" alt="Class photo">` : 
-                                    ''}
-                            </div>
-                            <p class="text-2xl font-bold text-text">${className}</p>
-                        </section>
-                    </a>
-                    <div id="${uniqueId}" class="hidden absolute top-12 right-3 bg-white rounded shadow-lg z-50 p-2 flex flex-col gap-2 text-sm text-black">
-                        <button class="hover:bg-gray-200 rounded px-2 py-1" action="/class/delete" method="post">Delete</button>
-                        <button class="hover:bg-gray-200 rounded px-2 py-1" action="/class/leave" method="post">Leave</button>
-                        <button class="hover:bg-gray-200 rounded px-2 py-1">Rename</button>
-                        <button class="hover:bg-gray-200 rounded px-2 py-1">Invite</button>
-                    </div>
-                </div>
-            `;
             
-            createdClassesContainer.innerHTML += html;
 
             // Add event listeners to the new menu
             const menuIcon = createdClassesContainer.lastElementChild.querySelector('[data-menu-id]');
@@ -360,10 +335,35 @@ document.addEventListener('DOMContentLoaded', function() {
         if (detailPopup) detailPopup.classList.add('hidden');
     });
 
-    // Show popup when plus button is clicked
+    // Show create class popup when button is clicked
     const createClassButton = document.querySelector('button[action="/class/create"]');
     createClassButton?.addEventListener('click', function(e) {
         e.preventDefault();
         detailPopup.classList.remove('hidden');
     });
 });
+
+
+// const html = `
+//                 <div class="relative group">
+//                     <a href="class.html" class="block">
+//                         <section class="bg-darkgray aspect-square rounded-lg shadow-md flex justify-center items-center p-6 transition-all duration-200 flex-col gap-8 relative hover:scale-98">
+//                             <div class="absolute top-0 right-0 p-5" data-menu-id="${uniqueId}">
+//                                 <i class="fa-solid fa-ellipsis-vertical text-xl text-text hover:scale-90 cursor-pointer"></i>
+//                             </div>
+//                             <div class="w-3/5 h-3/5 bg-white rounded-lg">
+//                                 ${classPhotoInput.files.length > 0 ? 
+//                                     `<img src="${URL.createObjectURL(classPhotoInput.files[0])}" class="w-full h-full object-cover rounded-lg" alt="Class photo">` : 
+//                                     ''}
+//                             </div>
+//                             <p class="text-2xl font-bold text-text">${className}</p>
+//                         </section>
+//                     </a>
+//                     <div id="${uniqueId}" class="hidden absolute top-12 right-3 bg-white rounded shadow-lg z-50 p-2 flex flex-col gap-2 text-sm text-black">
+//                         <button class="hover:bg-gray-200 rounded px-2 py-1" action="/class/delete" method="post">Delete</button>
+//                         <button class="hover:bg-gray-200 rounded px-2 py-1" action="/class/leave" method="post">Leave</button>
+//                         <button class="hover:bg-gray-200 rounded px-2 py-1">Rename</button>
+//                         <button class="hover:bg-gray-200 rounded px-2 py-1">Invite</button>
+//                     </div>
+//                 </div>
+//             `;
