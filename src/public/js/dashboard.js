@@ -186,6 +186,11 @@ document.addEventListener('DOMContentLoaded', function() {
     const detailPopup = document.getElementById('detailPopup');
     const closeDetailPopup = document.getElementById('closeDetailPopup');
 
+
+    const joinClassPopup = document.getElementById('joinClassPopup');
+    const closeJoinClassPopup = document.getElementById('closeJoinClassPopup');
+
+
     // Handle photo upload preview
     classPhotoInput?.addEventListener('change', function() {
         const file = this.files[0];
@@ -210,6 +215,18 @@ document.addEventListener('DOMContentLoaded', function() {
     detailPopup?.addEventListener('click', function(e) {
         if (e.target === detailPopup) {
             detailPopup.classList.add('hidden');
+        }
+    });
+
+
+    closeJoinClassPopup?.addEventListener('click', function() {
+        joinClassPopup.classList.add('hidden');
+    });
+
+    // Close popup when clicking outside
+    joinClassPopup?.addEventListener('click', function(e) {
+        if (e.target === joinClassPopup) {
+            joinClassPopup.classList.add('hidden');
         }
     });
 
