@@ -86,9 +86,26 @@
                 </div>
                 
                 <div id = "createdClassesGrid" class="grid grid-cols-2 md:grid-cols-5 gap-6 max-w-full  p-15 box-border text-text text-xl">
-                    {% block content %}
-        
-                    {% endblock %}
+                    {% for class in createdClasses %}
+                        <div class="relative group">
+                        <a href="/class/{{ class.id }}" class="block">
+                            <section class="bg-darkgray aspect-square rounded-lg shadow-md flex justify-center items-center p-6 transition-all duration-200 flex-col gap-8 relative hover:scale-98">
+                                <div class="absolute top-0 right-0 p-5" data-menu-id="${uniqueId}">
+                                    <i class="fa-solid fa-ellipsis-vertical text-xl text-text hover:scale-90 cursor-pointer"></i>
+                                </div>
+                                <div class="w-3/5 h-3/5 bg-white rounded-lg">
+                                </div>
+                                <p class="text-2xl font-bold text-text">{{ class.name }}</p>
+                            </section>
+                        </a>
+                        <div id="${uniqueId}" class="hidden absolute top-12 right-3 bg-white rounded shadow-lg z-50 p-2 flex flex-col gap-2 text-sm text-black">
+                            <button class="hover:bg-gray-200 rounded px-2 py-1" action="/class/delete" method="post">Delete</button>
+                            <button class="hover:bg-gray-200 rounded px-2 py-1" action="/class/leave" method="post">Leave</button>
+                            <button class="hover:bg-gray-200 rounded px-2 py-1">Rename</button>
+                            <button class="hover:bg-gray-200 rounded px-2 py-1">Invite</button>
+                        </div>
+                    </div>
+                    {% endfor %}
                 </div>
             </section>
             <section>
@@ -100,9 +117,26 @@
                     
                 </div>
                 <div id = "joinedClassesGrid" class="grid grid-cols-2 md:grid-cols-5 gap-6 max-w-full p-15 box-border text-text text-xl">
-                    {% block content2 %}
-        
-                    {% endblock %}
+                    {% for class in joinedClasses %}
+                        <div class="relative group">
+                        <a href="/class/{{ class.id }}"  class="block">
+                            <section class="bg-darkgray aspect-square rounded-lg shadow-md flex justify-center items-center p-6 transition-all duration-200 flex-col gap-8 relative hover:scale-98">
+                                <div class="absolute top-0 right-0 p-5" data-menu-id="${uniqueId}">
+                                    <i class="fa-solid fa-ellipsis-vertical text-xl text-text hover:scale-90 cursor-pointer"></i>
+                                </div>
+                                <div class="w-3/5 h-3/5 bg-white rounded-lg">
+                                </div>
+                                <p class="text-2xl font-bold text-text">{{ class.name }}</p>
+                            </section>
+                        </a>
+                        <div class="hidden absolute top-12 right-3 bg-white rounded shadow-lg z-50 p-2 flex flex-col gap-2 text-sm text-black">
+                            <button class="hover:bg-gray-200 rounded px-2 py-1" action="/class/delete" method="post">Delete</button>
+                            <button class="hover:bg-gray-200 rounded px-2 py-1" action="/class/leave" method="post">Leave</button>
+                            <button class="hover:bg-gray-200 rounded px-2 py-1">Rename</button>
+                            <button class="hover:bg-gray-200 rounded px-2 py-1">Invite</button>
+                        </div>
+                    </div>
+                    {% endfor %}
                 </div>
             </section>
         </article>
@@ -121,7 +155,7 @@
 
             
             <div class="mt-6 flex-1 px-2">
-                <div class="flex flex-col gap-6">
+                <form action="/class/create" method="post" class="flex flex-col gap-6">
                     
                     
 
@@ -129,7 +163,7 @@
                     <div class="grid grid-cols-2 gap-4">
                         <div class="flex flex-col">
                             <label for="className" class="text-text text-lg font-semibold mb-2">Název třídy</label>
-                            <input type="text" id="className" name="title" class="p-3 rounded-lg bg-lightgray text-text focus:outline-none focus:ring-2 focus:ring-primary" placeholder="Zadej název" required>
+                            <input type="text" id="className" name="name" class="p-3 rounded-lg bg-lightgray text-text focus:outline-none focus:ring-2 focus:ring-primary" placeholder="Zadej název" required>
                         </div>
                         <div class="flex flex-col">
                             <label for="classPhoto" class="text-text text-lg font-semibold mb-2">Fotka třídy</label>
@@ -166,10 +200,10 @@
                         </div>
                     </div>
 
-                    <button type="submit" class="mt-4 mb-2 p-3 bg-primary text-darkgray font-semibold rounded-lg hover:bg-lightgray hover:ring-2 hover:ring-primary hover:text-primary hover:shadow-xl transition-all duration-200" id = "addClassButton">
+                    <button type="submit" class="mt-4 mb-2 p-3 bg-primary text-darkgray font-semibold rounded-lg hover:bg-lightgray hover:ring-2 hover:ring-primary hover:text-primary hover:shadow-xl transition-all duration-200">
                         Přidat
                     </button>
-                </div>
+                </form>
             </div>
         </section>
     </article>
