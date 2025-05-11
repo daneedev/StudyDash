@@ -60,8 +60,8 @@
         <nav class="flex flex-row justify-between items-center px-6 py-4 bg-darkgray border-b-2 border-lightgray w-full">
             
             <div class="flex flex-col justify-center items-start gap-2">
-                <h1 class="text-4xl font-semibold text-text">Ahoj Samueli,</h1>
-                <h2 class="text-xl text-text opacity-70">Dnes je 22. dubna 2025</h2>
+                <h1 class="text-4xl font-semibold text-text">Ahoj {{ user.username }},</h1>
+                <h2 class="text-xl text-text opacity-70">Dnes je {{ currentDate.day }}. {{ currentDate.month }}. {{ currentDate.year }}</h2>
             </div>
         
             
@@ -108,160 +108,92 @@
                     <p class ="text-text font-semibold text-xl p-3">Poznámky</p>
                     
                 </div>
-                <div class="grid grid-cols-[1fr_3fr_6fr_8fr] p-3 m-3 rounded-lg gap-y-1 poznámky">
+                <div class="grid grid-cols-4 p-3 m-3 rounded-lg gap-y-1 poznámky">
                     <!-- Headers -->
-                    <h2 class="text-text font-semibold text-lg opacity-70 p-2">Datum</h2>
                     <h2 class="text-text font-semibold text-lg opacity-70 p-2">Předmět</h2>
                     <h2 class="text-text font-semibold text-lg opacity-70 p-2">Název</h2>
                     <h2 class="text-text font-semibold text-lg opacity-70 p-2">Popis</h2>
-                    
-                    <!-- Row 1 -->
+                    <h2 class="text-text font-semibold text-lg opacity-70 p-2">Přidal</h2>
+
+                    {% for note in notes %}
                     <div class="contents group hover:cursor-pointer">
-                        <p class="text-text text-lg p-2 group-hover:bg-lightgray/30 transition-colors duration-200 first:rounded-l-lg">22.3</p>
-                        <p class="text-text text-lg p-2 group-hover:bg-lightgray/30 transition-colors duration-200">MAT</p>
-                        <p class="text-text text-lg p-2 group-hover:bg-lightgray/30 transition-colors duration-200">Logaritmické výrazy</p>
-                        <p class="text-text text-lg p-2 group-hover:bg-lightgray/30 transition-colors duration-200 last:rounded-r-lg truncate">
-                            Základní logaritmické identity a jejich aplikace při řešení rovnic. Praktické příklady z finanční matematiky.
+                        <p class="text-text  text-lg p-2 group-hover:bg-lightgray/30 transition-colors duration-200">{{ note.subject }}</p>
+                        <p class="text-text  text-lg p-2 group-hover:bg-lightgray/30 transition-colors duration-200">{{ note.title }}</p>
+                        <p class="text-text  text-lg p-2 group-hover:bg-lightgray/30 transition-colors duration-200">{{ note.description}}</p>
+                        <p class="text-text  text-lg p-2 group-hover:bg-lightgray/30 transition-colors duration-200 first:rounded-l-lg last:rounded-r-lg">{{ note.addedBy }}</p>
+                        <p class="text-text text-lg p-2 group-hover:bg-lightgray/30 transition-colors duration-200 last:rounded-r-lg">
+                            <i class="fa-solid fa-xmark text-primary p-1 rounded-md hover:bg-lightgray duration-200"></i>
                         </p>
                     </div>
-                    
-                    <!-- Row 2 -->
-                    <div class="contents group hover:cursor-pointer">
-                        <p class="text-text text-lg p-2 group-hover:bg-lightgray/30 transition-colors duration-200 first:rounded-l-lg">23.3</p>
-                        <p class="text-text text-lg p-2 group-hover:bg-lightgray/30 transition-colors duration-200">FYZ</p>
-                        <p class="text-text text-lg p-2 group-hover:bg-lightgray/30 transition-colors duration-200">Kyvadlo</p>
-                        <p class="text-text text-lg p-2 group-hover:bg-lightgray/30 transition-colors duration-200 last:rounded-r-lg truncate">
-                            Měření gravitačního zrychlení pomocí matematického kyvadla. Vliv délky závěsu na periodu kmitů.
-                        </p>
-                    </div>
-                    
-                    <!-- Row 3 -->
-                    <div class="contents group hover:cursor-pointer">
-                        <p class="text-text text-lg p-2 group-hover:bg-lightgray/30 transition-colors duration-200 first:rounded-l-lg">30.3</p>
-                        <p class="text-text text-lg p-2 group-hover:bg-lightgray/30 transition-colors duration-200">CJL</p>
-                        <p class="text-text text-lg p-2 group-hover:bg-lightgray/30 transition-colors duration-200">K. H. Mácha</p>
-                        <p class="text-text text-lg p-2 group-hover:bg-lightgray/30 transition-colors duration-200 last:rounded-r-lg truncate">
-                            Rozbor básně Máj, romantické prvky v díle. Charakteristika hlavních postav a jejich vztahů.
-                        </p>
-                    </div>
-                    
-                    <!-- Row 4 -->
-                    <div class="contents group hover:cursor-pointer">
-                        <p class="text-text text-lg p-2 group-hover:bg-lightgray/30 transition-colors duration-200 first:rounded-l-lg">2.4</p>
-                        <p class="text-text text-lg p-2 group-hover:bg-lightgray/30 transition-colors duration-200">PCV</p>
-                        <p class="text-text text-lg p-2 group-hover:bg-lightgray/30 transition-colors duration-200">Kondenzátor</p>
-                        <p class="text-text text-lg p-2 group-hover:bg-lightgray/30 transition-colors duration-200 last:rounded-r-lg truncate">
-                            Princip činnosti kondenzátoru, jeho nabíjení a vybíjení. Praktické využití v elektrických obvodech.
-                        </p>
-                    </div>
+                    {% endfor %}
                 </div>
             </section>
             <section class = "m-5  rounded-lg border-lightgray border-2 shadow-xl hover:-translate-x-1 duration-200">
                 <p class ="text-text p-3 font-semibold text-xl opacity-70">Úkoly</p>
-                <div class="grid grid-cols-[1fr_3fr_6fr_2fr] p-3 m-3 rounded-lg gap-y-1 ukoly">
+                <div class="grid grid-cols-5 p-3 m-3 rounded-lg gap-y-1 ukoly">
                     <!-- Headers -->
                     <h2 class="text-text font-semibold text-lg opacity-70 p-2">Datum</h2>
                     <h2 class="text-text font-semibold text-lg opacity-70 p-2">Předmět</h2>
                     <h2 class="text-text font-semibold text-lg opacity-70 p-2">Název</h2>
+                    <h2 class="text-text font-semibold text-lg opacity-70 p-2">Přidal</h2>
                     <h2 class="text-text font-semibold text-lg opacity-70 p-2">Status</h2>
-                    
-                    <!-- Row 1 -->
+                
+                    {% for homework in homeworks %}
                     <div class="contents group hover:cursor-pointer">
-                        <p class="text-text  text-lg p-2 group-hover:bg-lightgray/30 transition-colors duration-200 first:rounded-l-lg last:rounded-r-lg">22.3</p>
-                        <p class="text-text  text-lg p-2 group-hover:bg-lightgray/30 transition-colors duration-200">MAT</p>
-                        <p class="text-text  text-lg p-2 group-hover:bg-lightgray/30 transition-colors duration-200 first:rounded-l-lg last:rounded-r-lg">Logaritmické výrazy</p>
+                        <p class="text-text  text-lg p-2 group-hover:bg-lightgray/30 transition-colors duration-200 first:rounded-l-lg last:rounded-r-lg">{{ homework.dueDate }}</p>
+                        <p class="text-text  text-lg p-2 group-hover:bg-lightgray/30 transition-colors duration-200">{{ homework.subject }}</p>
+                        <p class="text-text  text-lg p-2 group-hover:bg-lightgray/30 transition-colors duration-200">{{ homework.addedBy }}</p>
+                        <p class="text-text  text-lg p-2 group-hover:bg-lightgray/30 transition-colors duration-200 first:rounded-l-lg last:rounded-r-lg">{{ homework.title }}</p>
                         <p class="text-text text-lg p-2 group-hover:bg-lightgray/30 transition-colors duration-200 last:rounded-r-lg">
                             <i class="fa-solid fa-xmark text-primary p-1 rounded-md hover:bg-lightgray duration-200"></i>
                         </p>
                     </div>
-                    
-                    <!-- Row 2 -->
-                    <div class="contents group hover:cursor-pointer">
-                        <p class="text-text  text-lg p-2 group-hover:bg-lightgray/30 transition-colors duration-200 first:rounded-l-lg last:rounded-r-lg">23.3</p>
-                        <p class="text-text  text-lg p-2 group-hover:bg-lightgray/30 transition-colors duration-200">FYZ</p>
-                        <p class="text-text  text-lg p-2 group-hover:bg-lightgray/30 transition-colors duration-200 first:rounded-l-lg last:rounded-r-lg">Kyvadlo</p>
-                        <p class="text-text text-lg p-2 group-hover:bg-lightgray/30 transition-colors duration-200 last:rounded-r-lg">
-                            <i class="fa-solid fa-xmark text-primary p-1 rounded-md hover:bg-lightgray duration-200"></i>
-                        </p>
-                    </div>
-                    
-                    <!-- Row 3 -->
-                    <div class="contents group hover:cursor-pointer">
-                        <p class="text-text  text-lg p-2 group-hover:bg-lightgray/30 transition-colors duration-200 first:rounded-l-lg last:rounded-r-lg">30.3</p>
-                        <p class="text-text  text-lg p-2 group-hover:bg-lightgray/30 transition-colors duration-200">CJL</p>
-                        <p class="text-text  text-lg p-2 group-hover:bg-lightgray/30 transition-colors duration-200 first:rounded-l-lg last:rounded-r-lg">K. H. Mácha</p>
-                        <p class="text-text text-lg p-2 group-hover:bg-lightgray/30 transition-colors duration-200 last:rounded-r-lg">
-                            <i class="fa-solid fa-xmark text-primary p-1 rounded-md hover:bg-lightgray duration-200"></i>
-                        </p>
-                    </div>
-                    
-                    <!-- Row 4 -->
-                    <div class="contents group hover:cursor-pointer">
-                        <p class="text-text  text-lg p-2 group-hover:bg-lightgray/30 transition-colors duration-200 first:rounded-l-lg last:rounded-r-lg">2.4</p>
-                        <p class="text-text  text-lg p-2 group-hover:bg-lightgray/30 transition-colors duration-200">PCV</p>
-                        <p class="text-text  text-lg p-2 group-hover:bg-lightgray/30 transition-colors duration-200 first:rounded-l-lg last:rounded-r-lg">Kondenzátor</p>
-                        <p class="text-text text-lg p-2 group-hover:bg-lightgray/30 transition-colors duration-200 last:rounded-r-lg">
-                            <i class="fa-solid fa-xmark text-primary p-1 rounded-md hover:bg-lightgray duration-200"></i>
-                        </p>
-                    </div>
+                    {% endfor %}
                 </div>
             </section>
             <section class = "m-5 rounded-lg border-lightgray border-2 shadow-xl hover:-translate-x-1 duration-200">
                 <p class ="text-text p-3 font-semibold text-xl opacity-70">Testy</p>
-                <div class="grid grid-cols-[1fr_3fr_6fr_2fr] p-3 m-3 rounded-lg gap-y-1 testy">
+                <div class="grid grid-cols-5 p-3 m-3 rounded-lg gap-y-1 testy">
                     <!-- Headers -->
                     <h2 class="text-text font-semibold text-lg opacity-70 p-2">Datum</h2>
                     <h2 class="text-text font-semibold text-lg opacity-70 p-2">Předmět</h2>
                     <h2 class="text-text font-semibold text-lg opacity-70 p-2">Název</h2>
+                    <h2 class="text-text font-semibold text-lg opacity-70 p-2">Přidal</h2>
                     <h2 class="text-text font-semibold text-lg opacity-70 p-2">Status</h2>
-                    
-                    <!-- Row 1 -->
+
+                    {% for exam in exams %}
                     <div class="contents group hover:cursor-pointer">
-                        <p class="text-text  text-lg p-2 group-hover:bg-lightgray/30 transition-colors duration-200 first:rounded-l-lg last:rounded-r-lg">22.3</p>
-                        <p class="text-text  text-lg p-2 group-hover:bg-lightgray/30 transition-colors duration-200">MAT</p>
-                        <p class="text-text  text-lg p-2 group-hover:bg-lightgray/30 transition-colors duration-200 first:rounded-l-lg last:rounded-r-lg">Logaritmické výrazy</p>
+                        <p class="text-text  text-lg p-2 group-hover:bg-lightgray/30 transition-colors duration-200 first:rounded-l-lg last:rounded-r-lg">{{ exam.dueDate }}</p>
+                        <p class="text-text  text-lg p-2 group-hover:bg-lightgray/30 transition-colors duration-200">{{ exam.subject }}</p>
+                        <p class="text-text  text-lg p-2 group-hover:bg-lightgray/30 transition-colors duration-200">{{ exam.addedBy }}</p>
+                        <p class="text-text  text-lg p-2 group-hover:bg-lightgray/30 transition-colors duration-200 first:rounded-l-lg last:rounded-r-lg">{{ exam.title }}</p>
                         <p class="text-text text-lg p-2 group-hover:bg-lightgray/30 transition-colors duration-200 last:rounded-r-lg">
                             <i class="fa-solid fa-xmark text-primary p-1 rounded-md hover:bg-lightgray duration-200"></i>
                         </p>
                     </div>
-                    
-                    <!-- Row 2 -->
-                    <div class="contents group hover:cursor-pointer">
-                        <p class="text-text  text-lg p-2 group-hover:bg-lightgray/30 transition-colors duration-200 first:rounded-l-lg last:rounded-r-lg">23.3</p>
-                        <p class="text-text  text-lg p-2 group-hover:bg-lightgray/30 transition-colors duration-200">FYZ</p>
-                        <p class="text-text  text-lg p-2 group-hover:bg-lightgray/30 transition-colors duration-200 first:rounded-l-lg last:rounded-r-lg">Kyvadlo</p>
-                        <p class="text-text text-lg p-2 group-hover:bg-lightgray/30 transition-colors duration-200 last:rounded-r-lg">
-                            <i class="fa-solid fa-xmark text-primary p-1 rounded-md hover:bg-lightgray duration-200"></i>
-                        </p>
-                    </div>
-                    
-                    <!-- Row 3 -->
-                    <div class="contents group hover:cursor-pointer">
-                        <p class="text-text  text-lg p-2 group-hover:bg-lightgray/30 transition-colors duration-200 first:rounded-l-lg last:rounded-r-lg">30.3</p>
-                        <p class="text-text  text-lg p-2 group-hover:bg-lightgray/30 transition-colors duration-200">CJL</p>
-                        <p class="text-text  text-lg p-2 group-hover:bg-lightgray/30 transition-colors duration-200 first:rounded-l-lg last:rounded-r-lg">K. H. Mácha</p>
-                        <p class="text-text text-lg p-2 group-hover:bg-lightgray/30 transition-colors duration-200 last:rounded-r-lg">
-                            <i class="fa-solid fa-xmark text-primary p-1 rounded-md hover:bg-lightgray duration-200"></i>
-                        </p>
-                    </div>
-                    
-                    <!-- Row 4 -->
-                    <div class="contents group hover:cursor-pointer">
-                        <p class="text-text  text-lg p-2 group-hover:bg-lightgray/30 transition-colors duration-200 first:rounded-l-lg last:rounded-r-lg">2.4</p>
-                        <p class="text-text  text-lg p-2 group-hover:bg-lightgray/30 transition-colors duration-200">PCV</p>
-                        <p class="text-text  text-lg p-2 group-hover:bg-lightgray/30 transition-colors duration-200 first:rounded-l-lg last:rounded-r-lg">Kondenzátor</p>
-                        <p class="text-text text-lg p-2 group-hover:bg-lightgray/30 transition-colors duration-200 last:rounded-r-lg">
-                            <i class="fa-solid fa-xmark text-primary p-1 rounded-md hover:bg-lightgray duration-200"></i>
-                        </p>
-                    </div>
+                    {% endfor %}
                 </div>
             </section>
                 
             <section class = "m-5  rounded-lg border-lightgray border-2 shadow-xl hover:-translate-x-1 duration-200 flex flex-col">
-                <p class ="text-text p-3 font-semibold text-xl opacity-70">Moje třída</p>
-                <div class = " flex-grow flex justify-center items-center">
-                    <p class = "text-text text-9xl font-semibold">3.A</p>
+                <div class="flex flex-row justify-between items-center p-3">
+                   <p class="text-text p-3 font-semibold text-xl opacity-70">Moje třída</p>
+                   <p class="text-white text-md bg-green-500 rounded-full px-2 py-1 relative group">
+                       Kód třídy:
+                       <span class="hidden group-hover:inline"> {{ class.inviteCode }}</span>
+                   </p>
                 </div>
+                </div>
+                    <div class="grid grid-cols-2 p-3 m-3 rounded-lg gap-y-1">
+                        <h2 class="text-text font-semibold text-lg opacity-70 p-2">Uživatelské jméno</h2>
+                        <h2 class="text-text font-semibold text-lg opacity-70 p-2">Role</h2>
+                        {% for user in users %}
+                            <div class="contents group hover:cursor-pointer">
+                                <p class="text-text  text-lg p-2 group-hover:bg-lightgray/30 transition-colors duration-200 first:rounded-l-lg last:rounded-r-lg">{{ user.User.username }}</p>
+                                <p class="text-text  text-lg p-2 group-hover:bg-lightgray/30 transition-colors duration-200">{{ user.role }}</p>
+                            </div>
+                        {% endfor %} 
+                    </div>
             </section>
         </article>
 

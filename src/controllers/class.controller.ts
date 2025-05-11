@@ -2,6 +2,8 @@ import {Request, Response} from 'express';
 import Class from '../models/Class';
 import ClassUser from '../models/ClassUser';
 import User from '../models/User';
+import Assignment from '../models/Assignment';
+import Note from '../models/Note';
 
 function createClass(req: Request, res: Response) {
     const { name } = req.body;
@@ -9,7 +11,7 @@ function createClass(req: Request, res: Response) {
     Class.create({ name: name}).then((classInstance) => {
         ClassUser.create({ classId: classInstance.id, userId: user.id, role: 'admin' });
     })
-    res.status(200).json({ message: 'Class created' });
+    res.redirect('/dash');
 }
 
 async function deleteClass(req: Request, res: Response) {
@@ -69,9 +71,19 @@ async function getClassPage(req: Request, res: Response) {
     const classMembers = await ClassUser.findAll({ where: { classId: id }, include: [{
         model: User,
         as: 'User',
-        attributes: ['id', 'username', 'email']
     }] });
-    res.render('class.html', { class: classInstance, classMembers: classMembers });
+    const date = new Date();
+    const currentDate = {
+        day: date.getDate(),
+        month: date.getMonth() + 1,
+        year: date.getFullYear()
+    }
+
+    const exams = await Assignment.findAll({ where: { type: 'exam' } });
+    const notes = await Note.findAll({ where: { classId: id } });
+    const homeworks = await Assignment.findAll({ where: { classId: id, type: 'homework' } });
+
+    res.render('class.html', { class: classInstance, users: classMembers, user: req.user, currentDate: currentDate, exams: exams, notes: notes, homeworks: homeworks });
 }
 
 export default { createClass, deleteClass, joinClass, leaveClass, getClassPage };
