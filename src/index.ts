@@ -20,6 +20,7 @@ import assignmentRoutes from './routes/assignment.routes';
 import noteRoutes from './routes/note.routes';
 import { connect, db } from './db';
 import rateLimits from './utils/rateLimits';
+import "./models"
 
 const app = express();
 const server = createServer(app);
