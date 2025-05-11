@@ -140,20 +140,28 @@
             </section>
             <section class = "m-5  rounded-lg border-lightgray border-2 shadow-xl hover:-translate-x-1 duration-200">
                 <p class ="text-text p-3 font-semibold text-xl opacity-70">Úkoly</p>
-                <div class="grid grid-cols-5 p-3 m-3 rounded-lg gap-y-1 ukoly">
+                <div class="grid grid-cols-6 p-3 m-3 rounded-lg gap-y-1 ukoly">
                     <!-- Headers -->
                     <h2 class="text-text font-semibold text-lg opacity-70 p-2">Datum</h2>
                     <h2 class="text-text font-semibold text-lg opacity-70 p-2">Předmět</h2>
                     <h2 class="text-text font-semibold text-lg opacity-70 p-2">Název</h2>
                     <h2 class="text-text font-semibold text-lg opacity-70 p-2">Přidal</h2>
+                    <h2 class="text-text font-semibold text-lg opacity-70 p-2">.</h2>
                     <h2 class="text-text font-semibold text-lg opacity-70 p-2">Status</h2>
                 
                     {% for homework in homeworks %}
                     <div class="contents group hover:cursor-pointer">
                         <p class="text-text  text-lg p-2 group-hover:bg-lightgray/30 transition-colors duration-200 first:rounded-l-lg last:rounded-r-lg">{{ homework.dueDate }}</p>
                         <p class="text-text  text-lg p-2 group-hover:bg-lightgray/30 transition-colors duration-200">{{ homework.subject }}</p>
-                        <p class="text-text  text-lg p-2 group-hover:bg-lightgray/30 transition-colors duration-200">{{ homework.addedBy }}</p>
-                        <p class="text-text  text-lg p-2 group-hover:bg-lightgray/30 transition-colors duration-200 first:rounded-l-lg last:rounded-r-lg">{{ homework.title }}</p>
+                        <p class="text-text  text-lg p-2 group-hover:bg-lightgray/30 transition-colors duration-200">{{ homework.title }}</p>
+                        <p class="text-text  text-lg p-2 group-hover:bg-lightgray/30 transition-colors duration-200 first:rounded-l-lg last:rounded-r-lg">{{ homework.addedBy }}</p>
+                        <div class="flex flex-row gap-2 group-hover:bg-lightgray/30 transition-color duration-200">
+                            <form action="/assignments/delete/{{ homework.id }}" method="post">
+                                <button type="submit" class="text-text text-lg p-2 ">
+                                    <i class="fa-solid fa-xmark duration-200 hover:text-red-500 text-lg "></i>
+                                </button>
+                            </form>
+                        </div>
                         <p class="text-text text-lg p-2 group-hover:bg-lightgray/30 transition-colors duration-200 last:rounded-r-lg">
                             <i class="fa-solid fa-xmark text-primary p-1 rounded-md hover:bg-lightgray duration-200"></i>
                         </p>
@@ -224,7 +232,7 @@
             </div>
 
             
-            <form class="mt-6 flex flex-col h-[calc(100%-2rem)] ">
+            <form action="/assignments/create" method="post" class="mt-6 flex flex-col h-[calc(100%-2rem)] ">
                 
                 <div class="flex-1 overflow-y-auto px-2 ">
                     <div class="flex flex-col gap-4">
@@ -237,7 +245,7 @@
                         
                         <div class="flex flex-col">
                             <label for="homeworkDate" class="text-text text-lg font-semibold mb-2">Datum</label>
-                            <input type="date" id="homeworkDate" name="date" class="p-3 rounded-lg bg-lightgray text-text focus:outline-none focus:ring-2 focus:ring-primary" required>
+                            <input type="date" id="homeworkDate" name="dueDate" class="p-3 rounded-lg bg-lightgray text-text focus:outline-none focus:ring-2 focus:ring-primary" required>
                         </div>
             
                         
@@ -249,9 +257,10 @@
                         
                         <div class="flex flex-col flex-grow">
                             <label for="homeworkNotes" class="text-text text-lg font-semibold mb-2">Poznámky</label>
-                            <textarea id="homeworkNotes" name="notes" class="p-3 rounded-lg bg-lightgray text-text focus:outline-none focus:ring-2 focus:ring-primary h-full resize-none" placeholder="Přidávej poznámky..." required></textarea>
+                            <textarea id="homeworkNotes" name="description" class="p-3 rounded-lg bg-lightgray text-text focus:outline-none focus:ring-2 focus:ring-primary h-full resize-none" placeholder="Přidávej poznámky..." required></textarea>
                         </div>
-                        
+                        <input type="hidden" name="type" value="homework">
+                        <input type="hidden" name="id" value="{{ class.id }}">
                         
                         <div class="flex flex-col">
                             <label class="text-text text-lg font-semibold mb-2">Soubory</label>
