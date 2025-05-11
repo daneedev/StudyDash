@@ -40,6 +40,18 @@
                 
             </div>
             <div class="flex flex-col justify-center items-center text-text text-2xl m-5 max-w-auto">
+                {% if userRole == 'admin' %}
+                <form action="/class/delete/{{ class.id }}" method="post">
+                    <button type="submit" class="flex justify-center items-center gap-2 hover:scale-95 hover:bg-lightgray transition-all rounded-lg px-4 py-2 cursor-pointer">
+                        <i class="fa-solid fa-trash text-red-500 text-3xl"></i>
+                    </button>
+                </form>
+                {% endif %}
+                <form action="/class/leave/{{ class.id }}" method="post">
+                    <button type="submit" class="flex justify-center items-center gap-2 hover:scale-95 hover:bg-lightgray transition-all rounded-lg px-4 py-2 cursor-pointer">
+                        <i class="fa-solid fa-arrow-right-from-bracket text-red-500 text-3xl"></i>
+                    </button>
+                </form>
                 <div class ="flex justify-start items-start gap-5 hover:scale-95 hover:bg-lightgray transition-all rounded-xl p-5 w-auto">
                     <i class="fa-solid fa-gear text-3xl text-text"></i>  
                     
@@ -77,8 +89,6 @@
                     <i class="fa-regular fa-calendar text-text text-2xl"></i>
                     
                 </div>
-        
-                
                 <div class="relative">
                     <!-- Plus Button -->
                     <div id="plusButton" class="flex justify-center items-center gap-2 hover:scale-95 hover:bg-lightgray transition-all rounded-lg px-4 py-2 cursor-pointer">
@@ -178,10 +188,12 @@
             <section class = "m-5  rounded-lg border-lightgray border-2 shadow-xl hover:-translate-x-1 duration-200 flex flex-col">
                 <div class="flex flex-row justify-between items-center p-3">
                    <p class="text-text p-3 font-semibold text-xl opacity-70">Moje třída</p>
+                   {% if userRole == 'admin' %}
                    <p class="text-white text-md bg-green-500 rounded-full px-2 py-1 relative group">
                        Kód třídy:
                        <span class="hidden group-hover:inline"> {{ class.inviteCode }}</span>
                    </p>
+                    {% endif %}
                 </div>
                 </div>
                     <div class="grid grid-cols-2 p-3 m-3 rounded-lg gap-y-1">

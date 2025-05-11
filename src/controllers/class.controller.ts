@@ -15,7 +15,7 @@ function createClass(req: Request, res: Response) {
 }
 
 async function deleteClass(req: Request, res: Response) {
-    const { id } = req.body;
+    const { id } = req.params;
     const user = req.user as User;
     const classuser = await ClassUser.findOne({ where: { classId: id, userId: user.id } });
     if (!classuser || classuser.role !== 'admin') {
@@ -25,7 +25,7 @@ async function deleteClass(req: Request, res: Response) {
 
     Class.destroy({ where: { id: id } });
     ClassUser.destroy({ where: { classId: id } });
-    res.status(200).json({ message: 'Class deleted' });
+    res.redirect('/dash');
 }
 
 async function joinClass(req: Request, res: Response) {
@@ -34,22 +34,22 @@ async function joinClass(req: Request, res: Response) {
 
     const classInstance = await Class.findOne({ where: { inviteCode: inviteCode } });
     if (!classInstance) {
-        res.status(404).json({ message: 'Class does not exist' });
+        res.redirect('/dash');
         return
     }
 
     const existingEntry = await ClassUser.findOne({ where: { classId: classInstance.id, userId: user.id } });
     if (existingEntry) {
-        res.status(400).json({ message: 'User already in class' });
+        res.redirect('/dash');
         return
     }
 
     await ClassUser.create({ classId: classInstance.id, userId: user.id, role: 'student' });
-    res.status(200).json({ message: 'User joined class' });
+    res.redirect('/dash');
 }
 
 async function leaveClass(req: Request, res: Response) {
-    const { id } = req.body;
+    const { id } = req.params;
     const user = req.user as User;
     const classAdmins = await ClassUser.findAll({ where: { classId: id, role: 'admin' } });
     if (classAdmins.length === 1 && classAdmins[0].userId === user.id) {
@@ -58,11 +58,12 @@ async function leaveClass(req: Request, res: Response) {
     }
 
     ClassUser.destroy({ where: { classId: id, userId: user.id } });
-    res.status(200).json({ message: 'User left class' });
+    res.redirect('/dash');
 }
 
 async function getClassPage(req: Request, res: Response) {
     const { id } = req.params;
+    const user = req.user as User;
     const classInstance = await Class.findOne({ where: { id: id } });
     if (!classInstance) {
         res.status(404).json({ message: 'Class does not exist' });
@@ -83,7 +84,9 @@ async function getClassPage(req: Request, res: Response) {
     const notes = await Note.findAll({ where: { classId: id } });
     const homeworks = await Assignment.findAll({ where: { classId: id, type: 'homework' } });
 
-    res.render('class.html', { class: classInstance, users: classMembers, user: req.user, currentDate: currentDate, exams: exams, notes: notes, homeworks: homeworks });
+    const userRole = (await ClassUser.findOne({ where: { classId: id, userId: user.id } }))?.role;
+
+    res.render('class.html', { class: classInstance, users: classMembers, user: req.user, currentDate: currentDate, exams: exams, notes: notes, homeworks: homeworks, userRole: userRole });
 }
 
 export default { createClass, deleteClass, joinClass, leaveClass, getClassPage };
