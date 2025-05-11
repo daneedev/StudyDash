@@ -331,6 +331,13 @@ document.addEventListener('DOMContentLoaded', function() {
         e.preventDefault();
         detailPopup.classList.remove('hidden');
     });
+
+
+    const joinClassButton = document.querySelector('button[action="/class/join"]');
+    joinClassButton?.addEventListener('click', function(e) {
+        e.preventDefault();
+        joinClassPopup.classList.remove('hidden');
+    });
 });
 
 
