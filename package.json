@@ -30,7 +30,7 @@
     "typescript": "^5.8.3"
   },
   "dependencies": {
-    "@tailwindcss/cli": "^4.1.6",
+    "@tailwindcss/cli": "^4.1.7",
     "bcrypt": "^6.0.0",
     "colors": "^1.4.0",
     "connect-flash": "^0.1.1",
