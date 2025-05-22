@@ -45,7 +45,5 @@ ClassUser.init({
 
 ClassUser.sync();
 
-Class.belongsToMany(User, { through: ClassUser, foreignKey: 'classId' });
-User.belongsToMany(Class, { through: ClassUser, foreignKey: 'userId' });
 
 export default ClassUser;

@@ -1,0 +1,71 @@
+{%block popup%}
+
+
+
+
+<article class="w-full h-full max-w-full max-h-full absolute flex hidden justify-center items-center  backdrop-blur-sm bg-black/30" id="detailPopup">
+    <section class="w-3/5 h-5/9 bg-darkgray rounded-lg border-lightgray border-2 shadow-xl flex flex-col p-6">
+        <!-- Header -->
+        <div class="flex justify-between items-center pb-4 border-b border-lightgray/30">
+            <h2 class="text-text text-2xl font-semibold">Vytvoř třídu</h2>
+            <button class="text-text text-xl hover:text-primary transition-colors" id="closeDetailPopup">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+        </div>
+
+        
+        <div class="mt-6 flex-1 px-2">
+            <div class="flex flex-col gap-6">
+                
+                
+
+                
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="flex flex-col">
+                        <label for="className" class="text-text text-lg font-semibold mb-2">Název třídy</label>
+                        <input type="text" id="className" name="title" class="p-3 rounded-lg bg-lightgray text-text focus:outline-none focus:ring-2 focus:ring-primary" placeholder="Zadej název" required>
+                    </div>
+                    <div class="flex flex-col">
+                        <label for="classPhoto" class="text-text text-lg font-semibold mb-2">Fotka třídy</label>
+                        <div class="relative group">
+                            <input type="file" id="classPhoto" accept="image/*" class="hidden" />
+                            <label for="classPhoto" class="flex flex-col items-center justify-center gap-2 p-3 rounded-lg border-2 border-dashed border-lightgray/30 hover:border-primary transition-all cursor-pointer">
+                                <i class="fa-solid fa-image text-text text-2xl group-hover:text-primary transition-colors"></i>
+                                <p class="text-text/50 text-sm">Klikni pro nahrání fotky</p>
+                            </label>
+                            <div id="photoPreview" class="hidden mt-2">
+                                <img id="previewImage" class="w-full h-32 object-cover rounded-lg" alt="Náhled fotky">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                
+                
+
+                
+                <div class="flex flex-col gap-2">
+                    <span class="text-text/50 text-sm">Zkratky předmětů</span>
+                    <div class="flex items-center gap-2">
+                        <input type="text" id="subjectInput" 
+                            class="p-3 rounded-lg bg-lightgray/20 text-text placeholder-text/50 focus:outline-none focus:ring-2 focus:ring-primary focus:bg-lightgray/30 transition-all flex-grow" 
+                            placeholder="Zadej zkratku předmětu...">
+                        <button type="button" id="addSubject" 
+                            class="p-3 bg-primary text-darkgray font-semibold rounded-lg hover:bg-lightgray hover:text-primary hover:ring-2 hover:ring-primary transition-all">
+                            <i class="fa-solid fa-plus"></i>
+                        </button>
+                    </div>
+                    <div id="subjectsList" class="flex flex-wrap gap-2">
+                        <!-- Subject tags will be added here -->
+                    </div>
+                </div>
+
+                <button type="submit" class="mt-4 mb-2 p-3 bg-primary text-darkgray font-semibold rounded-lg hover:bg-lightgray hover:ring-2 hover:ring-primary hover:text-primary hover:shadow-xl transition-all duration-200" id = "addClassButton">
+                    Přidat
+                </button>
+            </div>
+        </div>
+    </section>
+</article>
+
+{%endblock%}

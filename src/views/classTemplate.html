@@ -6,14 +6,15 @@
     <link rel="stylesheet" href="/css/style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <link rel="icon" type="image/x-icon" href="/img/logo.svg">
+    
     {%block header %}
         
     {% endblock %}
 
-<body class = "flex min-h-screen  w-full bg-background font-montserrat flex-col ">
+<body class = "flex min-h-screen  w-full bg-background font-montserrat flex-row">
     
-    <nav class = "flex flex-1">
-        <aside class = "flex flex-col justify-between items-center  transition-all duration-300 ease-in-out box-border min-h-full bg-darkgray ">
+    <nav class = "flex ">
+        <aside class = "flex flex-col justify-between items-center  transition-all duration-300 ease-in-out box-border min-h-full bg-darkgray border-2 border-lightgray">
             
             
             <div class="flex flex-col justify-start items-center text-text text-2xl m-5 max-w-auto">
@@ -39,6 +40,18 @@
                 
             </div>
             <div class="flex flex-col justify-center items-center text-text text-2xl m-5 max-w-auto">
+                {% if userRole == 'admin' %}
+                <form action="/class/delete/{{ class.id }}" method="post">
+                    <button type="submit" class="flex justify-center items-center gap-2 hover:scale-95 hover:bg-lightgray transition-all rounded-lg px-4 py-2 cursor-pointer">
+                        <i class="fa-solid fa-trash text-red-500 text-3xl"></i>
+                    </button>
+                </form>
+                {% endif %}
+                <form action="/class/leave/{{ class.id }}" method="post">
+                    <button type="submit" class="flex justify-center items-center gap-2 hover:scale-95 hover:bg-lightgray transition-all rounded-lg px-4 py-2 cursor-pointer">
+                        <i class="fa-solid fa-arrow-right-from-bracket text-red-500 text-3xl"></i>
+                    </button>
+                </form>
                 <div class ="flex justify-start items-start gap-5 hover:scale-95 hover:bg-lightgray transition-all rounded-xl p-5 w-auto">
                     <i class="fa-solid fa-gear text-3xl text-text"></i>  
                     
@@ -55,4 +68,275 @@
             
         </aside>
     </nav>
+    <main class = "flex flex-col flex-grow">
+        <nav class="flex flex-row justify-between items-center px-6 py-4 bg-darkgray border-b-2 border-lightgray w-full">
+            
+            <div class="flex flex-col justify-center items-start gap-2">
+                <h1 class="text-4xl font-semibold text-text">Ahoj {{ user.username }},</h1>
+                <h2 class="text-xl text-text opacity-70">Dnes je {{ currentDate.day }}. {{ currentDate.month }}. {{ currentDate.year }}</h2>
+            </div>
+        
+            
+            <div class="flex flex-row justify-center items-center gap-4">
+                
+                <div class="flex justify-center items-center gap-2 hover:scale-95 hover:bg-lightgray transition-all rounded-lg px-4 py-2 cursor-pointer">
+                    <i class="fa-solid fa-chart-simple text-text text-2xl"></i>
+                    
+                </div>
+        
+                
+                <div class="flex justify-center items-center gap-2 hover:scale-95 hover:bg-lightgray transition-all rounded-lg px-4 py-2 cursor-pointer">
+                    <i class="fa-regular fa-calendar text-text text-2xl"></i>
+                    
+                </div>
+                <div class="relative">
+                    <!-- Plus Button -->
+                    <div id="plusButton" class="flex justify-center items-center gap-2 hover:scale-95 hover:bg-lightgray transition-all rounded-lg px-4 py-2 cursor-pointer">
+                        <i class="fa-solid fa-plus text-text text-2xl"></i>
+                    </div>
+                
+                    <!-- Dropdown Menu -->
+                    <div id="plusMenu" class="hidden absolute top-full right-0 mt-2 bg-white rounded shadow-lg z-50 p-2 flex flex-col gap-2 text-sm text-black">
+                        <button class="hover:bg-gray-200 rounded px-4 py-2">Poznámky</button>
+                        <button class="hover:bg-gray-200 rounded px-4 py-2">Úkol</button>
+                        <button class="hover:bg-gray-200 rounded px-4 py-2">Test</button>
+                        <button class="hover:bg-gray-200 rounded px-4 py-2">Událost</button>
+                    </div>
+                </div>
+            </div>
+        </nav>
+        <article class = "grid grid-rows-2 grid-cols-3 grow">
+            <section class="m-5 rounded-lg border-lightgray border-2 shadow-xl flex justify-center items-center flex-col">
+                <div class="w-72 h-72 flex justify-center items-center">
+                  <canvas id="gaugeChart" width="288" height="288"></canvas>
+                </div>
+            </section>
+              
+              
+              <section class="m-5 rounded-lg col-span-2 border-lightgray border-2 shadow-xl flex flex-col hover:-translate-x-1 duration-200">
+                <div class="ml-3 mr-3 mt-3 text-text  font-semibold text-xl opacity-100 flex justify-between items-center">
+                    <p class ="text-text font-semibold text-xl p-3">Poznámky</p>
+                    
+                </div>
+                <div class="grid grid-cols-4 p-3 m-3 rounded-lg gap-y-1 poznámky">
+                    <!-- Headers -->
+                    <h2 class="text-text font-semibold text-lg opacity-70 p-2">Předmět</h2>
+                    <h2 class="text-text font-semibold text-lg opacity-70 p-2">Název</h2>
+                    <h2 class="text-text font-semibold text-lg opacity-70 p-2">Popis</h2>
+                    <h2 class="text-text font-semibold text-lg opacity-70 p-2">Přidal</h2>
+
+                    {% for note in notes %}
+                    <div class="contents group hover:cursor-pointer">
+                        <p class="text-text  text-lg p-2 group-hover:bg-lightgray/30 transition-colors duration-200">{{ note.subject }}</p>
+                        <p class="text-text  text-lg p-2 group-hover:bg-lightgray/30 transition-colors duration-200">{{ note.title }}</p>
+                        <p class="text-text  text-lg p-2 group-hover:bg-lightgray/30 transition-colors duration-200">{{ note.description}}</p>
+                        <p class="text-text  text-lg p-2 group-hover:bg-lightgray/30 transition-colors duration-200 first:rounded-l-lg last:rounded-r-lg">{{ note.addedBy }}</p>
+                        <p class="text-text text-lg p-2 group-hover:bg-lightgray/30 transition-colors duration-200 last:rounded-r-lg">
+                            <i class="fa-solid fa-xmark text-primary p-1 rounded-md hover:bg-lightgray duration-200"></i>
+                        </p>
+                    </div>
+                    {% endfor %}
+                </div>
+            </section>
+            <section class = "m-5  rounded-lg border-lightgray border-2 shadow-xl hover:-translate-x-1 duration-200">
+                <p class ="text-text p-3 font-semibold text-xl opacity-70">Úkoly</p>
+                <div class="grid grid-cols-6 p-3 m-3 rounded-lg gap-y-1 ukoly">
+                    <!-- Headers -->
+                    <h2 class="text-text font-semibold text-lg opacity-70 p-2">Datum</h2>
+                    <h2 class="text-text font-semibold text-lg opacity-70 p-2">Předmět</h2>
+                    <h2 class="text-text font-semibold text-lg opacity-70 p-2">Název</h2>
+                    <h2 class="text-text font-semibold text-lg opacity-70 p-2">Přidal</h2>
+                    <h2 class="text-text font-semibold text-lg opacity-70 p-2">.</h2>
+                    <h2 class="text-text font-semibold text-lg opacity-70 p-2">Status</h2>
+                
+                    {% for homework in homeworks %}
+                    <div class="contents group hover:cursor-pointer">
+                        <p class="text-text  text-lg p-2 group-hover:bg-lightgray/30 transition-colors duration-200 first:rounded-l-lg last:rounded-r-lg">{{ homework.dueDate }}</p>
+                        <p class="text-text  text-lg p-2 group-hover:bg-lightgray/30 transition-colors duration-200">{{ homework.subject }}</p>
+                        <p class="text-text  text-lg p-2 group-hover:bg-lightgray/30 transition-colors duration-200">{{ homework.title }}</p>
+                        <p class="text-text  text-lg p-2 group-hover:bg-lightgray/30 transition-colors duration-200 first:rounded-l-lg last:rounded-r-lg">{{ homework.addedBy }}</p>
+                        <div class="flex flex-row gap-2 group-hover:bg-lightgray/30 transition-color duration-200">
+                            <form action="/assignments/delete/{{ homework.id }}" method="post">
+                                <button type="submit" class="text-text text-lg p-2 ">
+                                    <i class="fa-solid fa-xmark duration-200 hover:text-red-500 text-lg "></i>
+                                </button>
+                            </form>
+                        </div>
+                        <p class="text-text text-lg p-2 group-hover:bg-lightgray/30 transition-colors duration-200 last:rounded-r-lg">
+                            <i class="fa-solid fa-xmark text-primary p-1 rounded-md hover:bg-lightgray duration-200"></i>
+                        </p>
+                    </div>
+                    {% endfor %}
+                </div>
+            </section>
+            <section class = "m-5 rounded-lg border-lightgray border-2 shadow-xl hover:-translate-x-1 duration-200">
+                <p class ="text-text p-3 font-semibold text-xl opacity-70">Testy</p>
+                <div class="grid grid-cols-5 p-3 m-3 rounded-lg gap-y-1 testy">
+                    <!-- Headers -->
+                    <h2 class="text-text font-semibold text-lg opacity-70 p-2">Datum</h2>
+                    <h2 class="text-text font-semibold text-lg opacity-70 p-2">Předmět</h2>
+                    <h2 class="text-text font-semibold text-lg opacity-70 p-2">Název</h2>
+                    <h2 class="text-text font-semibold text-lg opacity-70 p-2">Přidal</h2>
+                    <h2 class="text-text font-semibold text-lg opacity-70 p-2">Status</h2>
+
+                    {% for exam in exams %}
+                    <div class="contents group hover:cursor-pointer">
+                        <p class="text-text  text-lg p-2 group-hover:bg-lightgray/30 transition-colors duration-200 first:rounded-l-lg last:rounded-r-lg">{{ exam.dueDate }}</p>
+                        <p class="text-text  text-lg p-2 group-hover:bg-lightgray/30 transition-colors duration-200">{{ exam.subject }}</p>
+                        <p class="text-text  text-lg p-2 group-hover:bg-lightgray/30 transition-colors duration-200">{{ exam.addedBy }}</p>
+                        <p class="text-text  text-lg p-2 group-hover:bg-lightgray/30 transition-colors duration-200 first:rounded-l-lg last:rounded-r-lg">{{ exam.title }}</p>
+                        <p class="text-text text-lg p-2 group-hover:bg-lightgray/30 transition-colors duration-200 last:rounded-r-lg">
+                            <i class="fa-solid fa-xmark text-primary p-1 rounded-md hover:bg-lightgray duration-200"></i>
+                        </p>
+                    </div>
+                    {% endfor %}
+                </div>
+            </section>
+                
+            <section class = "m-5  rounded-lg border-lightgray border-2 shadow-xl hover:-translate-x-1 duration-200 flex flex-col">
+                <div class="flex flex-row justify-between items-center p-3">
+                   <p class="text-text p-3 font-semibold text-xl opacity-70">Moje třída</p>
+                   {% if userRole == 'admin' %}
+                   <p class="text-white text-md bg-green-500 rounded-full px-2 py-1 relative group">
+                       Kód třídy:
+                       <span class="hidden group-hover:inline"> {{ class.inviteCode }}</span>
+                   </p>
+                    {% endif %}
+                </div>
+                </div>
+                    <div class="grid grid-cols-2 p-3 m-3 rounded-lg gap-y-1">
+                        <h2 class="text-text font-semibold text-lg opacity-70 p-2">Uživatelské jméno</h2>
+                        <h2 class="text-text font-semibold text-lg opacity-70 p-2">Role</h2>
+                        {% for user in users %}
+                            <div class="contents group hover:cursor-pointer">
+                                <p class="text-text  text-lg p-2 group-hover:bg-lightgray/30 transition-colors duration-200 first:rounded-l-lg last:rounded-r-lg">{{ user.User.username }}</p>
+                                <p class="text-text  text-lg p-2 group-hover:bg-lightgray/30 transition-colors duration-200">{{ user.role }}</p>
+                            </div>
+                        {% endfor %} 
+                    </div>
+            </section>
+        </article>
+
+
+        
+    </main>
+
+    <article class="w-full h-full max-w-full max-h-full absolute flex justify-center items-center hidden backdrop-blur-sm bg-black/30" id="popup">
+        <section class="w-4/5 h-4/5 bg-darkgray rounded-lg border-lightgray border-2 shadow-xl flex flex-col p-6 ">
+            <!-- Form Header -->
+            <div class="flex justify-between items-center">
+                <h2 class="text-text text-2xl font-semibold" id="popupTitle">Přidat úkol</h2>
+                <button class="text-text text-xl hover:text-primary transition-colors" id="closePopup">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+
+            
+            <form action="/assignments/create" method="post" class="mt-6 flex flex-col h-[calc(100%-2rem)] ">
+                
+                <div class="flex-1 overflow-y-auto px-2 ">
+                    <div class="flex flex-col gap-4">
+                        
+                        <div class="flex flex-col">
+                            <label for="homeworkTitle" class="text-text text-lg font-semibold mb-2">Nadpis</label>
+                            <input type="text" id="homeworkTitle" name="title" class="p-3 rounded-lg bg-lightgray text-text focus:outline-none focus:ring-2 focus:ring-primary" placeholder="Zadej nadpis" required>
+                        </div>
+            
+                        
+                        <div class="flex flex-col">
+                            <label for="homeworkDate" class="text-text text-lg font-semibold mb-2">Datum</label>
+                            <input type="date" id="homeworkDate" name="dueDate" class="p-3 rounded-lg bg-lightgray text-text focus:outline-none focus:ring-2 focus:ring-primary" required>
+                        </div>
+            
+                        
+                        <div class="flex flex-col">
+                            <label for="homeworkSubject" class="text-text text-lg font-semibold mb-2">Předmět</label>
+                            <input type="text" id="homeworkSubject" name="subject" class="p-3 rounded-lg bg-lightgray text-text focus:outline-none focus:ring-2 focus:ring-primary" placeholder="Zadej zkratku předmětu" required>
+                        </div>
+            
+                        
+                        <div class="flex flex-col flex-grow">
+                            <label for="homeworkNotes" class="text-text text-lg font-semibold mb-2">Poznámky</label>
+                            <textarea id="homeworkNotes" name="description" class="p-3 rounded-lg bg-lightgray text-text focus:outline-none focus:ring-2 focus:ring-primary h-full resize-none" placeholder="Přidávej poznámky..." required></textarea>
+                        </div>
+                        <input type="hidden" name="type" value="homework">
+                        <input type="hidden" name="id" value="{{ class.id }}">
+                        
+                        <div class="flex flex-col">
+                            <label class="text-text text-lg font-semibold mb-2">Soubory</label>
+                            <div class="flex flex-col gap-2">
+                                <div class="border-2 border-dashed border-lightgray rounded-lg p-4 hover:border-primary transition-colors">
+                                    <input type="file" id="fileUpload" multiple class="hidden" />
+                                    <label for="fileUpload" class="flex flex-col items-center justify-center gap-2 cursor-pointer">
+                                        <i class="fa-solid fa-cloud-arrow-up text-text text-3xl"></i>
+                                        <p class="text-text text-lg">Přetáhni soubory sem nebo klikni pro nahrání</p>
+                                        <p class="text-text text-sm opacity-70">Maximální velikost: 10MB</p>
+                                    </label>
+                                </div>
+                                <div id="fileList" class="flex flex-wrap gap-2">
+                                    
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+               
+                <button type="submit" class="mt-4 mb-2 p-3 bg-primary text-darkgray font-semibold rounded-lg hover:bg-lightgray hover:ring-2 hover:ring-primary hover:text-primary hover:shadow-xl transition-all duration-200">
+                    Přidat
+                </button>
+            </form>
+        </section>
+    </article>
+
+    <article class="w-full h-full max-w-full max-h-full absolute flex justify-center items-center hidden backdrop-blur-sm bg-black/30" id="detailPopup">
+        <section class="w-3/5 h-4/5 bg-darkgray rounded-lg border-lightgray border-2 shadow-xl flex flex-col p-6">
+            <!-- Header -->
+            <div class="flex justify-between items-center pb-4 border-b border-lightgray/30">
+                <h2 class="text-text text-2xl font-semibold" id="detailTitle"></h2>
+                <button class="text-text text-xl hover:text-primary transition-colors" id="closeDetailPopup">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+
+            
+            <div class="mt-6 flex-1 overflow-y-auto px-2">
+                <div class="flex flex-col gap-6">
+                    
+                    <div class="grid grid-cols-2 gap-4">
+                        <div class="flex flex-col">
+                            <span class="text-text/50 text-sm">Datum</span>
+                            <span class="text-text text-lg" id="detailDate"></span>
+                        </div>
+                        <div class="flex flex-col">
+                            <span class="text-text/50 text-sm">Předmět</span>
+                            <span class="text-text text-lg" id="detailSubject"></span>
+                        </div>
+                        <div class="flex flex-col">
+                            <span class="text-text/50 text-sm">Status</span>
+                            <span class="text-text text-lg" id="detailStatus"></span>
+                        </div>
+                    </div>
+
+                    
+                    <div class="flex flex-col gap-2">
+                        <span class="text-text/50 text-sm">Popis</span>
+                        <p class="text-text text-lg bg-lightgray/10 p-4 rounded-lg" id="detailDescription"></p>
+                    </div>
+
+                    
+                    <div class="flex flex-col gap-2">
+                        <span class="text-text/50 text-sm">Soubory</span>
+                        <div class="flex flex-wrap gap-2" id="detailFiles">
+                            
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </article>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2"></script>
+    <script src = "../js/class.js"></script>
 </body>
