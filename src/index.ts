@@ -67,6 +67,8 @@ loadPassport();
 db.sync()
 connect();
 
+app.set("trust proxy", 1);
+
 app.use("/", express.static(path.join(__dirname, 'public')));
 
 app.use("/auth", authRoutes)
