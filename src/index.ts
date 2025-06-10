@@ -55,7 +55,7 @@ app.use(session({
 app.use(flash());
 app.use(express.urlencoded({ extended: false }));
 
-app.use("/", express.static(path.join(__dirname, 'public')));
+app.use("/", express.static(__dirname + '/public'));
 
 // RATE LIMIT
 app.use(rateLimits.globalLimiter);
@@ -69,7 +69,7 @@ loadPassport();
 db.sync()
 connect();
 
-app.set("trust proxy", 1);
+app.set("trust proxy", true);
 
 
 app.use("/auth", authRoutes)
