@@ -55,6 +55,8 @@ app.use(session({
 app.use(flash());
 app.use(express.urlencoded({ extended: false }));
 
+app.use("/", express.static(path.join(__dirname, 'public')));
+
 // RATE LIMIT
 app.use(rateLimits.globalLimiter);
 
@@ -69,7 +71,6 @@ connect();
 
 app.set("trust proxy", 1);
 
-app.use("/", express.static(path.join(__dirname, 'public')));
 
 app.use("/auth", authRoutes)
 
