@@ -54,5 +54,5 @@ body:
 # Automatické přiřazení labelů podle odpovědí
 labels:
   - task
-  - ${{ (values.area == 'frontend' && 'frontend') || (values.area == 'backend' && 'backend') }}
-  - ${{ (values.priority == 'high' && 'priority: high') || (values.priority == 'medium' && 'priority: medium') || (values.priority == 'low' && 'priority: low') }}
+  - ${{ (area == 'frontend' && 'frontend') || (area == 'backend' && 'backend') }}
+  - ${{ (priority == 'high' && 'priority: high') || (priority == 'medium' && 'priority: medium') || (priority == 'low' && 'priority: low') }}
