@@ -1,0 +1,60 @@
+name: 🧩 Task
+description: Create new task
+title: "[TASK] Short task name"
+labels:
+  - task
+
+body:
+  - type: input
+    id: title
+    attributes:
+      label: Task title
+      description: Short and easy to understand ttle
+      placeholder: Enter task title
+    validations:
+      required: true
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Task description
+      description: Describe, what should be done and why
+      placeholder: Make a new route, edit component
+    validations:
+      required: true
+
+  - type: dropdown
+    id: area
+    attributes:
+      label: Backend/Frontend
+      description: Which part of project is this task related to?
+      options:
+        - label: 🖥️ Frontend
+          value: frontend
+        - label: ⚙️ Backend
+          value: backend
+    validations:
+      required: true
+
+  - type: dropdown
+    id: priority
+    attributes:
+      label: Priority
+      description: Choose task priority
+      options:
+        - label: 🟥 High
+          value: high
+        - label: 🟨 Medium
+          value: medium
+        - label: 🟩 Low
+          value: low
+    validations:
+      required: true
+
+# Automatické přiřazení labelů podle odpovědí
+labels:
+  - task
+  - ${{ (values.area == 'frontend' && 'frontend') || (values.area == 'backend' && 'backend') }}
+  - ${{ (values.priority == 'high' && 'priority: high') || 
+         (values.priority == 'medium' && 'priority: medium') || 
+         (values.priority == 'low' && 'priority: low') }}
