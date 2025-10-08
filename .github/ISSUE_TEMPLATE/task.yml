@@ -55,4 +55,4 @@ body:
 labels:
   - task
   - ${{ (area == 'frontend' && 'frontend') || (area == 'backend' && 'backend') }}
-  - ${{ (priority == 'high' && 'priority: high') || (priority == 'medium' && 'priority: medium') || (priority == 'low' && 'priority: low') }}
+  - "${{ (priority == 'high' && 'priority: high') || (priority == 'medium' && 'priority: medium') || (priority == 'low' && 'priority: low') }}"
