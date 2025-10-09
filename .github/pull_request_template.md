@@ -1,10 +1,10 @@
-# Task Delivery
+# Pull request template
 
 ## Related Task
 
 Link the related issue created using the **🧩 Task** template:
 `Closes #<issue_number>` or `Related to #<issue_number>`
-
+*If there isn't issue created, you can ignore this.*
 ---
 
 ## Summary
@@ -28,6 +28,6 @@ Provide a short overview of the changes:
 
 Before submitting, make sure you have:
 
-* [ ] Linked the correct issue
+* [ ] Linked the correct issue (if there is any)
 * [ ] Added appropriate labels (`frontend`, `backend`, `priority: ...`, you can use same labels that were used in issue) 
 * [ ] Verified that all tests and lint checks pass
