@@ -1,11 +1,3 @@
----
-name: ✅ Task Delivery
-about: Submit a pull request to complete or update an existing task
-title: "[Task Delivery] "
-labels: []
-assignees: ""
----
-
 ## Related Task
 
 Link the related issue created using the **🧩 Task** template:
