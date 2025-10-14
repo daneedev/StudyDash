@@ -8,7 +8,7 @@ import {Alert} from "@heroui/alert";
 
 
 function App() {
-  const [count, setCount] = useState(0)
+  
   const title = "This is an alert";
   const description = "Thanks for subscribing to our newsletter!";
 
