@@ -3,31 +3,23 @@ import reactLogo from './assets/react.svg'
 import viteLogo from '/vite.svg'
 import './App.css'
 
+import {Button, ButtonGroup} from "@heroui/button";
+import {Alert} from "@heroui/alert";
+
+
 function App() {
-  const [count, setCount] = useState(0)
+  
+  const title = "This is an alert";
+  const description = "Thanks for subscribing to our newsletter!";
 
   return (
     <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
+      
+      <Button  color="primary">Button</Button>
+      <div className="flex items-center justify-center w-full">
+        <Alert hideIcon description={description} title={title} />
       </div>
-      <h1 className = "underline">Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p className = "underline">
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
+      
     </>
   )
 }
