@@ -1,27 +1,12 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+const LandingPage = () => (
+  <main className="flex min-h-screen items-center justify-center p-6">
+    <div className="space-y-2 text-center">
+      <h1 className="text-2xl font-semibold">Welcome to StudyDash</h1>
+      <p className="text-gray-500">
+        Landing page placeholder. Swap in the real content once the design is ready.
+      </p>
+    </div>
+  </main>
+)
 
-import {Button, ButtonGroup} from "@heroui/button";
-import {Alert} from "@heroui/alert";
-
-
-function App() {
-  
-  const title = "This is an alert";
-  const description = "Thanks for subscribing to our newsletter!";
-
-  return (
-    <>
-      
-      <Button  color="primary">Button</Button>
-      <div className="flex items-center justify-center w-full">
-        <Alert hideIcon description={description} title={title} />
-      </div>
-      
-    </>
-  )
-}
-
-export default App
+export default LandingPage
