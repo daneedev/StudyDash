@@ -26,4 +26,8 @@ Contributions are welcome! Please open an issue or submit a pull request on GitH
 ### ⚖️ License
 The project is licensed under **[GPL-3.0](https://www.gnu.org/licenses/gpl-3.0.html)**, which allows you to share, modify the original project. Any modified version must be under the same license to keep the project open-source and free to everyone! 
 
-**Copyright 2025 [@daneedev](https://github.com/daneedev) & [@Richardinho3](https://github.com/Richardinho3) & [@MHDmaniak](https://github.com/MHDmaniak)**
+### ❤️ Authors
+- Backend: [@daneedev](https://github.com/daneedev)
+- Frotend:
+   - [@Richardinho3](https://github.com/Richardinho3)
+   - [@vojta1100](https://github.com/vojta1100)
