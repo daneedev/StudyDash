@@ -1,3 +1,7 @@
+import { createRoute, type AnyRoute } from '@tanstack/react-router'
+
+import { rootRoute } from './rootRoute'
+
 const LoginPage = () => (
   <main className="flex min-h-screen items-center justify-center p-6">
     <div className="space-y-2 text-center">
@@ -8,5 +12,14 @@ const LoginPage = () => (
     </div>
   </main>
 )
+
+const route = createRoute({
+  getParentRoute: () => rootRoute,
+  path: 'login',
+  component: LoginPage,
+})
+
+type LoginComponent = typeof LoginPage & { route?: AnyRoute }
+;(LoginPage as LoginComponent).route = route
 
 export default LoginPage

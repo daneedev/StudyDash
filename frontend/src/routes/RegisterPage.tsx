@@ -1,3 +1,7 @@
+import { createRoute, type AnyRoute } from '@tanstack/react-router'
+
+import { rootRoute } from './rootRoute'
+
 const RegisterPage = () => (
   <main className="flex min-h-screen items-center justify-center p-6">
     <div className="space-y-2 text-center">
@@ -8,5 +12,14 @@ const RegisterPage = () => (
     </div>
   </main>
 )
+
+const route = createRoute({
+  getParentRoute: () => rootRoute,
+  path: 'register',
+  component: RegisterPage,
+})
+
+type RegisterComponent = typeof RegisterPage & { route?: AnyRoute }
+;(RegisterPage as RegisterComponent).route = route
 
 export default RegisterPage

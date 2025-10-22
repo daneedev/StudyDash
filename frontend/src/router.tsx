@@ -1,83 +1,45 @@
-import { Suspense } from 'react'
-import {
-  Outlet,
-  RouterProvider,
-  createRoute,
-  createRootRouteWithContext,
-  createRouter,
-  redirect,
-} from '@tanstack/react-router'
-import { TanStackRouterDevtools } from '@tanstack/router-devtools'
-import LandingPage from './App'
-import LoginPage from './routes/LoginPage'
-import RegisterPage from './routes/RegisterPage'
-import DashboardPage from './routes/DashboardPage'
+import { createRouter, type AnyRoute } from '@tanstack/react-router'
 
-type AuthState = {
-  isAuthenticated: boolean
+import { authState, rootRoute } from './routes/rootRoute'
+
+type RouteModule = {
+  route?: AnyRoute
+  default?: unknown
 }
 
-type RouterContext = {
-  auth: AuthState
-}
-
-const authState: AuthState = {
-  isAuthenticated: true,
-}
-
-const RootComponent = () => (
-  <>
-    <Outlet />
-    {import.meta.env.DEV && (
-      <Suspense fallback={null}>
-        <TanStackRouterDevtools position="bottom-right" />
-      </Suspense>
-    )}
-  </>
-)
-
-const rootRoute = createRootRouteWithContext<RouterContext>()({
-  component: RootComponent,
+const routeModules = import.meta.glob<true, string, RouteModule>('./routes/**/*Page.tsx', {
+  eager: true,
 })
 
-const landingRoute = createRoute({
-  getParentRoute: () => rootRoute,
-  path: '/',
-  component: LandingPage,
+const appModules = import.meta.glob<true, string, RouteModule>('./App.tsx', {
+  eager: true,
 })
 
-const loginRoute = createRoute({
-  getParentRoute: () => rootRoute,
-  path: 'login',
-  component: LoginPage,
-})
-
-const registerRoute = createRoute({
-  getParentRoute: () => rootRoute,
-  path: 'register',
-  component: RegisterPage,
-})
-
-const dashboardRoute = createRoute({
-  getParentRoute: () => rootRoute,
-  path: 'dashboard',
-  component: DashboardPage,
-  beforeLoad: ({ context, location }) => {
-    if (!context.auth.isAuthenticated) {
-      throw redirect({
-        to: '/login',
-        search: { redirect: location.href },
-      })
+const childRoutes = [...Object.values(routeModules), ...Object.values(appModules)]
+  .map<AnyRoute | undefined>((module) => {
+    if (module.route) {
+      return module.route
     }
-  },
-})
 
-const routeTree = rootRoute.addChildren([
-  landingRoute,
-  loginRoute,
-  registerRoute,
-  dashboardRoute,
-])
+    if (module.default && typeof module.default === 'object') {
+      const maybeRoute = Reflect.get(module.default, 'route')
+      if (maybeRoute) {
+        return maybeRoute as AnyRoute
+      }
+    }
+
+    if (typeof module.default === 'function') {
+      const maybeRoute = Reflect.get(module.default, 'route')
+      if (maybeRoute) {
+        return maybeRoute as AnyRoute
+      }
+    }
+
+    return undefined
+  })
+  .filter((route): route is AnyRoute => route !== undefined)
+
+const routeTree = rootRoute.addChildren(childRoutes)
 
 export const router = createRouter({
   routeTree,
@@ -91,9 +53,3 @@ declare module '@tanstack/react-router' {
     router: typeof router
   }
 }
-
-type RouterProps = {
-  children?: never
-}
-
-export const AppRouter = (_props: RouterProps) => <RouterProvider router={router} />
