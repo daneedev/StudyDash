@@ -16,12 +16,7 @@ export class AuthService {
     });
     if (!user || !bcrypt.compareSync(dto.password, user.password)) {
       throw new HttpException(
-        {
-          success: false,
-          statusCode: HttpStatus.UNAUTHORIZED,
-          error: `Unauthorized`,
-          message: `Invalid username or password`,
-        },
+        `Invalid username or password`,
         HttpStatus.UNAUTHORIZED,
       );
     }
@@ -30,11 +25,7 @@ export class AuthService {
     const accessToken = await this.jwtService.signAsync(payload);
 
     return {
-      success: true,
-      statusCode: 200,
-      data: {
-        accessToken: accessToken,
-      },
+      accessToken: accessToken,
     };
   }
 
@@ -48,24 +39,14 @@ export class AuthService {
     if (existingUser) {
       const field = existingUser.email === dto.email ? 'email' : 'username';
       throw new HttpException(
-        {
-          success: false,
-          statusCode: HttpStatus.CONFLICT,
-          error: `Conflict`,
-          message: `User with this ${field} already exists`,
-        },
+        `User with this ${field} already exists`,
         HttpStatus.CONFLICT,
       );
     }
 
     if (dto.password.length < 8) {
       throw new HttpException(
-        {
-          success: false,
-          statusCode: HttpStatus.BAD_REQUEST,
-          error: `Bad Request`,
-          message: `Password must be at least 8 characters long`,
-        },
+        `Password must be at least 8 characters long`,
         HttpStatus.BAD_REQUEST,
       );
     }
@@ -77,10 +58,6 @@ export class AuthService {
     });
 
     const { password, ...userWithoutPassword } = newUser.dataValues;
-    return {
-      success: true,
-      statusCode: 201,
-      data: userWithoutPassword as UserModel,
-    };
+    return userWithoutPassword;
   }
 }
