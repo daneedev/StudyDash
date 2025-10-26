@@ -2,23 +2,26 @@ version: '3.8'
 
 services:
   mariadb:
-    image: mariadb:10.11
-    container_name: studydash-mariadb
+    image: mariadb:latest
+    container_name: mariadb
     restart: unless-stopped
     environment:
-      MYSQL_ROOT_PASSWORD: rootpassword
       MYSQL_DATABASE: studydash
       MYSQL_USER: studydash_user
       MYSQL_PASSWORD: studydash_password
+      MYSQL_ROOT_PASSWORD: root
     ports:
       - "3306:3306"
     volumes:
       - mariadb_data:/var/lib/mysql
-    command: >
-      --character-set-server=utf8mb4 
-      --collation-server=utf8mb4_unicode_ci
-      --default-authentication-plugin=mysql_native_password
-      --skip-name-resolve
 
+  adminer:
+    image: adminer
+    restart: always
+    container_name: adminer
+    environment:
+      ADMINER_DEFAULT_SERVER: mariadb
+    ports:
+      - 8080:8080
 volumes:
   mariadb_data:
