@@ -1,14 +1,41 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import { RegisterDto } from 'src/dto';
+import { AuthDto, RegisterDto } from 'src/dto';
 import UserModel from 'src/models/user.model';
 import * as bcrypt from 'bcryptjs';
 import { ApiResponse } from 'src/types/api.types';
 import { Op } from 'sequelize';
+import { JwtService } from '@nestjs/jwt';
 
 @Injectable({})
 export class AuthService {
-  login() {
-    return 'User logged in';
+  constructor(private jwtService: JwtService) {}
+
+  async login(dto: AuthDto) {
+    const user = await UserModel.findOne({
+      where: { username: dto.username },
+    });
+    if (!user || !bcrypt.compareSync(dto.password, user.password)) {
+      throw new HttpException(
+        {
+          success: false,
+          statusCode: HttpStatus.UNAUTHORIZED,
+          error: `Unauthorized`,
+          message: `Invalid username or password`,
+        },
+        HttpStatus.UNAUTHORIZED,
+      );
+    }
+
+    const payload = { id: user.id, username: user.username };
+    const accessToken = await this.jwtService.signAsync(payload);
+
+    return {
+      success: true,
+      statusCode: 200,
+      data: {
+        accessToken: accessToken,
+      },
+    };
   }
 
   async register(dto: RegisterDto): Promise<ApiResponse<UserModel>> {
@@ -19,7 +46,6 @@ export class AuthService {
     });
 
     if (existingUser) {
-      console.log(existingUser.email, dto.email);
       const field = existingUser.email === dto.email ? 'email' : 'username';
       throw new HttpException(
         {
