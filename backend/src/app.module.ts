@@ -3,10 +3,10 @@ import { APP_FILTER, APP_INTERCEPTOR } from '@nestjs/core';
 import { AuthModule } from './auth/auth.module';
 import { ResponseInterceptor } from './response/response.interceptor';
 import { HttpExceptionFilter } from './response/http-exception.filter';
+import { UsersModule } from './users/users.module';
 
 @Module({
-  imports: [AuthModule],
-  controllers: [],
+  imports: [AuthModule, UsersModule],
   providers: [
     {
       provide: APP_INTERCEPTOR,
