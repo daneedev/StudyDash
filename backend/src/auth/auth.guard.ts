@@ -14,7 +14,6 @@ export class AuthGuard implements CanActivate {
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const request = context.switchToHttp().getRequest();
     const [type, token] = request.headers.authorization?.split(' ') ?? [];
-    console.log(request.headers);
     if (!token || type !== 'Bearer') {
       throw new HttpException('Invalid or missing authorization token', 401);
     }

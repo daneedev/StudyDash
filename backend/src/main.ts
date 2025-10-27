@@ -11,6 +11,7 @@ async function bootstrap() {
     .setTitle('StudyDash API')
     .setDescription('API documentation for StudyDash')
     .setVersion('dev')
+    .addBearerAuth()
     .build();
 
   const document = SwaggerModule.createDocument(app, config);
