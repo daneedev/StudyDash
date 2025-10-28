@@ -9,7 +9,7 @@ services:
       MYSQL_DATABASE: studydash
       MYSQL_USER: studydash_user
       MYSQL_PASSWORD: studydash_password
-      MYSQL_ROOT_PASSWORD: root
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
     ports:
       - "3306:3306"
     volumes:
