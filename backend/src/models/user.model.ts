@@ -2,12 +2,12 @@ import { DataTypes, Model } from 'sequelize';
 import db from '../utils/db';
 
 class UserModel extends Model {
-  public id!: number;
-  public username!: string;
-  public email!: string;
-  public password!: string;
-  public createdAt!: Date;
-  public updatedAt!: Date;
+  declare id: number;
+  declare username: string;
+  declare email: string;
+  declare password: string;
+  declare createdAt: Date;
+  declare updatedAt: Date;
 }
 
 UserModel.init(
@@ -48,5 +48,7 @@ UserModel.init(
     modelName: 'User',
   },
 );
+
+UserModel.sync();
 
 export default UserModel;
