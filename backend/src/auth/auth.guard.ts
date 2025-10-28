@@ -23,7 +23,7 @@ export class AuthGuard implements CanActivate {
 
       request.user = payload;
     } catch (error) {
-      throw new HttpException('IInvalid or missing authorization token', 401);
+      throw new HttpException('Invalid or missing authorization token', 401);
     }
 
     return true;
