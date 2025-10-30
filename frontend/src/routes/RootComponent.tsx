@@ -1,6 +1,6 @@
 import { Suspense } from 'react'
 import { Outlet } from '@tanstack/react-router'
-import { TanStackRouterDevtools } from '@tanstack/router-devtools'
+import { TanStackRouterDevtools } from '@tanstack/react-router-devtools'
 
 const showDevtools =
   import.meta.env.DEV // stačí to spustit pomocí 'npm run dev' pro zobrazení dev tools
