@@ -5,3 +5,16 @@
 /* Note: You may need to change the path to fit your project structure */
 @source '../../node_modules/@heroui/theme/dist/**/*.{js,ts,jsx,tsx}';
 @custom-variant dark (&:is(.dark *));
+
+/* index.css */
+
+/* Force dark background for autofilled inputs */
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active {
+  -webkit-box-shadow: 0 0 0 1000px #1c1c1c inset !important;
+  -webkit-text-fill-color: #f6f7fb !important;
+  caret-color: #f6f7fb !important;
+  transition: background-color 5000s ease-in-out 0s;
+}

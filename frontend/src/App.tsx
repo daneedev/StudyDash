@@ -15,10 +15,12 @@ function App() {
   return (
     <>
       
-      <Button  color="primary">Button</Button>
-      <div className="flex items-center justify-center w-full">
-        <Alert hideIcon description={description} title={title} />
+      
+      <div className="flex flex-col items-center justify-center w-full h-screen">
+        <Alert className = "max-h-min" hideIcon description={description} title={title} />
+        <Button  color="primary">Button3</Button>  
       </div>
+
       
     </>
   )
