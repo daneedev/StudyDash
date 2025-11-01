@@ -6,6 +6,9 @@
 @source '../../node_modules/@heroui/theme/dist/**/*.{js,ts,jsx,tsx}';
 @custom-variant dark (&:is(.dark *));
 
+
+
+
 /* Autofill fix */
 input:-webkit-autofill,
 input:-webkit-autofill:hover,

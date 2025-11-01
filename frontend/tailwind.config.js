@@ -1,24 +1,30 @@
 // tailwind.config.js
-const {heroui, colors} = require("@heroui/react");
+import { heroui } from "@heroui/theme";
 
 /** @type {import('tailwindcss').Config} */
-module.exports = {
+export default {
   content: [
-    // ...
-    // make sure it's pointing to the ROOT node_module
+    // ...your app paths
     "./node_modules/@heroui/theme/dist/**/*.{js,ts,jsx,tsx}",
   ],
   theme: {
-    extend: {
-      colors: {
-        primary: "#39b6ab",
-        background: "#1c1c1c",
-        text: "#f6f7fb",
-        secondary:"#272727"
-      },
-
-    },
+    extend: {},
   },
   darkMode: "class",
-  plugins: [heroui()],
+  plugins: [
+    heroui({
+      themes: {
+        light: {
+          colors: {
+            primary: "#39b6ab",
+          },
+        },
+        dark: {
+          colors: {
+            primary: "#39b6ab",
+          },
+        },
+      },
+    }),
+  ],
 };

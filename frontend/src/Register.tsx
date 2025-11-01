@@ -1,7 +1,5 @@
-import { Button } from "@heroui/react";
+import { Button, buttonGroup, Input } from "@heroui/react";
 import { useState } from "react";
-import { Input } from "@heroui/react";
-
 import studydashLogo from "./assets/studydashLogoBlue.svg";
 
 export default function LoginPage() {
@@ -10,10 +8,11 @@ export default function LoginPage() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    // handle login logic here
   };
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-[#1c1c1c]">
+    <div className="flex min-h-screen items-center justify-center bg-[#1c1c1c] f">
       <div className="w-full max-w-md space-y-8 rounded-lg bg-[#272727] p-8 shadow-lg">
         <div className="flex flex-col items-center">
           <img
@@ -25,47 +24,58 @@ export default function LoginPage() {
             Vítejte zpět
           </h2>
         </div>
-        <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
+        <form
+          className="mt-8 space-y-6"
+          onSubmit={handleSubmit}
+          autoComplete="off"
+          autoSave="off"
+        >
           <div className="space-y-4 rounded-md">
-            <div>
-              <label
-                htmlFor="email"
-                className="block text-sm font-medium text-[#f6f7fb]"
-              >
-                Emailová adresa
-              </label>
-              <input
-                id="email"
-                name="email"
-                type="email"
-                required
-                className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-[#39b6ab] focus:outline-none focus:ring-[#39b6ab] bg-[#1c1c1c] text-[#f6f7fb] "
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-              />
-            </div>
-            <div>
-              <label
-                htmlFor="password"
-                className="block text-sm font-medium text-[#f6f7fb]"
-              >
-                Heslo
-              </label>
-              <input
-                id="password"
-                name="password"
-                type="password"
-                required
-                className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-[#39b6ab]  focus:outline-none focus:ring-[#39b6ab] bg-[#1c1c1c]  text-[#f6f7fb]"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-              />
-            </div>
+            <Input
+              id="email"
+              name="email"
+              type="email"
+              label="Emailová adresa"
+              labelPlacement="outside-top"
+              isRequired
+              errorMessage="Please enter a valid email"
+              isInvalid={true}
+              value={email}
+              onValueChange={setEmail}
+              classNames={{
+                inputWrapper:
+                  " bg-[#272727] border border-zinc-700 rounded-lg transition-colors focus-within:border-[#39b6dd] focus-within:ring-2 focus-within:ring-[#39b6ab]",
+                input:
+                  "bg-transparent text-[#f6f7fb] placeholder-zinc-400 focus:outline-none py-2 px-2 rounded-lg",
+                label: "text-[#f6f7fb] font-medium py-1",
+                errorMessage: "text-[#ff6b6b] mt-1 ",
+              }}
+            />
+            <Input
+              id="password"
+              name="password"
+              type="password"
+              label="Heslo"
+              labelPlacement="outside-top"
+              isRequired
+              value={password}
+              onValueChange={setPassword}
+              errorMessage="Please enter a valid password"
+              isInvalid={true}
+              classNames={{
+                inputWrapper:
+                  " bg-[#1c1c1c] border border-zinc-700 rounded-lg transition-colors focus-within:border-[#39b6dd] focus-within:ring-2 focus-within:ring-[#39b6ab]",
+                input:
+                  "bg-transparent text-[#f6f7fb] placeholder-zinc-400 focus:outline-none py-2 px-2 rounded-lg",
+                label: "text-[#f6f7fb] font-medium py-1",
+                errorMessage: "text-[#ff6b6b] mt-1 ",
+              }}
+            />
           </div>
 
           <Button
             type="submit"
-            className="w-full bg-[#39b6ab] font-medium  rounded-md hover:scale-99 transition-all"
+            className="w-full bg-[#39b6ab] hover:bg-cyan-400 text-white font-semibold rounded-lg shadow-md py-3 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-[#39b6ab] focus:ring-offset-2"
           >
             Registrovat se
           </Button>
@@ -75,7 +85,7 @@ export default function LoginPage() {
             Již máte účet?{" "}
             <a
               href="/register"
-              className="font-medium hover:text-[#2f9990] transition-all text-[#39b6ab] "
+              className="font-medium hover:text-cyan-300 transition-all text-[#39b6ab]"
             >
               Zaregistrujte se
             </a>
