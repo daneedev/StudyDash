@@ -8,8 +8,7 @@ import { HeroUIProvider } from "@heroui/react";
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
-    <HeroUIProvider>
-      <Login />
+    <HeroUIProvider className="">
       <Register />
     </HeroUIProvider>
   </StrictMode>
