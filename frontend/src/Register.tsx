@@ -21,7 +21,7 @@ export default function LoginPage() {
             className="h-20 w-auto mb-6"
           />
           <h2 className="text-left text-3xl font-bold tracking-tight text-[#f6f7fb]">
-            Vítejte zpět
+            Vítejte!
           </h2>
         </div>
         <form
@@ -71,11 +71,32 @@ export default function LoginPage() {
                 errorMessage: "text-[#ff6b6b] mt-1 ",
               }}
             />
+
+            <Input
+              id="password"
+              name="password"
+              type="password"
+              label="Opakujte heslo"
+              labelPlacement="outside-top"
+              isRequired
+              value={password}
+              onValueChange={setPassword}
+              errorMessage="Please enter a valid password"
+              isInvalid={true}
+              classNames={{
+                inputWrapper:
+                  " bg-[#1c1c1c] border border-zinc-700 rounded-lg transition-colors focus-within:border-[#39b6dd] focus-within:ring-2 focus-within:ring-[#39b6ab]",
+                input:
+                  "bg-transparent text-[#f6f7fb] placeholder-zinc-400 focus:outline-none py-2 px-2 rounded-lg",
+                label: "text-[#f6f7fb] font-medium py-1",
+                errorMessage: "text-[#ff6b6b] mt-1 ",
+              }}
+            />
           </div>
 
           <Button
             type="submit"
-            className="w-full bg-[#39b6ab] hover:bg-cyan-400 text-white font-semibold rounded-lg shadow-md py-3 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-[#39b6ab] focus:ring-offset-2"
+            className="w-full bg-[#39b6ab]  text-white hover:scale-98 transition-all font-semibold rounded-lg shadow-md py-3 relative overflow-hidden"
           >
             Registrovat se
           </Button>

@@ -32,6 +32,7 @@ export default function LoginPage() {
         >
           <div className="space-y-4 rounded-md">
             <Input
+              isClearable
               id="email"
               name="email"
               type="email"
@@ -44,12 +45,15 @@ export default function LoginPage() {
               onValueChange={setEmail}
               classNames={{
                 inputWrapper:
-                  " bg-[#272727] border border-zinc-700 rounded-lg transition-colors focus-within:border-[#39b6dd] focus-within:ring-2 focus-within:ring-[#39b6ab]",
+                  "relative bg-[#272727] border border-zinc-700 rounded-lg transition-colors focus-within:border-[#39b6dd] focus-within:ring-2 focus-within:ring-[#39b6ab]",
                 input:
                   "bg-transparent text-[#f6f7fb] placeholder-zinc-400 focus:outline-none py-2 px-2 rounded-lg",
                 label: "text-[#f6f7fb] font-medium py-1",
                 errorMessage: "text-[#ff6b6b] mt-1 ",
+                clearButton:
+                  "absolute right-2 top-1/2 -translate-y-1/2 text-zinc-400 hover:text-zinc-200",
               }}
+              className=""
             />
             <Input
               id="password"
