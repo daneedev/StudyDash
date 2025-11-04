@@ -1,27 +1,36 @@
-version: '3.8'
-
 services:
   mariadb:
     image: mariadb:latest
-    container_name: mariadb
+    container_name: studydash_mariadb
     restart: unless-stopped
-    environment:
-      MYSQL_DATABASE: studydash
-      MYSQL_USER: studydash_user
-      MYSQL_PASSWORD: studydash_password
-      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+    env_file:
+      - .env
     ports:
-      - "3306:3306"
+      - "3306"
     volumes:
       - mariadb_data:/var/lib/mysql
 
-  adminer:
-    image: adminer
-    restart: always
-    container_name: adminer
-    environment:
-      ADMINER_DEFAULT_SERVER: mariadb
+  backend:
+    build: ./backend
+    container_name: studydash_backend
+    restart: unless-stopped
+    depends_on:
+      - mariadb
+    env_file:
+      - .env
     ports:
-      - 8080:8080
+      - "3030:3030"
+  
+  frontend:
+      build: ./frontend
+      container_name: studydash_frontend
+      restart: unless-stopped
+      depends_on:
+        - backend
+      env_file:
+        - .env
+      ports:
+        - "3000:3000"
+
 volumes:
   mariadb_data:
