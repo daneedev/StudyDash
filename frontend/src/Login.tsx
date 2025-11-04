@@ -1,18 +1,20 @@
-import { Button, buttonGroup, Input } from "@heroui/react";
+import { Button, Input } from "@heroui/react";
 import { useState } from "react";
 import studydashLogo from "./assets/studydashLogoBlue.svg";
+import { Eye, EyeOff } from "lucide-react";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // handle login logic here
+    // handle login logic
   };
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-[#1c1c1c] f">
+    <div className="flex min-h-screen items-center justify-center bg-[#1c1c1c]">
       <div className="w-full max-w-md space-y-8 rounded-lg bg-[#272727] p-8 shadow-lg">
         <div className="flex flex-col items-center">
           <img
@@ -24,6 +26,7 @@ export default function LoginPage() {
             Vítejte zpět
           </h2>
         </div>
+
         <form
           className="mt-8 space-y-6"
           onSubmit={handleSubmit}
@@ -40,7 +43,7 @@ export default function LoginPage() {
               labelPlacement="outside-top"
               isRequired
               errorMessage="Please enter a valid email"
-              isInvalid={true}
+              isInvalid={false}
               value={email}
               onValueChange={setEmail}
               classNames={{
@@ -53,39 +56,58 @@ export default function LoginPage() {
                 clearButton:
                   "absolute right-2 top-1/2 -translate-y-1/2 text-zinc-400 hover:text-zinc-200",
               }}
-              className=""
             />
+
             <Input
               id="password"
               name="password"
-              type="password"
+              type={showPassword ? "text" : "password"}
               label="Heslo"
               labelPlacement="outside-top"
               isRequired
               value={password}
               onValueChange={setPassword}
               errorMessage="Please enter a valid password"
-              isInvalid={true}
+              isInvalid={false}
               classNames={{
                 inputWrapper:
-                  " bg-[#1c1c1c] border border-zinc-700 rounded-lg transition-colors focus-within:border-[#39b6dd] focus-within:ring-2 focus-within:ring-[#39b6ab]",
+                  "relative bg-[#272727 ] border border-zinc-700 rounded-lg transition-colors focus-within:border-[#39b6dd] focus-within:ring-2 focus-within:ring-[#39b6ab]",
                 input:
                   "bg-transparent text-[#f6f7fb] placeholder-zinc-400 focus:outline-none py-2 px-2 rounded-lg",
                 label: "text-[#f6f7fb] font-medium py-1",
                 errorMessage: "text-[#ff6b6b] mt-1 ",
               }}
+              endContent={
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="text-zinc-400 hover:text-zinc-200 focus:outline-none transition-transform duration-200 scale-60 hover:scale-55 absolute right-1 top-1/2 -translate-y-1/2"
+                >
+                  <span
+                    className="transition-opacity duration-200 ease-in-out"
+                    key={showPassword ? "eyeoff" : "eye"}
+                  >
+                    {showPassword ? (
+                      <EyeOff color="#f6f7fb" strokeWidth={1.5} />
+                    ) : (
+                      <Eye color="#f6f7fb" strokeWidth={1.5} />
+                    )}
+                  </span>
+                </button>
+              }
             />
           </div>
 
           <Button
             type="submit"
-            className="w-full bg-[#39b6ab]  text-white hover:scale-98 transition-all font-semibold rounded-lg shadow-md py-3 relative overflow-hidden"
+            className="w-full bg-[#39b6ab] text-white hover:scale-[0.98] transition-all font-semibold rounded-lg shadow-md py-3 relative overflow-hidden"
           >
             Registrovat se
           </Button>
         </form>
+
         <div className="mt-4 text-center">
-          <p className="text-sm text-[#f6f7fb] ">
+          <p className="text-sm text-[#f6f7fb]">
             Již máte účet?{" "}
             <a
               href="/register"
