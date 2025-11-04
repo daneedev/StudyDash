@@ -75,7 +75,7 @@ export default function LoginPage() {
 
           <Button
             type="submit"
-            className="w-full bg-[#39b6ab] hover:bg-cyan-400 text-white font-semibold rounded-lg shadow-md py-3 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-[#39b6ab] focus:ring-offset-2"
+            className="w-full bg-[#39b6ab]  text-white hover:scale-98 transition-all font-semibold rounded-lg shadow-md py-3 relative overflow-hidden"
           >
             Registrovat se
           </Button>
