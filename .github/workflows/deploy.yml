@@ -17,7 +17,7 @@ jobs:
           ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
 
       - name: Setup Git Safe Directory
-        run: ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SSH_IP }} 'cd ${{ secrets.WORK_DIR }} && sudo chown -R $(whoami):$(whoami) . && git config --global --add safe.directory $(pwd)'
+        run: ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SSH_IP }} 'cd ${{ secrets.WORK_DIR }} && git config --global --add safe.directory $(pwd)'
 
       - name: Stash, Pull and Restore Changes
         run: ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SSH_IP }} 'cd ${{ secrets.WORK_DIR }} && git stash push -m "Deploy stash $(date)" && git pull origin main && git stash pop || echo "No stash conflicts"'
