@@ -7,13 +7,14 @@ on:
 
 jobs:
   deploy:
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Build and run containers
-        run: |
-          docker compose down
-          docker compose up -d --build
+      - name: Install SSH Keys
+        uses: webfactory/ssh-agent@v0.5.4
+        with:
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+      - name: Connect to Server & Deploy
+        run: ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SSH_IP }} 'echo "Connected to server" && cd ${{ secrets.WORK_DIR }} && git pull && docker-compose up -d --build'
+      - name: Cleanup SSH Keys
+        run: rm -rf ~/.ssh
