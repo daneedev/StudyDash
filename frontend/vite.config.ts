@@ -15,6 +15,7 @@ export default defineConfig(({ mode }) => {
     preview: {
       port: Number(env.FRONTEND_PORT) || 3000,
       host: "0.0.0.0",
+      allowedHosts: ["localhost", "studydash.app"],
     },
     // Configure Vite to load .env from parent directory
     envDir: "../",
