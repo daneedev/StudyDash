@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - main
+  workflow_dispatch:
 
 jobs:
   deploy:
@@ -15,6 +16,4 @@ jobs:
         with:
           ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
       - name: Connect to Server & Deploy
-        run: ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SSH_IP }} 'echo "Connected to server" && cd ${{ secrets.WORK_DIR }} && git pull && docker-compose up -d --build'
-      - name: Cleanup SSH Keys
-        run: rm -rf ~/.ssh
+        run: ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SSH_IP }} 'echo "Connected to server" && cd ${{ secrets.WORK_DIR }} && git config --global --add safe.directory {${{ secrets.WORK_DIR }}} && git pull && docker-compose up -d --build'
