@@ -1,17 +1,17 @@
-import { createRoute, type AnyRoute } from '@tanstack/react-router'
+import { createRoute, type AnyRoute } from "@tanstack/react-router";
 
-import { LandingPage } from './features/landing/LandingPage'
-import { rootRoute } from './routes/rootRoute'
+import { LandingPage } from "./routes/LandingPage";
+import { rootRoute } from "./routes/rootRoute";
 
-const App = () => <LandingPage />
+const App = () => <LandingPage />;
 
 const route = createRoute({
   getParentRoute: () => rootRoute,
-  path: '/',
+  path: "/",
   component: App,
-})
+});
 
-type AppComponent = typeof App & { route?: AnyRoute }
-;(App as AppComponent).route = route
+type AppComponent = typeof App & { route?: AnyRoute };
+(App as AppComponent).route = route;
 
-export default App
+export default App;
