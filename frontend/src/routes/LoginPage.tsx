@@ -1,7 +1,7 @@
 import { createRoute, type AnyRoute } from "@tanstack/react-router";
 import { Button, Input } from "@heroui/react";
 import { useState } from "react";
-import studydashLogo from "../assets/react.svg";
+import studydashLogo from "../assets/studydashBlue.svg";
 import { Eye, EyeOff } from "lucide-react";
 
 import { rootRoute } from "./rootRoute";
@@ -50,13 +50,12 @@ function LoginPage() {
               onValueChange={setEmail}
               classNames={{
                 inputWrapper:
-                  "relative bg-[#272727] border border-zinc-700 rounded-lg transition-colors focus-within:border-[#39b6dd] focus-within:ring-2 focus-within:ring-[#39b6ab]",
+                  "relative !bg-[#1C1C1C] border border-zinc-700 rounded-lg transition-colors focus-within:border-[#39b6dd] focus-within:ring-2 focus-within:ring-[#39b6ab]",
                 input:
-                  "bg-transparent text-[#f6f7fb] placeholder-zinc-400 focus:outline-none py-2 px-2 rounded-lg",
+                  "bg-transparent !text-[#f6f7fb] placeholder-zinc-400 focus:outline-none py-2 px-2 rounded-lg",
                 label: "text-[#f6f7fb] font-medium py-1",
                 errorMessage: "text-[#ff6b6b] mt-1 ",
-                clearButton:
-                  "absolute right-2 top-1/2 -translate-y-1/2 text-zinc-400 hover:text-zinc-200",
+                clearButton: "text-zinc-400 hover:text-zinc-200",
               }}
             />
 
@@ -73,9 +72,9 @@ function LoginPage() {
               isInvalid={false}
               classNames={{
                 inputWrapper:
-                  "relative bg-[#272727 ] border border-zinc-700 rounded-lg transition-colors focus-within:border-[#39b6dd] focus-within:ring-2 focus-within:ring-[#39b6ab]",
+                  "text-[#f6f7fb] relative !bg-[#1C1C1C] border border-zinc-700 rounded-lg transition-colors focus-within:border-[#39b6dd] focus-within:ring-2 focus-within:ring-[#39b6ab] ",
                 input:
-                  "bg-transparent text-[#f6f7fb] placeholder-zinc-400 focus:outline-none py-2 px-2 rounded-lg",
+                  "text-[#f7f6fb] bg-transparent !text-[#f6f7fb] placeholder-zinc-400 focus:outline-none py-2 px-2 rounded-lg",
                 label: "text-[#f6f7fb] font-medium py-1",
                 errorMessage: "text-[#ff6b6b] mt-1 ",
               }}
@@ -83,7 +82,7 @@ function LoginPage() {
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="text-zinc-400 hover:text-zinc-200 focus:outline-none transition-transform duration-200 scale-60 hover:scale-55 absolute right-1 top-1/2 -translate-y-1/2"
+                  className="text-zinc-400 hover:text-zinc-200 focus:outline-none transition-transform duration-200 scale-60 hover:scale-55 absolute right-2 top-1/2 -translate-y-1/2"
                 >
                   <span
                     className="transition-opacity duration-200 ease-in-out"
@@ -104,7 +103,7 @@ function LoginPage() {
             type="submit"
             className="w-full bg-[#39b6ab] text-white hover:scale-[0.98] transition-all font-semibold rounded-lg shadow-md py-3 relative overflow-hidden"
           >
-            Registrovat se
+            Přihlásit se
           </Button>
         </form>
 
