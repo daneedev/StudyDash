@@ -12,9 +12,10 @@
   "dependencies": {
     "@heroui/react": "^2.8.5",
     "@tailwindcss/vite": "^4.1.14",
-    "@tanstack/react-router": "^1.133.15",
+    "@tanstack/react-router": "^1.134.12",
     "@tanstack/react-router-devtools": "^1.133.3",
     "framer-motion": "^12.23.24",
+    "lucide-react": "^0.552.0",
     "react": "^19.1.1",
     "react-dom": "^19.1.1",
     "tailwindcss": "^4.1.14"
