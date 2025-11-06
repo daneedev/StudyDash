@@ -23,4 +23,4 @@ jobs:
         run: ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SSH_IP }} 'cd ${{ secrets.WORK_DIR }} && git stash push -m "Deploy stash $(date)" && git pull origin main && git stash pop || echo "No stash conflicts"'
 
       - name: Deploy with Docker
-        run: ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SSH_IP }} 'cd ${{ secrets.WORK_DIR }} && docker-compose up -d --build'
+        run: ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SSH_IP }} 'cd ${{ secrets.WORK_DIR }} && docker compose up -d --build'
