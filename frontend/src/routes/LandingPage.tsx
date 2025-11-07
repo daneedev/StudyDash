@@ -1,9 +1,20 @@
 import { NavBar } from "../components/NavBar";
 import "../assets/css/landing.css";
+import { useEffect } from "react";
+
 
 export const LandingPage = () => {
+  useEffect(() => {
+    const htmlEl = document.documentElement
+    htmlEl.classList.add('landing-theme')
+
+    return () => {
+      htmlEl.classList.remove('landing-theme')
+    }
+  }, [])
+
   const navLinks = [
-    { href: "#uvod", label: "Úvod" },
+    { href: "#", label: "Úvod" },
     { href: "#funkce", label: "Funkce" },
     { href: "#poznamky", label: "Poznámky" },
     { href: "#kontakty", label: "Kontakty" },
@@ -38,8 +49,7 @@ export const LandingPage = () => {
                 </h3>
               </div>
               <p className="pb-4 pt-1 text-center text-xl font-medium md:text-left">
-                Zaregistruj se zdarma a přihlas se během pár vteřin – bez
-                zbytečností.
+                Zaregistruj se zdarma a přihlas se během pár vteřin – bez zbytečných komplikací.
               </p>
             </div>
             <div className="krok flex flex-col items-center md:items-start">
@@ -247,7 +257,7 @@ export const LandingPage = () => {
           </p>
 
           <button
-            className="flex items-center justify-center gap-4 px-5 py-3"
+            className="flex items-center justify-center gap-3 sm:gap-4 px-4 sm:px-5 py-2.5 sm:py-3 cursor-pointer"
             id="discord-btn"
             type="button"
           >
@@ -255,9 +265,11 @@ export const LandingPage = () => {
               loading="lazy"
               src="/web_images/discord-new.svg"
               alt="Discord"
+              className="w-7 h-7 sm:w-8 sm:h-8"
             />
-            <h3 className="text-xl font-semibold">Připoj se na Discord</h3>
+            <h3 className="text-lg sm:text-xl font-semibold">Připoj se na Discord</h3>
           </button>
+
         </section>
       </main>
 

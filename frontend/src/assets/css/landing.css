@@ -1,11 +1,19 @@
-.landing-page {
+html {
+    scroll-behavior: smooth;
+}
+
+html.landing-theme {
     --color-primary: #18b4a6;
-    --color-background: #1c1c1c;
+    --color-background: #141414;
     --color-text: #f6f7fb;
     --color-light-text: rgba(246, 247, 251, 0.8);
-    --color-darkgray: #292a2d;
-    --color-lightgray: #343539;
+    --color-darkgray: #2828285e;
+    --color-lightgray: #2D2B2B;
     --font-montserrat: 'Montserrat', sans-serif;
+    background-color: var(--color-background);
+}
+
+.landing-page {
     color: var(--color-text);
     background-color: var(--color-background);
     font-family: var(--font-montserrat);
@@ -70,7 +78,7 @@
 .landing-page .krok {
     border-radius: 15px;
     border: 2px solid #18b4a6;
-    background: #1e1e1e;
+    background: transparent;
     padding: 15px 20px;
     width: 400px;
     display: flex;
@@ -88,6 +96,7 @@
 .landing-page .vyhoda {
     border: 1px solid rgba(81, 83, 89, 1);
     max-width: 324px;
+    min-width: 303px;
 }
 
 .landing-page .funkcee {
@@ -97,7 +106,7 @@
 }
 
 .landing-page .funkce {
-    background-color: rgba(74, 74, 74, 0.3);
+    background-color: var(--color-darkgray);
     width: 400px;
 }
 
@@ -123,7 +132,7 @@
 }
 
 .landing-page footer {
-    background-color: rgba(65, 65, 65, 0.3);
+    background-color: var(--color-darkgray);
 }
 
 .landing-page #mobile-menu {

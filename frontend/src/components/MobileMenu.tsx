@@ -71,10 +71,10 @@ export const MobileMenu = ({
           const commonStyles = 'block rounded-lg px-4 py-3 text-center text-xl transition'
           const variantStyles =
             button.variant === 'filled'
-              ? 'bg-[var(--color-primary)] text-[var(--color-darkgray)] hover:opacity-90'
-              : 'border border-[var(--color-primary)] hover:bg-[var(--color-primary)] hover:text-[var(--color-darkgray)]'
+              ? 'bg-[var(--color-primary)] text-[var(--color-darkgray)] hover:opacity-90 text-[var(--color-text)] font-semibold'
+              : 'border border-[var(--color-primary)] hover:bg-[var(--color-primary)] hover:text-[var(--color-darkgray)] text-[var(--color-primary)] font-semibold'
 
-          return (
+            return (
             <a
               key={`${button.label}-${idx}`}
               href={button.href ?? '#'}
