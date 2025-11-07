@@ -109,7 +109,7 @@ function LoginPage() {
 
         <div className="mt-4 text-center">
           <p className="text-sm text-[#f6f7fb]">
-            Již máte účet?{" "}
+            Ještě nemáte účet?{" "}
             <a
               href="/register"
               className="font-medium hover:text-cyan-300 transition-all text-[#39b6ab]"
