@@ -2,7 +2,7 @@ html {
     scroll-behavior: smooth;
 }
 
-.landing-page {
+html.landing-theme {
     --color-primary: #18b4a6;
     --color-background: #141414;
     --color-text: #f6f7fb;
@@ -10,6 +10,10 @@ html {
     --color-darkgray: #2828285e;
     --color-lightgray: #2D2B2B;
     --font-montserrat: 'Montserrat', sans-serif;
+    background-color: var(--color-background);
+}
+
+.landing-page {
     color: var(--color-text);
     background-color: var(--color-background);
     font-family: var(--font-montserrat);

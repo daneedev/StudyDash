@@ -6,12 +6,10 @@ import { useEffect } from "react";
 export const LandingPage = () => {
   useEffect(() => {
     const htmlEl = document.documentElement
-    const previousBackground = htmlEl.style.backgroundColor
-
-    htmlEl.style.backgroundColor = '#141414'
+    htmlEl.classList.add('landing-theme')
 
     return () => {
-      htmlEl.style.backgroundColor = previousBackground
+      htmlEl.classList.remove('landing-theme')
     }
   }, [])
 
