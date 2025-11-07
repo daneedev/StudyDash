@@ -7,6 +7,7 @@ import { Eye, EyeOff } from "lucide-react";
 import { rootRoute } from "./rootRoute";
 function RegisterPage() {
   const [email, setEmail] = useState("");
+  const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
 
@@ -25,7 +26,7 @@ function RegisterPage() {
             className="h-20 w-auto mb-6"
           />
           <h2 className="text-left text-3xl font-bold tracking-tight text-[#f6f7fb]">
-            Vítejte zpět
+            Založte si účet
           </h2>
         </div>
 
@@ -36,6 +37,27 @@ function RegisterPage() {
           autoSave="off"
         >
           <div className="space-y-4 rounded-md">
+            <Input
+              isClearable
+              id="username"
+              name="username"
+              type="text"
+              label="Uživatelské jméno"
+              labelPlacement="outside-top"
+              isRequired
+              isInvalid={false}
+              value={username}
+              onValueChange={setUsername}
+              classNames={{
+                inputWrapper:
+                  "relative !bg-[#1C1C1C] border border-zinc-700 rounded-lg transition-colors focus-within:border-[#39b6dd] focus-within:ring-2 focus-within:ring-[#39b6ab]",
+                input:
+                  "bg-transparent !text-[#f6f7fb] placeholder-zinc-400 focus:outline-none py-2 px-2 rounded-lg",
+                label: "text-[#f6f7fb] font-medium py-1",
+                errorMessage: "text-[#ff6b6b] mt-1 ",
+                clearButton: "text-zinc-400 hover:text-zinc-200",
+              }}
+            />
             <Input
               isClearable
               id="email"
@@ -103,7 +125,7 @@ function RegisterPage() {
             type="submit"
             className="w-full bg-[#39b6ab] text-white hover:scale-[0.98] transition-all font-semibold rounded-lg shadow-md py-3 relative overflow-hidden"
           >
-            Přihlásit se
+            Registrovat se
           </Button>
         </form>
 
