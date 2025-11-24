@@ -1,19 +1,36 @@
-import { createRoute, type AnyRoute } from "@tanstack/react-router";
+import { createRoute, redirect, type AnyRoute, useNavigate } from "@tanstack/react-router";
 import { Button, Input } from "@heroui/react";
 import { useState } from "react";
 import studydashLogo from "../assets/studydashBlue.svg";
 import { Eye, EyeOff } from "lucide-react";
 
-import { rootRoute } from "./rootRoute";
+import { loginRequest, registerRequest } from "../utils/authApi";
+import { rootRoute, setAuthToken } from "./rootRoute";
 function RegisterPage() {
   const [email, setEmail] = useState("");
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+  const [error, setError] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const navigate = useNavigate({ from: "/register" });
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // handle login logic
+    setError("");
+    setIsSubmitting(true);
+
+    try {
+      await registerRequest({ username, password, email });
+      const token = await loginRequest({ username, password });
+      setAuthToken(token);
+      await navigate({ to: "/dashboard" });
+    } catch (err) {
+      const message = err instanceof Error ? err.message : "Registrace se nezdařila";
+      setError(message);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -123,11 +140,15 @@ function RegisterPage() {
 
           <Button
             type="submit"
+            isLoading={isSubmitting}
+            isDisabled={isSubmitting}
             className="w-full bg-[#39b6ab] text-white hover:scale-[0.98] transition-all font-semibold rounded-lg shadow-md py-3 relative overflow-hidden"
           >
             Registrovat se
           </Button>
         </form>
+
+        {error && <p className="text-sm text-red-400">{error}</p>}
 
         <div className="mt-4 text-center">
           <p className="text-sm text-[#f6f7fb]">
@@ -148,6 +169,11 @@ const route = createRoute({
   getParentRoute: () => rootRoute,
   path: "register",
   component: RegisterPage,
+  beforeLoad: ({ context }) => {
+    if (context.auth.isAuthenticated) {
+      throw redirect({ to: "/dashboard" });
+    }
+  },
 });
 
 type RegisterComponent = typeof RegisterPage & { route?: AnyRoute };

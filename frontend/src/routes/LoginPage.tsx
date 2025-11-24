@@ -1,18 +1,46 @@
-import { createRoute, type AnyRoute } from "@tanstack/react-router";
+import { createRoute, redirect, type AnyRoute, useNavigate } from "@tanstack/react-router";
 import { Button, Input } from "@heroui/react";
 import { useState } from "react";
 import studydashLogo from "../assets/studydashBlue.svg";
 import { Eye, EyeOff } from "lucide-react";
 
-import { rootRoute } from "./rootRoute";
+import { loginRequest } from "../utils/authApi";
+import { rootRoute, setAuthToken } from "./rootRoute";
+
+const route = createRoute({
+  getParentRoute: () => rootRoute,
+  path: "login",
+  component: LoginPage,
+  beforeLoad: ({ context }) => {
+    if (context.auth.isAuthenticated) {
+      throw redirect({ to: "/dashboard" });
+    }
+  },
+});
+
 function LoginPage() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+  const [error, setError] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const navigate = useNavigate({ from: "/login" });
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // handle login logic
+    setError("");
+    setIsSubmitting(true);
+
+    try {
+      const token = await loginRequest({ username, password });
+      setAuthToken(token);
+      await navigate({ to: "/dashboard" });
+    } catch (err) {
+      const message = err instanceof Error ? err.message : "Nepodařilo se přihlásit";
+      setError(message);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -100,11 +128,14 @@ function LoginPage() {
 
           <Button
             type="submit"
+            isLoading={isSubmitting}
+            isDisabled={isSubmitting}
             className="w-full bg-[#39b6ab] text-white hover:scale-[0.98] transition-all font-semibold rounded-lg shadow-md py-3 relative overflow-hidden"
           >
             Přihlásit se
           </Button>
         </form>
+        {error && <p className="text-sm text-red-400">{error}</p>}
 
         <div className="mt-4 text-center">
           <p className="text-sm text-[#f6f7fb]">
@@ -121,12 +152,6 @@ function LoginPage() {
     </div>
   );
 }
-
-const route = createRoute({
-  getParentRoute: () => rootRoute,
-  path: "login",
-  component: LoginPage,
-});
 
 type LoginComponent = typeof LoginPage & { route?: AnyRoute };
 (LoginPage as LoginComponent).route = route;
