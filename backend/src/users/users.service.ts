@@ -1,5 +1,5 @@
 import { HttpException, Injectable } from '@nestjs/common';
-import { UpdateUserDto } from 'src/dto';
+import { AuthDto, UpdateUserDto } from 'src/dto';
 import UserModel from 'src/models/user.model';
 import * as bcrypt from 'bcryptjs';
 import { Op } from 'sequelize/lib/operators';
@@ -54,5 +54,21 @@ export class UsersService {
     const token = await this.jwtService.signAsync(payload);
 
     return { user: userWithoutPassword, token };
+  }
+
+  async deleteUserProfile(dto: AuthDto, user: any) {
+    const { username, password } = dto;
+    const findUser = await UserModel.findByPk(user.id);
+    if (!findUser) {
+      throw new HttpException('User not found', 404);
+    }
+    if (findUser.username !== username) {
+      throw new HttpException('Username does not match', 401);
+    }
+    if (!bcrypt.compareSync(password, findUser.password)) {
+      throw new HttpException('Password is incorrect', 401);
+    }
+    await findUser.destroy();
+    return { message: 'User deleted successfully' };
   }
 }

@@ -1,8 +1,18 @@
-import { Controller, Get, UseGuards, Req, Put, Body } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  UseGuards,
+  Req,
+  Put,
+  Body,
+  Delete,
+  Patch,
+} from '@nestjs/common';
 import { ApiBearerAuth, ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { AuthGuard } from '../auth/auth.guard';
 import { UsersService } from './users.service';
 import { UpdateUserDto } from 'src/dto/users.dto';
+import { AuthDto } from 'src/dto';
 
 @Controller('users')
 export class UsersController {
@@ -38,7 +48,7 @@ export class UsersController {
     return req.user;
   }
 
-  @Put('profile')
+  @Patch('profile')
   @ApiOperation({ summary: 'Update current authenticated user profile' })
   @ApiBearerAuth()
   @UseGuards(AuthGuard)
@@ -77,5 +87,31 @@ export class UsersController {
   })
   updateProfile(@Req() req, @Body() dto: UpdateUserDto) {
     return this.usersService.updateUserProfile(dto, req.user);
+  }
+
+  @Delete('profile')
+  @ApiOperation({ summary: 'Delete current authenticated user profile' })
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard)
+  @ApiResponse({
+    status: 200,
+    description: 'User profile deleted successfully',
+    example: {
+      success: true,
+      statusCode: 200,
+      message: 'User profile deleted successfully',
+    },
+  })
+  @ApiResponse({
+    status: 401,
+    description: 'Unauthorized',
+    example: {
+      success: false,
+      statusCode: 401,
+      message: 'Invalid or missing authorization token',
+    },
+  })
+  deleteProfile(@Req() req, @Body() dto: AuthDto) {
+    return this.usersService.deleteUserProfile(dto, req.user);
   }
 }
