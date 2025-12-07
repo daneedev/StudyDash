@@ -1,19 +1,84 @@
-import { createRoute, type AnyRoute } from "@tanstack/react-router";
+import {
+  createRoute,
+  type AnyRoute,
+  useNavigate,
+} from "@tanstack/react-router";
 import { Button, Input } from "@heroui/react";
 import { useState } from "react";
 import studydashLogo from "../assets/studydashBlue.svg";
 import { Eye, EyeOff } from "lucide-react";
-
 import { rootRoute } from "./rootRoute";
+
 function RegisterPage() {
+  const navigate = useNavigate();
+
   const [email, setEmail] = useState("");
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // handle login logic
+    setError("");
+    setLoading(true);
+
+    if (!email.trim() || !username.trim() || !password.trim()) {
+      setError("Vyplňte všechna pole.");
+      setLoading(false);
+      return;
+    }
+
+    try {
+      const res = await fetch("https://api.studydash.app/auth/register", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
+        body: JSON.stringify({ email, username, password }),
+      });
+
+      let data: any = null;
+      try {
+        data = await res.json();
+      } catch {
+        data = null;
+      }
+
+      if (!res.ok) {
+        const message =
+          data?.message ||
+          data?.error ||
+          data?.errors?.[0] ||
+          res.statusText ||
+          "Registrace selhala.";
+        throw new Error(message);
+      }
+
+      const token = data?.token || data?.accessToken || data?.data?.token;
+      const user = data?.user || data?.data?.user;
+
+      if (token) {
+        localStorage.setItem("accessToken", token);
+      }
+      if (user) {
+        localStorage.setItem("user", JSON.stringify(user));
+      }
+
+      navigate({ to: "/dashboard" });
+    } catch (err: any) {
+      if (err instanceof TypeError) {
+        setError(
+          "Síťová chyba: nelze se připojit k API. Zkontrolujte připojení nebo CORS."
+        );
+      } else {
+        setError(err?.message || "Došlo k chybě při registraci.");
+      }
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -30,6 +95,8 @@ function RegisterPage() {
           </h2>
         </div>
 
+        {error && <p className="text-red-400 text-center text-sm">{error}</p>}
+
         <form
           className="mt-8 space-y-6"
           onSubmit={handleSubmit}
@@ -45,7 +112,6 @@ function RegisterPage() {
               label="Uživatelské jméno"
               labelPlacement="outside-top"
               isRequired
-              isInvalid={false}
               value={username}
               onValueChange={setUsername}
               classNames={{
@@ -54,10 +120,9 @@ function RegisterPage() {
                 input:
                   "bg-transparent !text-[#f6f7fb] placeholder-zinc-400 focus:outline-none py-2 px-2 rounded-lg",
                 label: "text-[#f6f7fb] font-medium py-1",
-                errorMessage: "text-[#ff6b6b] mt-1 ",
-                clearButton: "text-zinc-400 hover:text-zinc-200",
               }}
             />
+
             <Input
               isClearable
               id="email"
@@ -66,8 +131,6 @@ function RegisterPage() {
               label="Emailová adresa"
               labelPlacement="outside-top"
               isRequired
-              errorMessage="Please enter a valid email"
-              isInvalid={false}
               value={email}
               onValueChange={setEmail}
               classNames={{
@@ -76,8 +139,6 @@ function RegisterPage() {
                 input:
                   "bg-transparent !text-[#f6f7fb] placeholder-zinc-400 focus:outline-none py-2 px-2 rounded-lg",
                 label: "text-[#f6f7fb] font-medium py-1",
-                errorMessage: "text-[#ff6b6b] mt-1 ",
-                clearButton: "text-zinc-400 hover:text-zinc-200",
               }}
             />
 
@@ -90,15 +151,12 @@ function RegisterPage() {
               isRequired
               value={password}
               onValueChange={setPassword}
-              errorMessage="Please enter a valid password"
-              isInvalid={false}
               classNames={{
                 inputWrapper:
                   "text-[#f6f7fb] relative !bg-[#1C1C1C] border border-zinc-700 rounded-lg transition-colors focus-within:border-[#39b6dd] focus-within:ring-2 focus-within:ring-[#39b6ab] ",
                 input:
                   "text-[#f7f6fb] bg-transparent !text-[#f6f7fb] placeholder-zinc-400 focus:outline-none py-2 px-2 rounded-lg",
                 label: "text-[#f6f7fb] font-medium py-1",
-                errorMessage: "text-[#ff6b6b] mt-1 ",
               }}
               endContent={
                 <button
@@ -106,16 +164,11 @@ function RegisterPage() {
                   onClick={() => setShowPassword(!showPassword)}
                   className="text-zinc-400 hover:text-zinc-200 focus:outline-none transition-transform duration-200 scale-60 hover:scale-55 absolute right-2 top-1/2 -translate-y-1/2"
                 >
-                  <span
-                    className="transition-opacity duration-200 ease-in-out"
-                    key={showPassword ? "eyeoff" : "eye"}
-                  >
-                    {showPassword ? (
-                      <EyeOff color="#f6f7fb" strokeWidth={1.5} />
-                    ) : (
-                      <Eye color="#f6f7fb" strokeWidth={1.5} />
-                    )}
-                  </span>
+                  {showPassword ? (
+                    <EyeOff color="#f6f7fb" strokeWidth={1.5} />
+                  ) : (
+                    <Eye color="#f6f7fb" strokeWidth={1.5} />
+                  )}
                 </button>
               }
             />
@@ -123,9 +176,10 @@ function RegisterPage() {
 
           <Button
             type="submit"
+            isDisabled={loading}
             className="w-full bg-[#39b6ab] text-white hover:scale-[0.98] transition-all font-semibold rounded-lg shadow-md py-3 relative overflow-hidden"
           >
-            Registrovat se
+            {loading ? "Registruji..." : "Registrovat se"}
           </Button>
         </form>
 
@@ -144,6 +198,7 @@ function RegisterPage() {
     </div>
   );
 }
+
 const route = createRoute({
   getParentRoute: () => rootRoute,
   path: "register",
