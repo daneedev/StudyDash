@@ -21,7 +21,11 @@ async function bootstrap() {
   app.useGlobalPipes(new ValidationPipe());
 
   app.enableCors({
-    origin: ['http://localhost:3000', process.env.FRONTEND_BASE_URL],
+    origin: [
+      'http://localhost:3000',
+      process.env.FRONTEND_BASE_URL,
+      'https://studydash.app',
+    ],
     credentials: true,
   });
 
