@@ -39,11 +39,13 @@ export const setAuthToken = async (token: string | null) => {
     }
   );
   if (!response.ok) {
+    authState.accessToken = null;
+    authState.isAuthenticated = false;
     token = null;
+  } else {
+    authState.accessToken = token;
+    authState.isAuthenticated = true;
   }
-
-  authState.accessToken = token;
-  authState.isAuthenticated = Boolean(token);
 
   if (typeof localStorage === "undefined") {
     return;
