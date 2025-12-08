@@ -8,7 +8,7 @@ import { Button, Input } from "@heroui/react";
 import { useState } from "react";
 import studydashLogo from "../assets/studydashBlue.svg";
 import { Eye, EyeOff } from "lucide-react";
-import { rootRoute, setAuthToken } from "./rootRoute";
+import { rootRoute } from "./rootRoute";
 
 function RegisterPage() {
   const [email, setEmail] = useState("");
