@@ -1,11 +1,15 @@
-import { createRoute, redirect, type AnyRoute, useNavigate } from "@tanstack/react-router";
+import {
+  createRoute,
+  redirect,
+  type AnyRoute,
+  useNavigate,
+} from "@tanstack/react-router";
 import { Button, Input } from "@heroui/react";
 import { useState } from "react";
 import studydashLogo from "../assets/studydashBlue.svg";
 import { Eye, EyeOff } from "lucide-react";
-
-import { loginRequest, registerRequest } from "../utils/authApi";
 import { rootRoute, setAuthToken } from "./rootRoute";
+
 function RegisterPage() {
   const [email, setEmail] = useState("");
   const [username, setUsername] = useState("");
@@ -19,17 +23,21 @@ function RegisterPage() {
     e.preventDefault();
     setError("");
     setIsSubmitting(true);
-
     try {
-      await registerRequest({ username, password, email });
-      const token = await loginRequest({ username, password });
-      setAuthToken(token);
-      await navigate({ to: "/dashboard" });
+      await fetch(`${import.meta.env.VITE_API_BASE_URL}/auth/register`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ username, password, email }),
+      });
+      await navigate({ to: "/login" });
     } catch (err) {
-      const message = err instanceof Error ? err.message : "Registrace se nezdařila";
+      const message =
+        err instanceof Error ? err.message : "Nepodařilo se zaregistrovat";
       setError(message);
-    } finally {
       setIsSubmitting(false);
+      return;
     }
   };
 

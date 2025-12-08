@@ -1,48 +1,61 @@
-import { createRootRouteWithContext } from '@tanstack/react-router'
+import { createRootRouteWithContext } from "@tanstack/react-router";
 
-import RootComponent from './RootComponent'
+import RootComponent from "./RootComponent";
 
-const AUTH_TOKEN_KEY = 'studydash_token'
+const AUTH_TOKEN_KEY = "studydash_token";
 
 const getStoredToken = () => {
-  if (typeof localStorage === 'undefined') {
-    return null
+  if (typeof localStorage === "undefined") {
+    return null;
   }
 
-  return localStorage.getItem(AUTH_TOKEN_KEY)
-}
+  return localStorage.getItem(AUTH_TOKEN_KEY);
+};
 
-const storedToken = getStoredToken()
+const storedToken = getStoredToken();
 
 export type AuthState = {
-  isAuthenticated: boolean
-  accessToken: string | null
-}
+  isAuthenticated: boolean;
+  accessToken: string | null;
+};
 
 export type RouterContext = {
-  auth: AuthState
-}
+  auth: AuthState;
+};
 
 export const authState: AuthState = {
   isAuthenticated: Boolean(storedToken),
   accessToken: storedToken,
-}
+};
 
-export const setAuthToken = (token: string | null) => {
-  authState.accessToken = token
-  authState.isAuthenticated = Boolean(token)
+export const setAuthToken = async (token: string | null) => {
+  const response = await fetch(
+    `${import.meta.env.VITE_API_BASE_URL}/users/profile`,
+    {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
+  if (!response.ok) {
+    token = null;
+  }
 
-  if (typeof localStorage === 'undefined') {
-    return
+  authState.accessToken = token;
+  authState.isAuthenticated = Boolean(token);
+
+  if (typeof localStorage === "undefined") {
+    return;
   }
 
   if (token) {
-    localStorage.setItem(AUTH_TOKEN_KEY, token)
+    localStorage.setItem(AUTH_TOKEN_KEY, token);
   } else {
-    localStorage.removeItem(AUTH_TOKEN_KEY)
+    localStorage.removeItem(AUTH_TOKEN_KEY);
   }
-}
+};
 
 export const rootRoute = createRootRouteWithContext<RouterContext>()({
   component: RootComponent,
-})
+});

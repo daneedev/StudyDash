@@ -1,10 +1,14 @@
-import { createRoute, redirect, type AnyRoute, useNavigate } from "@tanstack/react-router";
+import {
+  createRoute,
+  redirect,
+  type AnyRoute,
+  useNavigate,
+} from "@tanstack/react-router";
 import { Button, Input } from "@heroui/react";
 import { useState } from "react";
 import studydashLogo from "../assets/studydashBlue.svg";
 import { Eye, EyeOff } from "lucide-react";
 
-import { loginRequest } from "../utils/authApi";
 import { rootRoute, setAuthToken } from "./rootRoute";
 
 const route = createRoute({
@@ -30,16 +34,29 @@ function LoginPage() {
     e.preventDefault();
     setError("");
     setIsSubmitting(true);
-
     try {
-      const token = await loginRequest({ username, password });
-      setAuthToken(token);
+      const login = await fetch(
+        `${import.meta.env.VITE_API_BASE_URL}/auth/login`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ username, password }),
+        }
+      );
+      const data = await login.json();
+      if (!login.ok) {
+        throw new Error(data.message || "Nepodařilo se přihlásit");
+      }
+      setAuthToken(data.data.accessToken);
       await navigate({ to: "/dashboard" });
     } catch (err) {
-      const message = err instanceof Error ? err.message : "Nepodařilo se přihlásit";
+      const message =
+        err instanceof Error ? err.message : "Nepodařilo se přihlásit";
       setError(message);
-    } finally {
       setIsSubmitting(false);
+      return;
     }
   };
 
