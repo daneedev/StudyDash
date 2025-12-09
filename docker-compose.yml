@@ -9,7 +9,6 @@ services:
       - "3306"
     volumes:
       - mariadb_data:/var/lib/mysql
-
   backend:
     build: ./backend
     container_name: studydash_backend
@@ -18,19 +17,39 @@ services:
       - mariadb
     env_file:
       - .env
-    ports:
-      - "3030:3030"
+    networks:
+      - traefik
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.studydash-backend.rule=Host(`api.studydash.app`)"
+      - "traefik.http.routers.studydash-backend.entrypoints=websecure"
+      - "traefik.http.routers.studydash-backend.tls.certresolver=myresolver"
+      - "traefik.http.services.studydash-backend.loadbalancer.server.port=3030"
+
   
   frontend:
-      build: ./frontend
+      build:
+        context: .
+        dockerfile: ./frontend/Dockerfile
       container_name: studydash_frontend
       restart: unless-stopped
       depends_on:
         - backend
       env_file:
         - .env
-      ports:
-        - "3000:3000"
+      networks:
+      - traefik
+      labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.studydash.rule=Host(`studydash.app`)"
+      - "traefik.http.routers.studydash.entrypoints=websecure"
+      - "traefik.http.routers.studydash.tls.certresolver=myresolver"
+      - "traefik.http.services.studydash.loadbalancer.server.port=3000"
+           
 
 volumes:
   mariadb_data:
+
+networks:
+  traefik:
+    external: true
