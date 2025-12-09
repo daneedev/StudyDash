@@ -29,32 +29,43 @@ export const authState: AuthState = {
 };
 
 export const setAuthToken = async (token: string | null) => {
-  const response = await fetch(
-    `${import.meta.env.VITE_API_BASE_URL}/users/profile`,
-    {
-      method: "GET",
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    }
-  );
-  if (!response.ok) {
-    authState.accessToken = null;
-    authState.isAuthenticated = false;
-    token = null;
-  } else {
+  if (token) {
     authState.accessToken = token;
     authState.isAuthenticated = true;
-  }
-
-  if (typeof localStorage === "undefined") {
-    return;
+    if (typeof localStorage !== "undefined") {
+      localStorage.setItem(AUTH_TOKEN_KEY, token);
+    }
+  } else {
+    authState.accessToken = null;
+    authState.isAuthenticated = false;
+    if (typeof localStorage !== "undefined") {
+      localStorage.removeItem(AUTH_TOKEN_KEY);
+    }
   }
 
   if (token) {
-    localStorage.setItem(AUTH_TOKEN_KEY, token);
-  } else {
-    localStorage.removeItem(AUTH_TOKEN_KEY);
+    try {
+      const response = await fetch(
+        `${import.meta.env.VITE_API_BASE_URL}/users/profile`,
+        {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      if (!response.ok) {
+        authState.accessToken = null;
+        authState.isAuthenticated = false;
+        if (typeof localStorage !== "undefined") {
+          localStorage.removeItem(AUTH_TOKEN_KEY);
+        }
+      }
+    } catch (error) {
+      // Při chybě sítě ponechte token (offline mode)
+      console.error("Failed to verify token:", error);
+    }
   }
 };
 
