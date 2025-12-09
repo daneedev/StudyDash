@@ -6,7 +6,7 @@ type DashboardNavBarProps = {
   onTabChange: (tab: DashboardTab) => void;
 };
 
-export const DashboardNavBar = ({ activeTab, onTabChange }: DashboardNavBarProps) => {
+export const DashboardNavBar = ({ onTabChange }: DashboardNavBarProps) => {
     const [isExpanded, setIsExpanded] = useState(false);
     const handleTabChange = (tab: DashboardTab) => {
       onTabChange(tab);
