@@ -1,10 +1,28 @@
+@import url(https://fonts.bunny.net/css?family=inria-sans:300,400,700i|montserrat:400,600,700);
 @import "tailwindcss";
 
-@import "tailwindcss";
 @plugin '../../utils/hero.ts';
 /* Note: You may need to change the path to fit your project structure */
 @source '../../../node_modules/@heroui/theme/dist/**/*.{js,ts,jsx,tsx}';
 @custom-variant dark (&:is(.dark *));
+
+:root {
+  --color-primary: #18b4a6;
+  --color-background: #141414;
+  --color-text: #f6f7fb;
+  --color-light-text: rgba(246, 247, 251, 0.8);
+  --color-darkgray: #2828285e;
+  --color-lightgray: #2d2b2b;
+  --font-montserrat: 'Montserrat', sans-serif;
+  --card-bg: rgba(30, 30, 30, 1);
+  background-color: var(--color-background);
+}
+
+body {
+  background-color: var(--color-background);
+  color: var(--color-text);
+  font-family: var(--font-montserrat);
+}
 
 /* Prevent Chrome from painting white background on autofill/focus */
 input:-webkit-autofill,
@@ -15,4 +33,12 @@ input:-webkit-autofill:active {
   -webkit-text-fill-color: #ffffff !important;
   caret-color: #ffffff !important;
   transition: background-color 9999s ease-in-out 0s;
+}
+
+.font-inria {
+  font-family: 'Inria Sans', sans-serif;
+}
+
+.font-montserrat {
+  font-family: 'Montserrat', sans-serif;
 }

@@ -24,13 +24,20 @@ function RegisterPage() {
     setError("");
     setIsSubmitting(true);
     try {
-      await fetch(`${import.meta.env.VITE_API_BASE_URL}/auth/register`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ username, password, email }),
-      });
+      const response = await fetch(
+        `${import.meta.env.VITE_API_BASE_URL}/auth/register`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ username, password, email }),
+        }
+      );
+      const data = await response.json();
+      if (!response.ok) {
+        throw new Error(data.message || "Nepodařilo se zaregistrovat");
+      }
       await navigate({ to: "/login" });
     } catch (err) {
       const message =
