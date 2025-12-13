@@ -1,59 +1,30 @@
-import { HttpException, Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { AuthDto, UpdateUserDto } from 'src/dto';
 import UserModel from 'src/models/user.model';
 import * as bcrypt from 'bcryptjs';
-import { Op } from 'sequelize/lib/operators';
+import { Op } from 'sequelize';
 import { JwtService } from '@nestjs/jwt';
 
 @Injectable()
 export class UsersService {
   constructor(private jwtService: JwtService) {}
   async updateUserProfile(dto: UpdateUserDto, user: any) {
-    const { currentPassword, newPassword, email, username } = dto;
     const findUser = await UserModel.findByPk(user.id);
     if (!findUser) {
       throw new HttpException('User not found', 404);
     }
-    if (
-      currentPassword &&
-      !bcrypt.compareSync(currentPassword, findUser.password)
-    ) {
-      throw new HttpException('Current password is incorrect', 401);
-    }
-    if (newPassword && newPassword.length < 8) {
-      throw new HttpException(
-        'New password must be at least 8 characters long',
-        400,
-      );
-    }
-    const existingUser = await UserModel.findOne({
-      where: {
-        [Op.or]: [{ email: dto.email }, { username: dto.username }],
-      },
-    });
-    if (existingUser) {
-      const field = existingUser.email === dto.email ? 'email' : 'username';
-      throw new HttpException(`${field} is already taken`, 409);
-    }
-    if (email) {
-      findUser.email = email;
-    }
-    if (username) {
-      findUser.username = username;
-    }
-    if (newPassword) {
-      findUser.password = bcrypt.hashSync(newPassword, 10);
-    }
+    
+    findUser.username = dto.username || findUser.username;
+    findUser.email = dto.email || findUser.email;
+    findUser.password = bcrypt.hashSync(
+      dto.newPassword || dto.currentPassword,
+      10,
+    );
     await findUser.save();
-    const { password, ...userWithoutPassword } = findUser.dataValues;
-    const payload = {
-      id: findUser.id,
-      username: findUser.username,
-      email: findUser.email,
-    };
-    const token = await this.jwtService.signAsync(payload);
 
-    return { user: userWithoutPassword, token };
+    const payload = { id: findUser.id, username: findUser.username, email: findUser.email };
+    const token = this.jwtService.sign(payload);
+    return { user: findUser, token  };
   }
 
   async deleteUserProfile(dto: AuthDto, user: any) {
