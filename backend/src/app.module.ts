@@ -4,9 +4,10 @@ import { AuthModule } from './auth/auth.module';
 import { ResponseInterceptor } from './response/response.interceptor';
 import { HttpExceptionFilter } from './response/http-exception.filter';
 import { UsersModule } from './users/users.module';
+import { ClassesModule } from './classes/classes.module';
 
 @Module({
-  imports: [AuthModule, UsersModule],
+  imports: [AuthModule, UsersModule, ClassesModule],
   providers: [
     {
       provide: APP_INTERCEPTOR,
