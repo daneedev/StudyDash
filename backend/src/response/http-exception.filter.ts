@@ -31,8 +31,9 @@ export class HttpExceptionFilter implements ExceptionFilter {
         message = 'An error occurred';
       }
     } else {
+      console.log('Unexpected error:', exception);
       status = HttpStatus.INTERNAL_SERVER_ERROR;
-      message = 'Internal server error';
+      message = 'Internal server error, please check the server logs for more details.';
     }
     const errorResponse = {
       success: false,
