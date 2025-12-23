@@ -8,15 +8,16 @@ import { Button, Input } from "@heroui/react";
 import { useState } from "react";
 import studydashLogo from "../assets/studydashBlue.svg";
 import { Eye, EyeOff } from "lucide-react";
-
-import { rootRoute, setAuthToken } from "./rootRoute";
+import { rootRoute } from "./rootRoute";
 import Snowfall from "react-snowfall";
+import { checkAuthToken, setAuthToken } from "./rootRoute";
+
 const route = createRoute({
   getParentRoute: () => rootRoute,
   path: "login",
   component: LoginPage,
-  beforeLoad: ({ context }) => {
-    if (context.auth.isAuthenticated) {
+  beforeLoad: async () => {
+    if (await checkAuthToken()) {
       throw redirect({ to: "/dashboard" });
     }
   },
@@ -38,7 +39,7 @@ function LoginPage() {
       const login = await fetch(
         `${import.meta.env.VITE_API_BASE_URL}/auth/login`,
         {
-          method: "POST",
+          method: "POST", 
           headers: {
             "Content-Type": "application/json",
           },
@@ -49,7 +50,7 @@ function LoginPage() {
       if (!login.ok) {
         throw new Error(data.message || "Nepodařilo se přihlásit");
       }
-      setAuthToken(data.data.accessToken);
+      await setAuthToken(data.data.accessToken)
       await navigate({ to: "/dashboard" });
     } catch (err) {
       const message =

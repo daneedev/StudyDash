@@ -11,6 +11,7 @@ import { Eye, EyeOff } from "lucide-react";
 import { rootRoute } from "./rootRoute";
 
 import Snowfall from "react-snowfall";
+import { checkAuthToken } from "./rootRoute";
 function RegisterPage() {
   const [email, setEmail] = useState("");
   const [username, setUsername] = useState("");
@@ -186,8 +187,8 @@ const route = createRoute({
   getParentRoute: () => rootRoute,
   path: "register",
   component: RegisterPage,
-  beforeLoad: ({ context }) => {
-    if (context.auth.isAuthenticated) {
+  beforeLoad: async () => {
+    if (await checkAuthToken()) {
       throw redirect({ to: "/dashboard" });
     }
   },

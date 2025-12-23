@@ -7,6 +7,7 @@ import {
   DashboardNavBar,
   type DashboardTab,
 } from "../components/DashboardNavBar";
+import { checkAuthToken } from "./rootRoute";
 
 const DashboardPage = () => {
   const [activeTab, setActiveTab] = useState<DashboardTab>("dashboard");
@@ -31,8 +32,8 @@ const route = createRoute({
   getParentRoute: () => rootRoute,
   path: "dashboard",
   component: DashboardPage,
-  beforeLoad: ({ context, location }) => {
-    if (!context.auth.isAuthenticated) {
+  beforeLoad: async ({ location }) => {
+    if (!await checkAuthToken()) {
       throw redirect({
         to: "/login",
         search: { redirect: location.href },
