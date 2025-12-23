@@ -91,10 +91,10 @@ function getStoredToken(): string | null {
   return localStorage.getItem("auth_token");
 }
 
-export async function checkAuthToken(token?: string): Promise<boolean> {
+export async function checkAuthToken(token?: string): Promise<{isValid: boolean, userData?: any}> {
   const currentToken = token || getStoredToken() ;
     if (!currentToken) {
-        return false;
+        return {isValid: false};
     }
     try {
         const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/users/profile`, {
@@ -105,20 +105,21 @@ export async function checkAuthToken(token?: string): Promise<boolean> {
         });
         localStorage.setItem("auth_token", currentToken);
         if (response.ok) {
-            return true;
+            const data = await response.json();
+            return {isValid: true, userData: data.data};
         } else {
             localStorage.removeItem("auth_token");
-            return false;
+            return {isValid: false};
         }
     }
     catch (error) {
-        return false;
+        return {isValid: false};
     }
 }   
 
 export async function setAuthToken(token: string | null): Promise<void> {
-    const isValid = token ? await checkAuthToken(token) : false;
-    if (isValid && token) {
+    const result = token ? await checkAuthToken(token) : {isValid: false};
+    if (result.isValid && token) {
         authState.isAuthenticated = true;
         localStorage.setItem("auth_token", token);
     } else {

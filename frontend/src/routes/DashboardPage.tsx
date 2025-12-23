@@ -15,12 +15,14 @@ const route = createRoute({
   path: "dashboard",
   component: DashboardLayout,
   beforeLoad: async ({ location }) => {
-    if (!(await checkAuthToken())) {
+    const authResult = await checkAuthToken();
+    if (!authResult.isValid) {
       throw redirect({
         to: "/login",
         search: { redirect: location.href },
       });
     }
+    return { userData: authResult.userData };
   },
 });
 
@@ -33,33 +35,35 @@ const overallRoute = createRoute({
 const notesRoute = createRoute({
   getParentRoute: () => route,
   path: "notes",
-  component: SectionLayout,
+  component: SectionLayout, // TODO: Replace with actual Notes component
 });
 const tasksRoute = createRoute({
   getParentRoute: () => route,
   path: "todo",
-  component: SectionLayout,
+  component: SectionLayout, // TODO: Replace with actual To-do component
 });
 const calendarRoute = createRoute({
   getParentRoute: () => route,
   path: "calendar",
-  component: SectionLayout,
+  component: SectionLayout, // TODO: Replace with actual Calendar component
 });
 const settingsRoute = createRoute({
   getParentRoute: () => route,
   path: "settings",
-  component: SectionLayout,
+  component: SectionLayout, // TODO: Replace with actual Settings component
 });
 const profileRoute = createRoute({
   getParentRoute: () => route,
   path: "profile",
-  component: SectionLayout,
+  component: SectionLayout, // TODO: Replace with actual Profile component
 });
 
 function DashboardLayout() {
+  const { userData } = route.useRouteContext();
+
   return (
     <>
-      <DashboardNavBar />
+     <DashboardNavBar username={userData ? userData.username : ''} />
       <main className="flex min-h-screen items-center justify-center p-6">
         <div className="space-y-2 text-center">
           <Outlet />
@@ -80,6 +84,7 @@ function SectionLayout() {
     </>
   );
 }
+
 
 export const dashboardRouteTree = route.addChildren([
   overallRoute,

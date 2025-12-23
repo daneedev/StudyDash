@@ -1,15 +1,19 @@
 import { Link } from "@tanstack/react-router";
 import { useState } from "react";
 
+type DashboardNavBarProps = {
+    username: string;
+}
 
-export const DashboardNavBar = () => {
+
+export const DashboardNavBar = ({username} : DashboardNavBarProps) => {
     const [isExpanded, setIsExpanded] = useState(true);
     const navWidthClasses = isExpanded ? "w-48" : "w-14 md:w-18";
     const visibilityClass = isExpanded ? "block" : "hidden";
     const isExpandedClass = isExpanded ? "w-[160px] justify-start gap-3" : "w-[38px]";
     const marginLeftClass = isExpanded ? "ml-3" : "ml-0";
     const toggleIcon = isExpanded ? "/web_images/Arrow_Left.svg" : "/web_images/Arrow_Right.svg";
-    const user = "Bedřich Zavřálek";
+    const user = username;
     const role = "Správce";
     const zkratka = user.slice(0, 2).toUpperCase();   
 
