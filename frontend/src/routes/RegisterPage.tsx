@@ -188,7 +188,8 @@ const route = createRoute({
   path: "register",
   component: RegisterPage,
   beforeLoad: async () => {
-    if (await checkAuthToken()) {
+    const authResult = await checkAuthToken();
+    if (authResult.isValid) {
       throw redirect({ to: "/dashboard" });
     }
   },

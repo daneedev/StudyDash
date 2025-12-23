@@ -17,7 +17,8 @@ const route = createRoute({
   path: "login",
   component: LoginPage,
   beforeLoad: async () => {
-    if (await checkAuthToken()) {
+    const authResult = await checkAuthToken();
+    if (authResult.isValid) {
       throw redirect({ to: "/dashboard" });
     }
   },
