@@ -2,72 +2,64 @@ import { createRootRouteWithContext } from "@tanstack/react-router";
 
 import RootComponent from "./RootComponent";
 
-const AUTH_TOKEN_KEY = "studydash_token";
-
-const getStoredToken = () => {
-  if (typeof localStorage === "undefined") {
-    return null;
-  }
-
-  return localStorage.getItem(AUTH_TOKEN_KEY);
-};
-
-const storedToken = getStoredToken();
-
 export type AuthState = {
   isAuthenticated: boolean;
-  accessToken: string | null;
 };
+
 
 export type RouterContext = {
   auth: AuthState;
 };
 
 export const authState: AuthState = {
-  isAuthenticated: Boolean(storedToken),
-  accessToken: storedToken,
+  isAuthenticated: Boolean(getStoredToken()),
 };
 
-export const setAuthToken = async (token: string | null) => {
-  if (token) {
-    authState.accessToken = token;
-    authState.isAuthenticated = true;
-    if (typeof localStorage !== "undefined") {
-      localStorage.setItem(AUTH_TOKEN_KEY, token);
-    }
-  } else {
-    authState.accessToken = null;
-    authState.isAuthenticated = false;
-    if (typeof localStorage !== "undefined") {
-      localStorage.removeItem(AUTH_TOKEN_KEY);
-    }
-  }
 
-  if (token) {
+
+function getStoredToken(): string | null {
+  if (typeof localStorage === "undefined") {
+    return null;
+  }
+  return localStorage.getItem("auth_token");
+}
+
+export async function checkAuthToken(token?: string): Promise<{isValid: boolean, userData?: any}> {
+  const currentToken = token || getStoredToken() ;
+    if (!currentToken) {
+        return {isValid: false};
+    }
     try {
-      const response = await fetch(
-        `${import.meta.env.VITE_API_BASE_URL}/users/profile`,
-        {
-          method: "GET",
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
+        const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/users/profile`, {
+            method: "GET",
+            headers: {
+                Authorization: `Bearer ${currentToken}`,
+            },
+        });
+        localStorage.setItem("auth_token", currentToken);
+        if (response.ok) {
+            const data = await response.json();
+            return {isValid: true, userData: data.data};
+        } else {
+            localStorage.removeItem("auth_token");
+            return {isValid: false};
         }
-      );
-
-      if (!response.ok) {
-        authState.accessToken = null;
-        authState.isAuthenticated = false;
-        if (typeof localStorage !== "undefined") {
-          localStorage.removeItem(AUTH_TOKEN_KEY);
-        }
-      }
-    } catch (error) {
-      // Při chybě sítě ponechte token (offline mode)
-      console.error("Failed to verify token:", error);
     }
-  }
-};
+    catch (error) {
+        return {isValid: false};
+    }
+}   
+
+export async function setAuthToken(token: string | null): Promise<void> {
+    const result = token ? await checkAuthToken(token) : {isValid: false};
+    if (result.isValid && token) {
+        authState.isAuthenticated = true;
+        localStorage.setItem("auth_token", token);
+    } else {
+        authState.isAuthenticated = false;
+        localStorage.removeItem("auth_token");
+    }
+}
 
 export const rootRoute = createRootRouteWithContext<RouterContext>()({
   component: RootComponent,

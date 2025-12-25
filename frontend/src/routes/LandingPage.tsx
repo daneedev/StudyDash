@@ -1,12 +1,31 @@
 import { NavBar } from "../components/NavBar";
 import "../assets/css/landing.css";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import { checkAuthToken } from "./rootRoute";
 
 
 export const LandingPage = () => {
+  const [authButtons, setAuthButtons] = useState([
+    { label: "Přihlášení", href: "/login", asButton: false },
+    { label: "Registrace", href: "/register", asButton: true },
+  ]);
+
   useEffect(() => {
     const htmlEl = document.documentElement
     htmlEl.classList.add('landing-theme')
+
+    checkAuthToken()
+      .then(result => {
+        if (result.isValid) {
+          // User is logged in
+          setAuthButtons([
+            { label: "Dashboard", href: "/dashboard", asButton: true },
+          ]);
+        }
+      })
+      .catch(error => {
+        console.error('Error checking auth:', error);
+      });
 
     return () => {
       htmlEl.classList.remove('landing-theme')
@@ -20,10 +39,6 @@ export const LandingPage = () => {
     { href: "#kontakty", label: "Kontakty" },
   ];
 
-  const authButtons = [
-    { label: "Přihlášení", href: "/login", asButton: false },
-    { label: "Registrace", href: "/register", asButton: true },
-  ];
 
   return (
     <div className="landing-page">

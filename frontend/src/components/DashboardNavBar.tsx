@@ -1,23 +1,19 @@
+import { Link } from "@tanstack/react-router";
 import { useState } from "react";
-export type DashboardTab = "dashboard" | "notes" | "todo" | "calendar" | "settings" | "profile";
 
 type DashboardNavBarProps = {
-  activeTab: DashboardTab;
-  onTabChange: (tab: DashboardTab) => void;
-};
+    username: string;
+}
 
-export const DashboardNavBar = ({ onTabChange }: DashboardNavBarProps) => {
-    const [isExpanded, setIsExpanded] = useState(false);
-    const handleTabChange = (tab: DashboardTab) => {
-      onTabChange(tab);
-      setIsExpanded(false);
-    };
+
+export const DashboardNavBar = ({username} : DashboardNavBarProps) => {
+    const [isExpanded, setIsExpanded] = useState(true);
     const navWidthClasses = isExpanded ? "w-48" : "w-14 md:w-18";
     const visibilityClass = isExpanded ? "block" : "hidden";
     const isExpandedClass = isExpanded ? "w-[160px] justify-start gap-3" : "w-[38px]";
     const marginLeftClass = isExpanded ? "ml-3" : "ml-0";
     const toggleIcon = isExpanded ? "/web_images/Arrow_Left.svg" : "/web_images/Arrow_Right.svg";
-    const user = "Bedřich Zavřálek";
+    const user = username;
     const role = "Správce";
     const zkratka = user.slice(0, 2).toUpperCase();   
 
@@ -32,46 +28,46 @@ export const DashboardNavBar = ({ onTabChange }: DashboardNavBarProps) => {
                 <img src="/web_images/dot.svg" className="w-[5px] h-[5px] my-5" alt="dot" />
 
                 <div className="flex flex-col gap-4.5">
-                    <div className="cursor-pointer" onClick={() => handleTabChange("dashboard")}>
+                    <Link className="cursor-pointer" to="/dashboard">
                         <div className={`rounded-[14px] bg-[var(--card-bg)] ${isExpandedClass} h-[38px] flex justify-center items-center text-center shadow-[0_0_1.5px_0_#18B4A6]`}>
                             <img src="/web_images/Home.svg" className={`${marginLeftClass} w-[24px] h-[24px] my-5`} alt="home" />
                             <p className={`text-[var(--color-light-text)] font-montserrat font-md ${visibilityClass}`}>Dashboard</p>
                         </div>
-                    </div>
+                    </Link>
 
-                    <div className="cursor-pointer" onClick={() => handleTabChange("notes")}>
+                    <Link className="cursor-pointer" to="/dashboard/notes">
                         <div className={`rounded-[14px] bg-[var(--card-bg)] ${isExpandedClass} h-[38px] flex justify-center items-center text-center shadow-[0_0_1.5px_0_#18B4A6]`}>
                             <img src="/web_images/Notebook2.svg" className={`${marginLeftClass} w-[24px] h-[24px] my-5`} alt="notes" />
                             <p className={`text-[var(--color-light-text)] font-montserrat font-md ${visibilityClass}`}>Poznámky</p>
                         </div>
-                    </div>
+                    </Link>
 
-                    <div className="cursor-pointer" onClick={() => handleTabChange("todo")}>
+                    <Link className="cursor-pointer" to="/dashboard/todo">
                         <div className={`rounded-[14px] bg-[var(--card-bg)] ${isExpandedClass} h-[38px] flex justify-center items-center text-center shadow-[0_0_1.5px_0_#18B4A6]`}>
                             <img src="/web_images/Checklist.svg" className={`${marginLeftClass} w-[24px] h-[24px] my-5`} alt="to-do" />
                             <p className={`text-[var(--color-light-text)] font-montserrat font-md ${visibilityClass}`}>To-do list</p>
                         </div>
-                    </div>
+                    </ Link>
 
-                    <div className="cursor-pointer" onClick={() => handleTabChange("calendar")}>
+                    <Link className="cursor-pointer" to="/dashboard/calendar">
                         <div className={`rounded-[14px] bg-[var(--card-bg)] ${isExpandedClass} h-[38px] flex justify-center items-center text-center shadow-[0_0_1.5px_0_#18B4A6]`}>
                             <img src="/web_images/Calendar.svg" className={`${marginLeftClass} w-[24px] h-[24px] my-5`} alt="calendar" />
                             <p className={`text-[var(--color-light-text)] font-montserrat font-md ${visibilityClass}`}>Kalendář</p>
                         </div>
-                    </div>
+                    </Link>
 
-                    <div className="cursor-pointer" onClick={() => handleTabChange("settings")}>
+                    <Link className="cursor-pointer" to="/dashboard/settings">
                         <div className={`rounded-[14px] bg-[var(--card-bg)] ${isExpandedClass} h-[38px] flex justify-center items-center text-center shadow-[0_0_1.5px_0_#18B4A6]`}>
                             <img src="/web_images/Settings.svg" className={`${marginLeftClass} w-[24px] h-[24px] my-5`} alt="settings" />
                             <p className={`text-[var(--color-light-text)] font-montserrat font-md ${visibilityClass}`}>Nastavení</p>
                         </div>
-                    </div>
+                    </Link>
                 </div>
 
                 <img src="/web_images/dot.svg" className="w-[5px] h-[5px] my-5" alt="dot" />
             </div>
 
-            <div className="flex items-center text-center cursor-pointer" onClick={() => handleTabChange("profile")}>
+            <Link className="flex items-center text-center cursor-pointer" to="/dashboard/profile">
                 <div className="w-[40px] h-[40px] rounded-[14px] flex justify-center text-center items-center"
                 style={{ backgroundImage: 'url("/web_images/pastel.png")', backgroundSize: "cover" }}>
                     <h3 className="text-[#1B1919] font-inria font-bold text-xl ">{zkratka}</h3>
@@ -80,7 +76,7 @@ export const DashboardNavBar = ({ onTabChange }: DashboardNavBarProps) => {
                     <p className="text-[var(--color-text)] whitespace-nowrap overflow-hidden text-ellipsis w-[120px] h-[24px]">{user}</p>
                     <p className="text-[var(--color-light-text)] text-sm whitespace-nowrap overflow-auto text-ellipsis">{role}</p>
                 </div>
-            </div>
+            </Link>
         </div>
         
         <div
