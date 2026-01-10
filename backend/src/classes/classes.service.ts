@@ -24,11 +24,9 @@ export class ClassesService {
             where: { userId: user.id },
         });
         const userClasses = classUsers.map(async (classUser) => {
-            console.log(classUser);
             const classInfo = await ClassModel.findByPk(classUser.classId);
-            console.log(classInfo);
             return {
-                class: classInfo,
+                class: {...classInfo?.get(), inviteCode: undefined},
                 role: classUser.role,
             };
         });
@@ -40,7 +38,7 @@ export class ClassesService {
         if (!classInfo) {
             throw new HttpException('Class not found', 404);
         }
-        return classInfo;
+        return {...classInfo?.get(), inviteCode: undefined};
     }
 
     async updateClass(dto: ClassDto, classId: number) {
@@ -50,7 +48,7 @@ export class ClassesService {
         }
         classInfo.name = dto.name || classInfo.name;
         await classInfo.save();
-        return classInfo;
+        return { ...classInfo.get(), inviteCode: undefined };
     }
     async deleteClass(classId: number) {
         const classInfo = await ClassModel.findByPk(classId);
