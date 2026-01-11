@@ -1,13 +1,14 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post, Req, UseGuards } from "@nestjs/common";
+import { Body, Controller, Delete, Get, Param, Patch, Post, Put, Req, UseGuards } from "@nestjs/common";
 import { ClassesService } from "./classes.service";
 import { ClassDto } from "src/dto/";
 import { AuthGuard } from "src/auth/auth.guard";
 import { ApiBearerAuth, ApiOperation, ApiParam, ApiResponse } from "@nestjs/swagger";
 import { ClassesAdminGuard, ClassesGuard } from "./classes.guard";
+import { InvitesService } from "./invites.service";
 
 @Controller('classes')
 export class ClassesController {
-  constructor(private classesService: ClassesService) {}
+  constructor(private classesService: ClassesService, private invitesService: InvitesService) {}
   // Controller methods will go here
   @UseGuards(AuthGuard)
   @ApiOperation({ summary: 'Get list of all users classes' })
@@ -193,5 +194,21 @@ export class ClassesController {
   @ApiParam({ name: 'id', type: Number, description: 'Class ID' })
   @Delete(':id') deleteClass(@Param('id') id: number) {
     return this.classesService.deleteClass(id);
+  }
+
+  @Get(':id/invite') getInviteCode(@Param('id') id: number) {
+    return this.invitesService.getInviteCode(id);
+  }
+  
+  @Put(':id/invite') regenerateInviteCode(@Param('id') id: number) {
+    return this.invitesService.regenerateInviteCode(id);
+  }
+
+  @Post('join') joinClassViaInviteCode(@Body('inviteCode') inviteCode: string, @Req() req) {
+    return this.invitesService.joinClassViaInviteCode(inviteCode, req.user);
+  }
+
+  @Post(':id/leave') leaveClass(@Param('id') id: number, @Req() req) {
+    return this.invitesService.leaveClass(id, req.user);
   }
 }
