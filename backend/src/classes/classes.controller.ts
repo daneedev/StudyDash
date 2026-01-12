@@ -2,7 +2,7 @@ import { Body, Controller, Delete, Get, Param, Patch, Post, Put, Req, UseGuards 
 import { ClassesService } from "./classes.service";
 import { ClassDto } from "src/dto/";
 import { AuthGuard } from "src/auth/auth.guard";
-import { ApiBearerAuth, ApiOperation, ApiParam, ApiResponse } from "@nestjs/swagger";
+import { ApiBearerAuth, ApiBody, ApiOperation, ApiParam, ApiResponse } from "@nestjs/swagger";
 import { ClassesAdminGuard, ClassesGuard } from "./classes.guard";
 import { InvitesService } from "./invites.service";
 
@@ -191,23 +191,178 @@ export class ClassesController {
     },
   })
   @ApiBearerAuth()
+  @UseGuards(AuthGuard, ClassesAdminGuard)
   @ApiParam({ name: 'id', type: Number, description: 'Class ID' })
+  @ApiBearerAuth()
   @Delete(':id') deleteClass(@Param('id') id: number) {
     return this.classesService.deleteClass(id);
   }
 
+  @UseGuards(AuthGuard, ClassesAdminGuard)
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Get invite code for a class by ID' })
+  @ApiParam({ name: 'id', type: Number, description: 'Class ID' })
+  @ApiResponse({
+    status: 200,
+    description: 'Invite code retrieved successfully',
+    example: {
+      success: true,
+      statusCode: 200,
+      data: {
+        inviteCode: 'ABCD1234',
+      },
+    },
+  })
+  @ApiResponse({
+    status: 401,
+    description: 'Unauthorized',
+    example: {
+      success: false,
+      statusCode: 401,
+      message: 'Invalid or missing authorization token',
+    },
+  })
+  @ApiResponse({
+    status: 403,
+    description: 'Forbidden',
+    example: {
+      success: false,
+      statusCode: 403,
+      message: 'Admin access to class denied',
+    },
+  })
+  @ApiResponse({
+    status: 404,
+    description: 'Class not found',
+    example: {
+      success: false,
+      statusCode: 404,
+      message: 'Class not found',
+    },
+  })
   @Get(':id/invite') getInviteCode(@Param('id') id: number) {
     return this.invitesService.getInviteCode(id);
   }
-  
+
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard, ClassesAdminGuard)
+  @ApiOperation({ summary: 'Regenerate invite code for a class by ID' })
+  @ApiParam({ name: 'id', type: Number, description: 'Class ID' })
+  @ApiResponse({
+    status: 200,
+    description: 'Invite code regenerated successfully',
+    example: {
+      success: true,
+      statusCode: 200,
+      data: {
+        inviteCode: 'WXYZ5678',
+      },
+    },
+  })
+  @ApiResponse({
+    status: 401,
+    description: 'Unauthorized',
+    example: {
+      success: false,
+      statusCode: 401,
+      message: 'Invalid or missing authorization token',
+    },
+  })
+  @ApiResponse({
+    status: 403,
+    description: 'Forbidden',
+    example: {
+      success: false,
+      statusCode: 403,
+      message: 'Admin access to class denied',
+    },
+  })
+  @ApiResponse({
+    status: 404,
+    description: 'Class not found',
+    example: {
+      success: false,
+      statusCode: 404,
+      message: 'Class not found',
+    },
+  })
   @Put(':id/invite') regenerateInviteCode(@Param('id') id: number) {
     return this.invitesService.regenerateInviteCode(id);
   }
 
-  @Post('join') joinClassViaInviteCode(@Body('inviteCode') inviteCode: string, @Req() req) {
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard)
+  @ApiOperation({ summary: 'Join a class via invite code' })
+  @ApiParam({ name: 'inviteCode', type: String, description: 'Invite Code' })
+  @ApiResponse({
+    status: 200,
+    description: 'Joined class successfully',
+    example: {
+      success: true,
+      statusCode: 200,
+      data: {
+        classUser: {
+          id: 1,
+          classId: 2,
+          userId: 3,
+          role: 'member'
+        }
+      },
+    },
+  })
+  @ApiResponse({
+    status: 401,
+    description: 'Unauthorized',
+    example: {
+      success: false,
+      statusCode: 401,
+      message: 'Invalid or missing authorization token',
+    },
+  })
+  @ApiResponse({
+    status: 404,
+    description: 'Invalid invite code',
+    example: {
+      success: false,
+      statusCode: 404,
+      message: 'Invalid invite code',
+    },
+  })
+  @Post('join/:inviteCode') joinClassViaInviteCode(@Param('inviteCode') inviteCode: string, @Req() req) {
     return this.invitesService.joinClassViaInviteCode(inviteCode, req.user);
   }
 
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard)
+  @ApiOperation({ summary: 'Leave a class by ID' })
+  @ApiParam({ name: 'id', type: Number, description: 'Class ID' })
+  @ApiResponse({
+    status: 200,
+    description: 'Left class successfully',
+    example: {
+      success: true,
+      statusCode: 200,
+      message: 'Left class successfully',
+    },
+  })
+  @ApiResponse({
+    status: 401,
+    description: 'Unauthorized',
+    example: {
+      success: false,
+      statusCode: 401,
+      message: 'Invalid or missing authorization token',
+    },
+  })
+  @ApiResponse({
+    status: 404,
+    description: 'Class not found or user not part of the class',
+    example: {
+      success: false,
+      statusCode: 404,
+      message: 'Class not found or user not part of the class',
+    },
+  })
   @Post(':id/leave') leaveClass(@Param('id') id: number, @Req() req) {
     return this.invitesService.leaveClass(id, req.user);
   }
