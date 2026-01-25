@@ -4,15 +4,13 @@ import { useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { library } from "@fortawesome/fontawesome-svg-core";
 
-import { fas } from "@fortawesome/free-solid-svg-icons";
-import { far } from "@fortawesome/free-regular-svg-icons";
-import { fab } from "@fortawesome/free-brands-svg-icons";
-
 import { faGreaterThan } from "@fortawesome/free-solid-svg-icons";
 import { faLessThan } from "@fortawesome/free-solid-svg-icons";
 import { faSquarePlus } from "@fortawesome/free-solid-svg-icons";
 
-library.add(fas, far, fab, faGreaterThan, faLessThan, faSquarePlus);
+import { faDna } from "@fortawesome/free-solid-svg-icons";
+
+library.add(faGreaterThan, faLessThan, faSquarePlus, faDna);
 
 import { isWoman, vocative } from "czech-vocative";
 
@@ -158,7 +156,7 @@ export function DashboardOverview({ username }: DashboardOverviewProps) {
 
         <section className="min-h-0 bg-[var(--card-bg)] rounded-xl border border-[#18b4a6]"></section>
 
-        <section className="col-span-2 min-h-0 bg-[var(--card-bg)] rounded-xl border border-[#18b4a6] grid grid-cols-2 grid-rows-[1fr_3fr] gap-6">
+        <section className="col-span-2 min-h-0 bg-[var(--card-bg)] rounded-xl border border-[#18b4a6] grid grid-cols-2 grid-rows-[1fr_3fr] gap-4 overflow-hidden">
           <h2 className="font-bold text-3xl capitalize p-4">Poznámky</h2>
           <div className="flex justify-end items-start p-6">
             <FontAwesomeIcon
@@ -166,8 +164,46 @@ export function DashboardOverview({ username }: DashboardOverviewProps) {
               className="text-[#18b4a6] scale-200 hover:scale-190 cursor-pointer transition-transform duration-100"
             />
           </div>
-          <div></div>
-          <div></div>
+          <article className=" flex flex-col flex-1 mb-4 ml-4  border border-[#353535] rounded-lg">
+            <section className="flex justify-between items-center m-4">
+              <h4 className="font-semibold text-xl">
+                Fyzika - Výpočet kapacity kondenzátorů
+              </h4>
+              <FontAwesomeIcon
+                icon={faDna}
+                className="text-[#18b4a6] scale-200 hover:scale-190 cursor-pointer transition-transform duration-100"
+              />
+            </section>
+            <section className="m-4 pt-6 flex-1">
+              <p>
+                Kapacita kondenzátoru se vypočítá jako poměr náboje a napětí: C
+                rovná se Q děleno U, jednotka farad v SI soustavě...
+              </p>
+            </section>
+            <section className="flex flex-1 justify-end items-center pr-2 text-md">
+              <p>25-1-26</p>
+            </section>
+          </article>
+          <article className="flex flex-col flex-1 mb-4 mr-4  border border-[#353535] rounded-lg">
+            <section className="flex justify-between items-center m-4">
+              <h4 className="font-semibold text-xl">
+                Fyzika - Výpočet kapacity kondenzátorů
+              </h4>
+              <FontAwesomeIcon
+                icon={faDna}
+                className="text-[#18b4a6] scale-200 hover:scale-190 cursor-pointer transition-transform duration-100"
+              />
+            </section>
+            <section className="m-4 pt-6 flex-1">
+              <p>
+                Kapacita kondenzátoru se vypočítá jako poměr náboje a napětí: C
+                rovná se Q děleno U, jednotka farad v SI soustavě...
+              </p>
+            </section>
+            <section className="flex flex-1 justify-end items-center pr-2 text-md">
+              <p>25-1-26</p>
+            </section>
+          </article>
         </section>
       </article>
     </main>
