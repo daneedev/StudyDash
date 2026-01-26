@@ -18,6 +18,10 @@ export class InvitesService {
         if (!classInstance) {
             throw new HttpException("Invalid invite code", 404);
         }
+        const existingMembership = await ClassUserModel.findOne({ where: { classId: classInstance.id, userId: user.id } });
+        if (existingMembership) {
+            throw new HttpException("User is already a member of this class", 400);
+        }
         const classUser = await ClassUserModel.create({
             classId: classInstance.id,
             userId: user.id,
