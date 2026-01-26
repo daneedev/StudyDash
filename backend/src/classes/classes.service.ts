@@ -2,6 +2,7 @@ import { HttpException, Injectable } from "@nestjs/common";
 import { ClassDto } from "src/dto";
 import ClassModel from "src/models/class.model";
 import ClassUserModel from "src/models/classuser.model";
+import UserModel from "src/models/user.model";
 import { generateInviteCode } from "src/utils/inviteGen";
 
 @Injectable()
@@ -38,7 +39,22 @@ export class ClassesService {
         if (!classInfo) {
             throw new HttpException('Class not found', 404);
         }
-        return {...classInfo?.get(), inviteCode: undefined};
+        const classUsers = await ClassUserModel.findAll({
+            where: { classId: classId },
+        });
+        const members = classUsers.map(async (classUser) => {
+            const user = await UserModel.findByPk(classUser.userId);
+            return {
+                username: user?.username,
+                id: user?.id,
+                role: classUser.role,
+            };
+        });
+        return {
+            ...classInfo.get(),
+            inviteCode: undefined,
+            members: await Promise.all(members),
+        };
     }
 
     async updateClass(dto: ClassDto, classId: number) {
