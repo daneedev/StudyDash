@@ -36,9 +36,9 @@ function ClassesPage() {
       <h1 className="text-2xl font-semibold mb-4 text-gray-900 dark:text-gray-100">
         Třídy
       </h1>
-      <p className="text-gray-700 dark:text-gray-300">
+      <a className="text-gray-700 dark:text-gray-300" href="/dashboard">
         Zde bude seznam vašich tříd.
-      </p>
+      </a>
     </main>
   );
 }
