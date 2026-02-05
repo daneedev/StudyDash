@@ -2,11 +2,15 @@ import { HttpException, Injectable } from '@nestjs/common';
 import AssignmentModel from 'src/models/assignment.model';
 import { CreateAssignmentDto, UpdateAssignmentDto } from 'src/dto/index';
 import ClassUserModel from 'src/models/classuser.model';
+import ClassModel from 'src/models/class.model';
 
 @Injectable()
 export class AssignmentsService {
     async getAssignmentsByClass(classId: number) {
         const assignments = await AssignmentModel.findAll({ where: { classId } });
+        if (!assignments) {
+            throw new HttpException('Class not found', 404);
+        }
         return assignments;
     }
     async createAssignment(createAssignmentDto: CreateAssignmentDto, user: any) {
@@ -15,6 +19,10 @@ export class AssignmentsService {
         });
         if (!classUser) {
             throw new HttpException('Access to class denied', 403);
+        }
+        const classNotFound = await ClassModel.findByPk(createAssignmentDto.classId);
+        if (!classNotFound) {
+            throw new HttpException('Class not found', 404);
         }
        const newAssignment = await AssignmentModel.create({
             ...createAssignmentDto,
@@ -26,6 +34,10 @@ export class AssignmentsService {
         const assignment = await AssignmentModel.findByPk(id);
         if (!assignment) {
             throw new HttpException('Assignment not found', 404);
+        }
+        const classNotFound = await ClassModel.findByPk(assignment.classId);
+        if (!classNotFound) {
+            throw new HttpException('Class not found', 404);
         }
         const classUser = await ClassUserModel.findOne({
             where: { classId: assignment.classId, userId: user.id },
