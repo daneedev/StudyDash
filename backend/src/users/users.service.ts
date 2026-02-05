@@ -14,13 +14,20 @@ export class UsersService {
       throw new HttpException('User not found', 404);
     }
     
-    findUser.username = dto.username || findUser.username;
-    findUser.email = dto.email || findUser.email;
-    findUser.password = bcrypt.hashSync(
-      dto.newPassword || dto.currentPassword,
-      10,
-    );
-    await findUser.save();
+    // Verify current password before allowing updates
+    if (!bcrypt.compareSync(dto.currentPassword, findUser.password)) {
+      throw new HttpException('Current password is incorrect', 401);
+    }
+    
+    // Only update allowed fields explicitly
+    const updates: any = {};
+    if (dto.username) updates.username = dto.username;
+    if (dto.email) updates.email = dto.email;
+    if (dto.newPassword) {
+      updates.password = bcrypt.hashSync(dto.newPassword, 10);
+    }
+    
+    await findUser.update(updates);
 
     const payload = { id: findUser.id, username: findUser.username, email: findUser.email };
     const token = this.jwtService.sign(payload);
