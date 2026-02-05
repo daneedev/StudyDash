@@ -7,10 +7,11 @@ import { ClassesAdminGuard, ClassesGuard } from "./classes.guard";
 import { InvitesService } from "./invites.service";
 
 @Controller('classes')
+@ApiBearerAuth()
+@UseGuards(AuthGuard)
 export class ClassesController {
   constructor(private classesService: ClassesService, private invitesService: InvitesService) {}
   // Controller methods will go here
-  @UseGuards(AuthGuard)
   @ApiOperation({ summary: 'Get list of all users classes' })
   @ApiResponse({
     status: 200,
@@ -36,12 +37,11 @@ export class ClassesController {
       message: 'Invalid or missing authorization token',
     },
   })
-  @ApiBearerAuth()
   @Get() getClasses(@Req() req) {
     return this.classesService.getAllUserClasses(req.user);
   }
 
-  @UseGuards(AuthGuard, ClassesGuard)
+  @UseGuards(ClassesGuard)
   @ApiOperation({ summary: 'Get class details by ID' })
   @ApiResponse({
     status: 200,
@@ -83,13 +83,11 @@ export class ClassesController {
       message: 'Class not found',
     },
   })
-  @ApiBearerAuth()
   @ApiParam({ name: 'id', type: Number, description: 'Class ID' })
   @Get(':id') getClassById(@Param('id') id: number) {
     return this.classesService.getClassById(id);
   }
 
-  @UseGuards(AuthGuard)
   @ApiOperation({ summary: 'Create a new class' })
   @ApiResponse({
     status: 201,
@@ -113,12 +111,11 @@ export class ClassesController {
       message: 'Invalid or missing authorization token',
     },
   })
-  @ApiBearerAuth()
   @Post() createClass(@Body() dto: ClassDto, @Req() req) {
     return this.classesService.createClass(dto, req.user);
   }
 
-  @UseGuards(AuthGuard, ClassesAdminGuard)
+  @UseGuards(ClassesAdminGuard)
   @ApiOperation({ summary: 'Update class details by ID' })
   @ApiResponse({
     status: 200,
@@ -151,13 +148,12 @@ export class ClassesController {
       message: 'Admin access to class denied',
     },
   })
-  @ApiBearerAuth()
   @ApiParam({ name: 'id', type: Number, description: 'Class ID' })
   @Patch(':id') updateClass(@Body() dto: ClassDto, @Param('id') id: number) {
     return this.classesService.updateClass(dto, id);
   }
 
-  @UseGuards(AuthGuard, ClassesAdminGuard)
+  @UseGuards(ClassesAdminGuard)
   @ApiOperation({ summary: 'Delete class by ID' })
   @ApiResponse({
     status: 200,
@@ -190,16 +186,14 @@ export class ClassesController {
       message: 'Admin access to class denied',
     },
   })
-  @ApiBearerAuth()
-  @UseGuards(AuthGuard, ClassesAdminGuard)
+  
+  @UseGuards(ClassesAdminGuard)
   @ApiParam({ name: 'id', type: Number, description: 'Class ID' })
-  @ApiBearerAuth()
   @Delete(':id') deleteClass(@Param('id') id: number) {
     return this.classesService.deleteClass(id);
   }
 
-  @UseGuards(AuthGuard, ClassesAdminGuard)
-  @ApiBearerAuth()
+  @UseGuards(ClassesAdminGuard)
   @ApiOperation({ summary: 'Get invite code for a class by ID' })
   @ApiParam({ name: 'id', type: Number, description: 'Class ID' })
   @ApiResponse({
@@ -243,8 +237,7 @@ export class ClassesController {
   @Get(':id/invite') getInviteCode(@Param('id') id: number) {
     return this.invitesService.getInviteCode(id);
   }
-
-  @ApiBearerAuth()
+ 
   @UseGuards(AuthGuard, ClassesAdminGuard)
   @ApiOperation({ summary: 'Regenerate invite code for a class by ID' })
   @ApiParam({ name: 'id', type: Number, description: 'Class ID' })
@@ -290,8 +283,6 @@ export class ClassesController {
     return this.invitesService.regenerateInviteCode(id);
   }
 
-  @ApiBearerAuth()
-  @UseGuards(AuthGuard)
   @ApiOperation({ summary: 'Join a class via invite code' })
   @ApiParam({ name: 'inviteCode', type: String, description: 'Invite Code' })
   @ApiResponse({
@@ -332,8 +323,6 @@ export class ClassesController {
     return this.invitesService.joinClassViaInviteCode(inviteCode, req.user);
   }
 
-  @ApiBearerAuth()
-  @UseGuards(AuthGuard)
   @ApiOperation({ summary: 'Leave a class by ID' })
   @ApiParam({ name: 'id', type: Number, description: 'Class ID' })
   @ApiResponse({
