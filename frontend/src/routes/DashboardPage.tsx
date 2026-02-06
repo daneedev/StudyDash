@@ -10,6 +10,9 @@ import { rootRoute } from "./rootRoute";
 import { DashboardNavBar } from "../components/DashboardNavBar";
 import { checkAuthToken } from "./rootRoute";
 
+import { DashboardOverview } from "../components/DashboardOverview";
+import { useState } from "react";
+
 const route = createRoute({
   getParentRoute: () => rootRoute,
   path: "dashboard",
@@ -60,31 +63,33 @@ const profileRoute = createRoute({
 
 function DashboardLayout() {
   const { userData } = route.useRouteContext();
+  const [isNavExpanded, setIsNavExpanded] = useState(true);
+  const marginClass = isNavExpanded ? "ml-48" : "ml-14 md:ml-18";
 
   return (
     <>
-     <DashboardNavBar username={userData ? userData.username : ''} />
-      <main className="flex min-h-screen items-center justify-center p-6">
-        <div className="space-y-2 text-center">
-          <Outlet />
-        </div>
+      <DashboardNavBar
+        username={userData ? userData.username : ""}
+        isExpanded={isNavExpanded}
+        onToggle={setIsNavExpanded}
+      />
+      <main
+        className={`${marginClass} pt-6 pb-6 px-6 h-screen transition-all duration-200`}
+      >
+        <Outlet />
       </main>
     </>
   );
 }
 
 function SectionLayout() {
+  const { userData } = route.useRouteContext();
   return (
     <>
-      <h1 className="text-2xl font-semibold">Dashboard -</h1>
-      <p className="text-gray-500">
-        Protected dashboard placeholder. Users must be authenticated to view
-        this route.
-      </p>
+      <DashboardOverview username={userData ? userData.username : ""} />
     </>
   );
 }
-
 
 export const dashboardRouteTree = route.addChildren([
   overallRoute,
