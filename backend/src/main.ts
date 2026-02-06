@@ -14,8 +14,10 @@ async function bootstrap() {
     .addBearerAuth()
     .build();
 
-  const document = SwaggerModule.createDocument(app, config);
-  SwaggerModule.setup('/', app, document);
+  const document = SwaggerModule.createDocument(app, config, {
+    deepScanRoutes: true,
+  });
+  SwaggerModule.setup('/docs', app, document);
 
   await db.testConnection();
   app.useGlobalPipes(new ValidationPipe());

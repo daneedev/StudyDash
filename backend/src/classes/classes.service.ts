@@ -2,6 +2,7 @@ import { HttpException, Injectable } from "@nestjs/common";
 import { ClassDto } from "src/dto";
 import ClassModel from "src/models/class.model";
 import ClassUserModel from "src/models/classuser.model";
+import UserModel from "src/models/user.model";
 import { generateInviteCode } from "src/utils/inviteGen";
 
 @Injectable()
@@ -24,11 +25,9 @@ export class ClassesService {
             where: { userId: user.id },
         });
         const userClasses = classUsers.map(async (classUser) => {
-            console.log(classUser);
             const classInfo = await ClassModel.findByPk(classUser.classId);
-            console.log(classInfo);
             return {
-                class: classInfo,
+                class: {...classInfo?.get(), inviteCode: undefined},
                 role: classUser.role,
             };
         });
@@ -40,7 +39,22 @@ export class ClassesService {
         if (!classInfo) {
             throw new HttpException('Class not found', 404);
         }
-        return classInfo;
+        const classUsers = await ClassUserModel.findAll({
+            where: { classId: classId },
+        });
+        const members = classUsers.map(async (classUser) => {
+            const user = await UserModel.findByPk(classUser.userId);
+            return {
+                username: user?.username,
+                id: user?.id,
+                role: classUser.role,
+            };
+        });
+        return {
+            ...classInfo.get(),
+            inviteCode: undefined,
+            members: await Promise.all(members),
+        };
     }
 
     async updateClass(dto: ClassDto, classId: number) {
@@ -50,7 +64,7 @@ export class ClassesService {
         }
         classInfo.name = dto.name || classInfo.name;
         await classInfo.save();
-        return classInfo;
+        return { ...classInfo.get(), inviteCode: undefined };
     }
     async deleteClass(classId: number) {
         const classInfo = await ClassModel.findByPk(classId);

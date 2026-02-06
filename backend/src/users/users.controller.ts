@@ -15,12 +15,13 @@ import { UpdateUserDto } from 'src/dto/users.dto';
 import { AuthDto } from 'src/dto';
 
 @Controller('users')
+@UseGuards(AuthGuard)
+@ApiBearerAuth()
 export class UsersController {
   constructor(private usersService: UsersService) {}
 
   @Get('profile')
   @ApiOperation({ summary: 'Get current authenticated user' })
-  @ApiBearerAuth()
   @ApiResponse({
     status: 200,
     description: 'Current user retrieved successfully',
@@ -43,15 +44,12 @@ export class UsersController {
       message: 'Invalid or missing authorization token',
     },
   })
-  @UseGuards(AuthGuard)
   getProfile(@Req() req) {
     return req.user;
   }
 
   @Patch('profile')
   @ApiOperation({ summary: 'Update current authenticated user profile' })
-  @ApiBearerAuth()
-  @UseGuards(AuthGuard)
   @ApiResponse({
     status: 200,
     description: 'User profile updated successfully',
@@ -92,7 +90,6 @@ export class UsersController {
   @Delete('profile')
   @ApiOperation({ summary: 'Delete current authenticated user profile' })
   @ApiBearerAuth()
-  @UseGuards(AuthGuard)
   @ApiResponse({
     status: 200,
     description: 'User profile deleted successfully',
