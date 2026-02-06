@@ -1,5 +1,5 @@
 import { Link } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 type DashboardNavBarProps = {
   username: string;
@@ -179,7 +179,7 @@ export const DashboardNavBar = ({ username, isExpanded: externalIsExpanded, onTo
       <div onClick={handleToggle}>
         <img
           src={`${toggleIcon}`}
-          alt="arrow rigt"
+          alt={isExpanded ? "Collapse sidebar" : "Expand sidebar"}
           className="cursor-pointer"
         />
       </div>

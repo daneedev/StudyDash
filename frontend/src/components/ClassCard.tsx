@@ -31,9 +31,7 @@ export function ClassCard({ title, onDelete, classId, isAdmin }: Props) {
 
       if (res.ok) {
         const json = await res.json();
-        console.log("Invite code response:", json);
         const code = json.data?.inviteCode || json.inviteCode || json.data;
-        console.log("Extracted invite code:", code);
         if (code && typeof code === "string") {
           setInviteCode(code);
         }
@@ -47,11 +45,41 @@ export function ClassCard({ title, onDelete, classId, isAdmin }: Props) {
     }
   };
 
-  const copyInviteCode = () => {
-    if (inviteCode) {
-      navigator.clipboard.writeText(inviteCode);
-      alert(`Pozvánkový kód zkopírován: ${inviteCode}`);
-      setMenuOpen(false);
+  const copyInviteCode = async () => {
+    if (!inviteCode) return;
+
+    try {
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        await navigator.clipboard.writeText(inviteCode);
+        alert(`Pozvánkový kód zkopírován: ${inviteCode}`);
+        setMenuOpen(false);
+        return;
+      }
+
+      // Fallback copy mechanism for environments without Clipboard API
+      const textarea = document.createElement("textarea");
+      textarea.value = inviteCode;
+      textarea.style.position = "fixed";
+      textarea.style.opacity = "0";
+      document.body.appendChild(textarea);
+      textarea.focus();
+      textarea.select();
+      const successful = document.execCommand("copy");
+      document.body.removeChild(textarea);
+
+      if (successful) {
+        alert(`Pozvánkový kód zkopírován: ${inviteCode}`);
+        setMenuOpen(false);
+      } else {
+        alert(
+          `Nepodařilo se zkopírovat pozvánkový kód. Zkopírujte jej prosím ručně: ${inviteCode}`,
+        );
+      }
+    } catch (error) {
+      console.error("Failed to copy invite code:", error);
+      alert(
+        `Nepodařilo se zkopírovat pozvánkový kód. Zkopírujte jej prosím ručně: ${inviteCode}`,
+      );
     }
   };
 

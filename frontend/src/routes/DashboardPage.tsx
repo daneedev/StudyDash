@@ -11,7 +11,6 @@ import { DashboardNavBar } from "../components/DashboardNavBar";
 import { checkAuthToken } from "./rootRoute";
 
 import { DashboardOverview } from "../components/DashboardOverview";
-import { main } from "framer-motion/client";
 import { useState } from "react";
 
 const route = createRoute({
