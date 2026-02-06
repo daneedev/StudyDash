@@ -12,7 +12,7 @@ export class ClassesGuard implements CanActivate {
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const request = context.switchToHttp().getRequest();
     const user = request.user;
-    const classId = request.params.id;
+    const classId = request.params.id || request.params.classId; 
     const classUser = await ClassUserModel.findOne({
       where: { classId: classId, userId: user.id },
     });
