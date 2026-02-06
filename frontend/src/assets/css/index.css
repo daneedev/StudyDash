@@ -8,6 +8,7 @@
 
 :root {
   --color-primary: #18b4a6;
+  --dark-primary: #0E6860;
   --color-background: #141414;
   --color-text: #f6f7fb;
   --color-light-text: rgba(246, 247, 251, 0.8);
@@ -17,7 +18,10 @@
   --card-bg: rgba(23, 27, 27, 0.7);
   background-color: var(--color-background);
   --border-card: #353535;
+  --text-white: #FDFAFA;
   --text-semiwhite: #C5C5C5;
+  --text-darkgray: #6D6D6D;
+  --loader-bg: rgba(19, 21, 21, 0.99)
 }
 
 body {
@@ -43,4 +47,22 @@ input:-webkit-autofill:active {
 
 .font-montserrat {
   font-family: 'Montserrat', sans-serif;
+}
+
+
+
+img {
+  user-select: none;
+}
+
+@keyframes dashboard-loader-move {
+  0% {
+    transform: translateX(0%);
+  }
+  55% {
+    transform: translateX(180%);
+  }
+  100% {
+    transform: translateX(320%);
+  }
 }

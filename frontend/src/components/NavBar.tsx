@@ -17,7 +17,7 @@ type NavBarProps = {
 }
 
 export const NavBar = ({
-  brand = { src: '/web_images/logo-new.png', label: 'StudyDash' },
+  brand = { src: '/web_images/logo-new.webp', label: 'StudyDash' },
   links = [],
   authButtons = [],
 }: NavBarProps) => {
@@ -44,7 +44,7 @@ export const NavBar = ({
             {authButtons.map((button, idx) =>
               button.asButton ? (
                 <a key={`${button.label}-${idx}`} href={button.href ?? '#'}>
-                  <button className="rounded-lg px-3 py-2" type="button">
+                  <button className="rounded-lg px-3 py-2 cursor-pointer" type="button">
                     {button.label}
                   </button>
                 </a>
