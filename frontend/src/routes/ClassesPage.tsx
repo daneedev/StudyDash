@@ -50,7 +50,7 @@ export function ClassesPage() {
     }
 
     try {
-      const res = await fetch("https://api.studydash.app/classes", {
+      const res = await fetch(`${import.meta.env.VITE_API_BASE_URL}/classes`, {
         headers: { Authorization: `Bearer ${token}` },
       });
 
@@ -101,7 +101,7 @@ export function ClassesPage() {
     setLoading(true);
 
     try {
-      const res = await fetch("https://api.studydash.app/classes", {
+      const res = await fetch(`${import.meta.env.VITE_API_BASE_URL}/classes`, {
         method: "POST",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -136,7 +136,7 @@ export function ClassesPage() {
     }
 
     try {
-      const res = await fetch(`https://api.studydash.app/classes/${id}`, {
+      const res = await fetch(`${import.meta.env.VITE_API_BASE_URL}/classes/${id}`, {
         method: "DELETE",
         headers: { Authorization: `Bearer ${token}` },
       });
@@ -166,12 +166,10 @@ export function ClassesPage() {
     setLoading(true);
 
     try {
-      const res = await fetch(
-        `https://api.studydash.app/classes/join/${inviteCode.trim()}`,
-        {
-          method: "POST",
-          headers: {
-            Authorization: `Bearer ${token}`,
+      const res = await fetch(`${import.meta.env.VITE_API_BASE_URL}/classes/join/${inviteCode.trim()}`, {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`,
           },
         },
       );

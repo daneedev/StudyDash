@@ -23,7 +23,7 @@ export function ClassCard({ title, onDelete, classId, isAdmin }: Props) {
     try {
       const token = localStorage.getItem("auth_token");
       const res = await fetch(
-        `https://api.studydash.app/classes/${classId}/invite`,
+        `${import.meta.env.VITE_API_BASE_URL}/classes/${classId}/invite`,
         {
           headers: { Authorization: `Bearer ${token}` },
         },
