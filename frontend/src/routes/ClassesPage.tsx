@@ -219,7 +219,7 @@ export function ClassesPage() {
         onToggle={setIsNavExpanded}
       />
       <article
-        className={`bg-[#1c1c1c] min-h-screen transition-all duration-200 ${isNavExpanded ? "ml-48" : "ml-14 md:ml-18"}`}
+        className={`bg-[#141414] min-h-screen transition-all duration-200 ${isNavExpanded ? "ml-48" : "ml-14 md:ml-18"}`}
       >
         <header className="flex items-center justify-between p-6">
           <h1 className="text-3xl font-semibold text-[#18b4a6]">Třídy</h1>
@@ -247,9 +247,9 @@ export function ClassesPage() {
         </header>
 
         <main
-          className="grid gap-4 p-6"
+          className="grid gap-4 p-6 pl-7"
           style={{
-            gridTemplateColumns: "repeat(auto-fill, minmax(400px, 1fr))",
+            gridTemplateColumns: "repeat(auto-fill, minmax(310px, 1fr))",
           }}
         >
           {classes.map((c) => (

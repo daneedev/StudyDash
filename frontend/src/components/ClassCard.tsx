@@ -99,10 +99,15 @@ export function ClassCard({ title, onDelete, classId, isAdmin }: Props) {
     return () => document.removeEventListener("click", handleClickOutside);
   }, []);
 
+  const classInitials = title
+    .replace(/[^a-zA-Z0-9]/g, "")
+    .slice(0, 2)
+    .toUpperCase();
+
   return (
     <div
       ref={containerRef}
-      className="relative w-full h-full p-4 bg-[#272727]  rounded-lg shadow-lg hover:shadow-xl  hover:scale-99 transition duration-150 flex flex-col justify-center items-center"
+      className="relative w-full h-full p-4 bg-[#272727] rounded-lg shadow-lg hover:shadow-xl hover:scale-99 transition duration-150 flex flex-col justify-center items-center gap-8 hover:cursor-pointer"
     >
       {(onDelete || isAdmin) && (
         <button
@@ -159,7 +164,19 @@ export function ClassCard({ title, onDelete, classId, isAdmin }: Props) {
         </div>
       )}
 
-      <div className="text-white text-xl font-semibold truncate text-center">
+      <div
+        className="w-[50%] aspect-square rounded-2xl flex justify-center items-center"
+        style={{
+          backgroundImage: 'url("/web_images/pastel.png")',
+          backgroundSize: "cover",
+        }}
+      >
+        <h3 className="text-[#1B1919] font-inria font-extrabold text-[5vw] md:text-[3vw] lg:text-[2.3vw]">
+          {classInitials}
+        </h3>
+      </div>
+
+      <div className="text-white text-2xl font-semibold truncate text-center">
         {title}
       </div>
     </div>
