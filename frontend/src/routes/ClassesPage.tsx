@@ -8,6 +8,7 @@ import "../assets/css/index.css";
 import { rootRoute, checkAuthToken } from "./rootRoute";
 import { useEffect, useState } from "react";
 import { ClassCard } from "../components/ClassCard";
+import { ClassesNavBar } from "../components/ClassesNavBar";
 
 const route = createRoute({
   getParentRoute: () => rootRoute,
@@ -39,6 +40,8 @@ export function ClassesPage() {
   const [name, setName] = useState("");
   const [inviteCode, setInviteCode] = useState("");
   const [loading, setLoading] = useState(false);
+  const [isNavExpanded, setIsNavExpanded] = useState(true);
+  const [userData, setUserData] = useState<{ username: string } | null>(null);
 
   const getToken = () => localStorage.getItem("auth_token");
 
@@ -92,6 +95,16 @@ export function ClassesPage() {
 
   useEffect(() => {
     loadClasses();
+    const token = localStorage.getItem("auth_token");
+    if (token) {
+      try {
+        const payload = JSON.parse(atob(token.split(".")[1]));
+        setUserData({ username: payload.username || "User" });
+      } catch (error) {
+        console.error("Error parsing token:", error);
+        setUserData({ username: "User" });
+      }
+    }
   }, []);
 
   const createClass = async () => {
@@ -136,10 +149,13 @@ export function ClassesPage() {
     }
 
     try {
-      const res = await fetch(`${import.meta.env.VITE_API_BASE_URL}/classes/${id}`, {
-        method: "DELETE",
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      const res = await fetch(
+        `${import.meta.env.VITE_API_BASE_URL}/classes/${id}`,
+        {
+          method: "DELETE",
+          headers: { Authorization: `Bearer ${token}` },
+        },
+      );
 
       console.log("Delete response:", res.status, res.statusText);
 
@@ -166,10 +182,12 @@ export function ClassesPage() {
     setLoading(true);
 
     try {
-      const res = await fetch(`${import.meta.env.VITE_API_BASE_URL}/classes/join/${inviteCode.trim()}`, {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${token}`,
+      const res = await fetch(
+        `${import.meta.env.VITE_API_BASE_URL}/classes/join/${inviteCode.trim()}`,
+        {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${token}`,
           },
         },
       );
@@ -195,7 +213,14 @@ export function ClassesPage() {
 
   return (
     <>
-      <article className="w-auto bg-[#1c1c1c] min-h-screen">
+      <ClassesNavBar
+        username={userData ? userData.username : ""}
+        isExpanded={isNavExpanded}
+        onToggle={setIsNavExpanded}
+      />
+      <article
+        className={`bg-[#1c1c1c] min-h-screen transition-all duration-200 ${isNavExpanded ? "ml-48" : "ml-14 md:ml-18"}`}
+      >
         <header className="flex items-center justify-between p-6">
           <h1 className="text-3xl font-semibold text-[#18b4a6]">Třídy</h1>
 
