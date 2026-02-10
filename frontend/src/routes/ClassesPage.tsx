@@ -10,6 +10,11 @@ import { useEffect, useState } from "react";
 import { ClassCard } from "../components/ClassCard";
 import { ClassesNavBar } from "../components/ClassesNavBar";
 
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faLink } from "@fortawesome/free-solid-svg-icons";
+
+import { Alert, Button } from "@heroui/react";
+
 const route = createRoute({
   getParentRoute: () => rootRoute,
   path: "classes",
@@ -42,6 +47,20 @@ export function ClassesPage() {
   const [loading, setLoading] = useState(false);
   const [isNavExpanded, setIsNavExpanded] = useState(true);
   const [userData, setUserData] = useState<{ username: string } | null>(null);
+  const [alerts, setAlerts] = useState<
+    Array<{ id: number; title: string; message: string }>
+  >([]);
+  const [nextAlertId, setNextAlertId] = useState(0);
+
+  const showAlert = (title: string, message: string) => {
+    const id = nextAlertId;
+    setNextAlertId(id + 1);
+    setAlerts((prev) => [...prev, { id, title, message }]);
+  };
+
+  const removeAlert = (id: number) => {
+    setAlerts((prev) => prev.filter((alert) => alert.id !== id));
+  };
 
   const getToken = () => localStorage.getItem("auth_token");
 
@@ -124,15 +143,17 @@ export function ClassesPage() {
       });
 
       if (!res.ok) {
-        alert("Nepodařilo se vytvořit třídu");
+        showAlert("Chyba", "Nepodařilo se vytvořit třídu");
         return;
       }
+
+      showAlert("Úspěch", "Třída byla úspěšně vytvořena");
 
       setName("");
       setShowCreateModal(false);
       await loadClasses();
     } catch (error) {
-      alert("Chyba při vytváření třídy");
+      showAlert("Chyba", "Chyba při vytváření třídy");
     } finally {
       setLoading(false);
     }
@@ -140,7 +161,6 @@ export function ClassesPage() {
 
   const deleteClass = async (id: number) => {
     console.log("Attempting to delete class with ID:", id);
-    if (!confirm("Opravdu chcete smazat tuto třídu?")) return;
 
     const token = getToken();
     if (!token) {
@@ -162,16 +182,18 @@ export function ClassesPage() {
       if (!res.ok) {
         const errorData = await res.json().catch(() => ({}));
         console.error("Delete failed:", errorData);
-        alert("Nepodařilo se smazat třídu");
+        showAlert("Chyba", "Nepodařilo se smazat třídu");
         return;
       }
 
       console.log("Class deleted successfully, reloading...");
 
+      showAlert("Úspěch", "Třída byla úspěšně smazána");
+
       await loadClasses();
     } catch (error) {
       console.error("Error deleting class:", error);
-      alert("Chyba při mazání třídy");
+      showAlert("Chyba", "Chyba při mazání třídy");
     }
   };
 
@@ -194,18 +216,20 @@ export function ClassesPage() {
 
       if (!res.ok) {
         if (res.status === 404) {
-          alert("Neplatný pozvánkový kód :/");
+          showAlert("Chyba", "Neplatný pozvánkový kód :/");
         } else {
-          alert("Nepodařilo se připojit do třídy :/");
+          showAlert("Chyba", "Nepodařilo se připojit do třídy");
         }
         return;
       }
+
+      showAlert("Úspěch", "Úspěšně jste se připojili do třídy");
 
       setInviteCode("");
       setShowJoinModal(false);
       await loadClasses();
     } catch (error) {
-      alert("Chyba při připojování do třídy");
+      showAlert("Chyba", "Chyba při připojování do třídy");
     } finally {
       setLoading(false);
     }
@@ -218,11 +242,30 @@ export function ClassesPage() {
         isExpanded={isNavExpanded}
         onToggle={setIsNavExpanded}
       />
+
+      <div className="fixed top-4 right-4 z-50 flex flex-col gap-2 max-w-md">
+        {alerts.map((alert) => (
+          <Alert
+            key={alert.id}
+            description={alert.message}
+            isVisible={true}
+            title={alert.title}
+            variant="faded"
+            onClose={() => removeAlert(alert.id)}
+            style={{
+              backgroundColor: "white",
+              borderColor: "#18b4a6",
+              color: "#18b4a6",
+            }}
+          />
+        ))}
+      </div>
+
       <article
         className={`bg-[#141414] min-h-screen transition-all duration-200 ${isNavExpanded ? "ml-48" : "ml-14 md:ml-18"}`}
       >
-        <header className="flex items-center justify-between p-6">
-          <h1 className="text-3xl font-semibold text-[#18b4a6]">Třídy</h1>
+        <header className="flex items-center justify-between p-6 pt-4">
+          <h1 className="text-4xl font-semibold text-text">Třídy</h1>
 
           <Link to="/dashboard" className="text-white">
             provizorní odkaz na dashboard zde
@@ -234,7 +277,7 @@ export function ClassesPage() {
               onClick={() => setShowJoinModal(true)}
               className="px-4 py-2 bg-[#18b4a6] text-white rounded-md shadow-lg hover:scale-95"
             >
-              Připojit se do třídy
+              <FontAwesomeIcon icon={faLink} />
             </button>
             <button
               type="button"
@@ -259,6 +302,7 @@ export function ClassesPage() {
                 onDelete={c.isAdmin ? () => deleteClass(c.id) : undefined}
                 classId={c.id}
                 isAdmin={c.isAdmin}
+                showAlert={showAlert}
               />
             </div>
           ))}

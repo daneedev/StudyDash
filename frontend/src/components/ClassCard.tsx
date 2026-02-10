@@ -8,9 +8,16 @@ type Props = {
   onDelete?: () => void;
   classId?: number;
   isAdmin?: boolean;
+  showAlert?: (title: string, message: string) => void;
 };
 
-export function ClassCard({ title, onDelete, classId, isAdmin }: Props) {
+export function ClassCard({
+  title,
+  onDelete,
+  classId,
+  isAdmin,
+  showAlert,
+}: Props) {
   const [menuOpen, setMenuOpen] = useState(false);
   const [inviteCode, setInviteCode] = useState<string | null>(null);
   const [loadingInvite, setLoadingInvite] = useState(false);
@@ -51,7 +58,7 @@ export function ClassCard({ title, onDelete, classId, isAdmin }: Props) {
     try {
       if (navigator.clipboard && navigator.clipboard.writeText) {
         await navigator.clipboard.writeText(inviteCode);
-        alert(`Pozvánkový kód zkopírován: ${inviteCode}`);
+        showAlert?.("Úspěch", `Pozvánkový kód zkopírován: ${inviteCode}`);
         setMenuOpen(false);
         return;
       }
@@ -68,16 +75,18 @@ export function ClassCard({ title, onDelete, classId, isAdmin }: Props) {
       document.body.removeChild(textarea);
 
       if (successful) {
-        alert(`Pozvánkový kód zkopírován: ${inviteCode}`);
+        showAlert?.("Úspěch", `Pozvánkový kód zkopírován: ${inviteCode}`);
         setMenuOpen(false);
       } else {
-        alert(
+        showAlert?.(
+          "Chyba",
           `Nepodařilo se zkopírovat pozvánkový kód. Zkopírujte jej prosím ručně: ${inviteCode}`,
         );
       }
     } catch (error) {
       console.error("Failed to copy invite code:", error);
-      alert(
+      showAlert?.(
+        "Chyba",
         `Nepodařilo se zkopírovat pozvánkový kód. Zkopírujte jej prosím ručně: ${inviteCode}`,
       );
     }
@@ -164,14 +173,8 @@ export function ClassCard({ title, onDelete, classId, isAdmin }: Props) {
         </div>
       )}
 
-      <div
-        className="w-[50%] aspect-square rounded-2xl flex justify-center items-center"
-        style={{
-          backgroundImage: 'url("/web_images/pastel.png")',
-          backgroundSize: "cover",
-        }}
-      >
-        <h3 className="text-[#1B1919] font-inria font-extrabold text-[5vw] md:text-[3vw] lg:text-[2.3vw]">
+      <div className="w-[50%] aspect-square rounded-md flex justify-center items-center bg-[#18b4a6]">
+        <h3 className="text-text font-inria font-extrabold text-[5vw] md:text-[3vw] lg:text-[2.3vw]">
           {classInitials}
         </h3>
       </div>
