@@ -13,7 +13,7 @@ import { ClassesNavBar } from "../components/ClassesNavBar";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faLink } from "@fortawesome/free-solid-svg-icons";
 
-import { Alert, Button } from "@heroui/react";
+import { Alert, Button, Input } from "@heroui/react";
 
 const route = createRoute({
   getParentRoute: () => rootRoute,
@@ -216,7 +216,7 @@ export function ClassesPage() {
 
       if (!res.ok) {
         if (res.status === 404) {
-          showAlert("Chyba", "Neplatný pozvánkový kód :/");
+          showAlert("Chyba", "Neplatný pozvánkový kód");
         } else {
           showAlert("Chyba", "Nepodařilo se připojit do třídy");
         }
@@ -243,7 +243,7 @@ export function ClassesPage() {
         onToggle={setIsNavExpanded}
       />
 
-      <div className="fixed top-4 right-4 z-50 flex flex-col gap-2 max-w-md">
+      <div className="fixed top-4 right-4 z-50 flex flex-col gap-2 max-w-md transition-all duration-300">
         {alerts.map((alert) => (
           <Alert
             key={alert.id}
@@ -295,7 +295,7 @@ export function ClassesPage() {
             gridTemplateColumns: "repeat(auto-fill, minmax(310px, 1fr))",
           }}
         >
-          {classes.map((c) => (
+          {classes.map((c: ClassItem) => (
             <div key={c.id} className="w-full aspect-square">
               <ClassCard
                 title={c.name}
@@ -311,27 +311,35 @@ export function ClassesPage() {
 
       {showCreateModal && (
         <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50">
-          <div className="bg-white rounded-xl p-6 w-96">
-            <h2 className="text-xl font-semibold mb-4 text-black">
+          <div className="bg-[#272727] rounded-xl p-6 w-96">
+            <h2 className="text-xl font-semibold mb-4 text-white">
               Nová třída
             </h2>
-            <input
-              className="w-full border px-3 py-2 rounded mb-3 text-black"
-              placeholder="Název třídy"
+            <Input
+              isClearable
+              type="text"
+              placeholder="Zadejte název třídy"
               value={name}
-              onChange={(e) => setName(e.target.value)}
+              onValueChange={setName}
+              classNames={{
+                inputWrapper:
+                  "relative !bg-[#1C1C1C] border border-zinc-700 rounded-lg transition-colors focus-within:border-[#18b4a6] focus-within:ring-2 focus-within:ring-[#18b4a6]",
+                input:
+                  "bg-transparent !text-[#f6f7fb] placeholder-zinc-400 focus:outline-none py-2 px-2 rounded-lg",
+                clearButton: "text-zinc-400 hover:text-zinc-200",
+              }}
             />
-            <div className="flex justify-end gap-2">
+            <div className="flex justify-end gap-2 mt-6">
               <button
                 onClick={() => setShowCreateModal(false)}
-                className="px-4 py-2 bg-gray-300 rounded"
+                className="px-4 py-2 bg-gray-600 text-white rounded hover:bg-gray-700 transition-colors duration-150"
               >
                 Zrušit
               </button>
               <button
                 onClick={createClass}
                 disabled={loading || !name}
-                className="px-4 py-2 bg-[#18b4a6] text-white rounded disabled:opacity-50"
+                className="px-4 py-2 bg-[#18b4a6] text-white rounded  hover:bg-[#159a8d] transition-colors duration-150"
               >
                 {loading ? "Vytvářím…" : "Vytvořit"}
               </button>
@@ -342,27 +350,36 @@ export function ClassesPage() {
 
       {showJoinModal && (
         <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50">
-          <div className="bg-white rounded-xl p-6 w-96">
-            <h2 className="text-xl font-semibold mb-4 text-black">
+          <div className="bg-[#272727] rounded-xl p-6 w-96">
+            <h2 className="text-xl font-semibold mb-4 text-white">
               Připojit se do třídy
             </h2>
-            <input
-              className="w-full border px-3 py-2 rounded mb-3 text-black"
-              placeholder="Invite code"
+            <Input
+              isClearable
+              type="text"
+              placeholder="Zadejte kód"
               value={inviteCode}
-              onChange={(e) => setInviteCode(e.target.value)}
+              onValueChange={setInviteCode}
+              classNames={{
+                inputWrapper:
+                  "relative !bg-[#1C1C1C] border border-zinc-700 rounded-lg transition-colors focus-within:border-[#18b4a6] focus-within:ring-2 focus-within:ring-[#18b4a6]",
+                input:
+                  "bg-transparent !text-[#f6f7fb] placeholder-zinc-400 focus:outline-none py-2 px-2 rounded-lg",
+
+                clearButton: "text-zinc-400 hover:text-zinc-200",
+              }}
             />
-            <div className="flex justify-end gap-2">
+            <div className="flex justify-end gap-2 mt-6">
               <button
                 onClick={() => setShowJoinModal(false)}
-                className="px-4 py-2 bg-gray-300 rounded"
+                className="px-4 py-2 bg-gray-600 text-white rounded hover:bg-gray-700 transition-colors duration-150"
               >
                 Zrušit
               </button>
               <button
                 onClick={joinClass}
                 disabled={loading || !inviteCode.trim()}
-                className="px-4 py-2 bg-[#18b4a6] text-white rounded disabled:opacity-50"
+                className="px-4 py-2 bg-[#18b4a6] text-white rounded hover:bg-[#159a8d] transition-colors duration-150"
               >
                 {loading ? "Připojuji…" : "Připojit"}
               </button>
