@@ -11,7 +11,7 @@ import { DashboardNavBar } from "../components/DashboardNavBar";
 import { checkAuthToken } from "./rootRoute";
 
 import { DashboardOverview } from "../components/DashboardOverview";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 const route = createRoute({
   getParentRoute: () => rootRoute,
@@ -61,6 +61,12 @@ const profileRoute = createRoute({
   component: SectionLayout, // TODO: Replace with actual Profile component
 });
 
+const classDetailRoute = createRoute({
+  getParentRoute: () => route,
+  path: "$classId",
+  component: ClassDetailLayout, // Individual class page
+});
+
 function DashboardLayout() {
   const { userData } = route.useRouteContext();
   const [isNavExpanded, setIsNavExpanded] = useState(true);
@@ -91,6 +97,47 @@ function SectionLayout() {
   );
 }
 
+function ClassDetailLayout() {
+  const { classId } = classDetailRoute.useParams();
+  const { userData } = route.useRouteContext();
+  const [className, setClassName] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchClassName = async () => {
+      const token = localStorage.getItem("auth_token");
+      if (!token || !classId) return;
+
+      try {
+        const res = await fetch(
+          `${import.meta.env.VITE_API_BASE_URL}/classes/${classId}`,
+          {
+            headers: { Authorization: `Bearer ${token}` },
+          },
+        );
+
+        if (res.ok) {
+          const json = await res.json();
+          const name = json.data?.name || json.name || json.data?.class?.name;
+          setClassName(name);
+        }
+      } catch (error) {
+        console.error("Error fetching class name:", error);
+      }
+    };
+
+    fetchClassName();
+  }, [classId]);
+
+  return (
+    <>
+      <DashboardOverview
+        username={userData ? userData.username : ""}
+        className={className || undefined}
+      />
+    </>
+  );
+}
+
 export const dashboardRouteTree = route.addChildren([
   overallRoute,
   notesRoute,
@@ -98,6 +145,7 @@ export const dashboardRouteTree = route.addChildren([
   calendarRoute,
   tasksRoute,
   settingsRoute,
+  classDetailRoute,
 ]);
 
 type DashboardComponent = typeof DashboardLayout & { route?: AnyRoute };

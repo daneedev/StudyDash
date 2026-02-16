@@ -1,4 +1,4 @@
-import { h1 } from "framer-motion/client";
+import ClassesPage from "../routes/ClassesPage";
 import { useState } from "react";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -16,9 +16,13 @@ import { isWoman, vocative } from "czech-vocative";
 
 type DashboardOverviewProps = {
   username: string;
+  className?: string;
 };
 
-export function DashboardOverview({ username }: DashboardOverviewProps) {
+export function DashboardOverview({
+  username,
+  className,
+}: DashboardOverviewProps) {
   const usernameVocative = username
     ? capitalizeFirstLetter(vocative(username, isWoman(username)))
     : "Uživateli";
@@ -76,7 +80,8 @@ export function DashboardOverview({ username }: DashboardOverviewProps) {
   return (
     <main className="h-full w-full flex flex-col ">
       <h1 className="text-3xl shrink-0 mb-1 font-semibold">
-        Ahoj {usernameVocative},
+        Ahoj {usernameVocative}
+        {className && ` - ${className}`},
       </h1>
       <p className="mb-3">
         Dnes je{" "}
