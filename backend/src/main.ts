@@ -1,12 +1,14 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
-import db from './utils/db';
 import { ValidationPipe } from '@nestjs/common';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
+import dotenv from 'dotenv';
+import path from 'path';
 
+dotenv.config({ path: path.join(__dirname, '..', '..', '..', '.env') });
 async function bootstrap() {
+  
   const app = await NestFactory.create(AppModule);
-
   const config = new DocumentBuilder()
     .setTitle('StudyDash API')
     .setDescription('API documentation for StudyDash')
@@ -19,7 +21,6 @@ async function bootstrap() {
   });
   SwaggerModule.setup('/docs', app, document);
 
-  await db.testConnection();
   app.useGlobalPipes(new ValidationPipe());
 
   app.enableCors({

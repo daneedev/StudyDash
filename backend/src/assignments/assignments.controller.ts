@@ -58,7 +58,7 @@ export class AssignmentsController {
         },
     })
     @Get("/:classId")
-    getAssignmentsByClass(@Param("classId") classId: number) {
+    getAssignmentsByClass(@Param("classId") classId: string) {
         return this.assignmentsService.getAssignmentsByClass(classId);
     }
 
@@ -155,7 +155,7 @@ export class AssignmentsController {
         },
     })
     @Patch("/:id")
-    updateAssignment(@Param("id") id: number, @Body() dto: UpdateAssignmentDto, @Req() req) {
+    updateAssignment(@Param("id") id: string, @Body() dto: UpdateAssignmentDto, @Req() req) {
         return this.assignmentsService.updateAssignment(id, dto, req.user);
     }
     @ApiOperation({ summary: 'Delete an assignment' })
@@ -196,7 +196,7 @@ export class AssignmentsController {
         },
     })
     @Delete("/:id")
-    deleteAssignment(@Param("id") id: number, @Req() req) {
+    deleteAssignment(@Param("id") id: string, @Req() req) {
         return this.assignmentsService.deleteAssignment(id, req.user);
     }   
 }

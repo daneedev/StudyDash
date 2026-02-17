@@ -1,0 +1,84 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+  moduleFormat    = "cjs"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum AssignmentType {
+  homework
+  exam
+}
+
+enum ClassRole {
+  admin
+  member
+}
+
+model User {
+  id          String       @id @default(uuid())
+  username    String       @unique
+  email       String       @unique
+  password    String
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+  assignments Assignment[] @relation("UserAssignments")
+  classes     ClassUser[]
+}
+
+model Class {
+  id          String       @id @default(uuid())
+  name        String
+  inviteCode  String       @unique
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+  assignments Assignment[]
+  subjects    Subject[]
+  users       ClassUser[]
+}
+
+model ClassUser {
+  id      String    @id @default(uuid())
+  classId String
+  userId  String
+  role    ClassRole
+  class   Class     @relation(fields: [classId], references: [id])
+  user    User      @relation(fields: [userId], references: [id])
+
+  @@unique([classId, userId])
+}
+
+model Assignment {
+  id          String         @id @default(uuid())
+  name        String
+  description String
+  dueDate     DateTime
+  type        AssignmentType
+  createdAt   DateTime       @default(now())
+  updatedAt   DateTime       @updatedAt
+  classId     String
+  subjectId   String
+  authorId    String
+  class       Class          @relation(fields: [classId], references: [id])
+  subject     Subject        @relation(fields: [subjectId], references: [id])
+  author      User           @relation("UserAssignments", fields: [authorId], references: [id])
+}
+
+model Subject {
+  id          String       @id @default(uuid())
+  name        String
+  classId     String
+  class       Class        @relation(fields: [classId], references: [id])
+  assignments Assignment[]
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+}

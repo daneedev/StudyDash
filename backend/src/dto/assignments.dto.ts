@@ -12,10 +12,10 @@ export class CreateAssignmentDto {
     @IsString()
     @IsNotEmpty()
     @ApiProperty({
-        description: 'Subject of the assignment',
-        example: 'Mathematics',
+        description: 'Subject ID of the assignment',
+        example: 'UUID of the subject',
     })
-    subject: string;
+    subjectId: string;
     @IsString()
     @IsNotEmpty()
     @ApiProperty({
@@ -31,12 +31,12 @@ export class CreateAssignmentDto {
     })
     dueDate: Date;
     @IsNotEmpty()
-    @IsNumber()
+    @IsString()
     @ApiProperty({
         description: 'ID of the class the assignment belongs to',
-        example: 1,
+        example: "UUID of the class",
     })
-    classId: number;
+    classId: string;
     @IsNotEmpty()
     @IsEnum(['homework', 'exam'])
     @ApiProperty({

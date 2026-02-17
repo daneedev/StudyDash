@@ -4,17 +4,21 @@ import {
   HttpException,
   Injectable,
 } from '@nestjs/common';
-import ClassUserModel from 'src/models/classuser.model';
+import { PrismaService } from 'src/prisma/prisma.service';
 
 @Injectable()
 export class ClassesGuard implements CanActivate {
+  constructor(private prisma: PrismaService) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const request = context.switchToHttp().getRequest();
     const user = request.user;
     const classId = request.params.id || request.params.classId; 
-    const classUser = await ClassUserModel.findOne({
-      where: { classId: classId, userId: user.id },
+    const classUser = await this.prisma.classUser.findFirst({
+      where: {
+        classId: classId,
+        userId: user.id,
+      },
     });
     if (!classUser) {
       throw new HttpException('Access to class denied', 403);
@@ -26,12 +30,17 @@ export class ClassesGuard implements CanActivate {
 
 @Injectable()
 export class ClassesAdminGuard implements CanActivate {
+    constructor(private prisma: PrismaService) {}
+
     async canActivate(context: ExecutionContext): Promise<boolean> {
         const request = context.switchToHttp().getRequest();
         const user = request.user;
         const classId = request.params.id;
-        const classUser = await ClassUserModel.findOne({
-            where: { classId: classId, userId: user.id },
+        const classUser = await this.prisma.classUser.findFirst({
+            where: {
+                classId: classId,
+                userId: user.id,
+            },
         });
         if (!classUser || classUser.role !== 'admin') {
             throw new HttpException('Admin access to class denied', 403);

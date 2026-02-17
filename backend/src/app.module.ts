@@ -6,9 +6,11 @@ import { HttpExceptionFilter } from './response/http-exception.filter';
 import { UsersModule } from './users/users.module';
 import { ClassesModule } from './classes/classes.module';
 import { AssignmentsModule } from './assignments/assignments.module';
+import { SubjectsModule } from './subjects/subjects.module';
+import { PrismaModule } from './prisma/prisma.module';
 
 @Module({
-  imports: [AuthModule, UsersModule, ClassesModule, AssignmentsModule],
+  imports: [PrismaModule, AuthModule, UsersModule, ClassesModule, AssignmentsModule, SubjectsModule],
   providers: [
     {
       provide: APP_INTERCEPTOR,

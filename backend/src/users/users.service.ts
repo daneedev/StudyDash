@@ -1,15 +1,30 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { AuthDto, UpdateUserDto } from 'src/dto';
-import UserModel from 'src/models/user.model';
 import * as bcrypt from 'bcryptjs';
-import { Op } from 'sequelize';
 import { JwtService } from '@nestjs/jwt';
+import { PrismaService } from 'src/prisma/prisma.service';
 
 @Injectable()
 export class UsersService {
-  constructor(private jwtService: JwtService) {}
+  constructor(private jwtService: JwtService, private prisma: PrismaService) {}
+
+  async getUserProfile(user: any) {
+    const findUser = await this.prisma.user.findUnique({
+      where: { id: user.id },
+      omit: {
+        password: true,
+      }
+    });
+    if (!findUser) {
+      throw new HttpException('User not found', 404);
+    }
+    return findUser;
+  }
+
   async updateUserProfile(dto: UpdateUserDto, user: any) {
-    const findUser = await UserModel.findByPk(user.id);
+    const findUser = await this.prisma.user.findUnique({
+      where: { id: user.id },
+    });
     if (!findUser) {
       throw new HttpException('User not found', 404);
     }
@@ -27,7 +42,10 @@ export class UsersService {
       updates.password = bcrypt.hashSync(dto.newPassword, 10);
     }
     
-    await findUser.update(updates);
+    await this.prisma.user.update({
+      where: { id: user.id },
+      data: updates,
+    });
 
     const payload = { id: findUser.id, username: findUser.username, email: findUser.email };
     const token = this.jwtService.sign(payload);
@@ -36,7 +54,9 @@ export class UsersService {
 
   async deleteUserProfile(dto: AuthDto, user: any) {
     const { username, password } = dto;
-    const findUser = await UserModel.findByPk(user.id);
+    const findUser = await this.prisma.user.findUnique({
+      where: { id: user.id },
+    });
     if (!findUser) {
       throw new HttpException('User not found', 404);
     }
@@ -46,7 +66,9 @@ export class UsersService {
     if (!bcrypt.compareSync(password, findUser.password)) {
       throw new HttpException('Password is incorrect', 401);
     }
-    await findUser.destroy();
+    await this.prisma.user.delete({
+      where: { id: user.id },
+    });
     return { message: 'User deleted successfully' };
   }
 }
