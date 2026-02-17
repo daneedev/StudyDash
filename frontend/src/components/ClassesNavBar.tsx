@@ -7,12 +7,16 @@ type DashboardNavBarProps = {
   username: string;
   isExpanded?: boolean;
   onToggle?: (expanded: boolean) => void;
+  onJoinClass?: () => void;
+  onCreateClass?: () => void;
 };
 
 export const ClassesNavBar = ({
   username,
   isExpanded: externalIsExpanded,
   onToggle,
+  onJoinClass,
+  onCreateClass,
 }: DashboardNavBarProps) => {
   const [internalIsExpanded, setInternalIsExpanded] = useState(true);
   const isExpanded =
@@ -64,14 +68,15 @@ export const ClassesNavBar = ({
           />
 
           <div className="flex flex-col gap-4.5">
-            <Link className="cursor-pointer" to="/dashboard/settings">
+            <button
+              className="cursor-pointer"
+              onClick={onJoinClass}
+              type="button"
+            >
               <div
                 className={`rounded-[14px] bg-[var(--card-bg)] ${isExpandedClass} h-[38px] flex justify-center items-center text-center shadow-[0_0_1.5px_0_#18B4A6]`}
               >
-                <FontAwesomeIcon
-                  icon={faLink}
-                  className="text-[#18b4a6] my-5"
-                />
+                <FontAwesomeIcon icon={faLink} className="text-[#18b4a6]" />
 
                 <p
                   className={`text-[var(--color-light-text)] font-montserrat font-md ${visibilityClass}`}
@@ -79,8 +84,12 @@ export const ClassesNavBar = ({
                   Připojit se
                 </p>
               </div>
-            </Link>
-            <Link className="cursor-pointer" to="/dashboard/settings">
+            </button>
+            <button
+              className="cursor-pointer"
+              onClick={onCreateClass}
+              type="button"
+            >
               <div
                 className={`rounded-[14px] bg-[var(--card-bg)] ${isExpandedClass} h-[38px] flex justify-center items-center text-center shadow-[0_0_1.5px_0_#18B4A6]`}
               >
@@ -92,7 +101,7 @@ export const ClassesNavBar = ({
                   Vytvořit třídu
                 </p>
               </div>
-            </Link>
+            </button>
           </div>
 
           <img

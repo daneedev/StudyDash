@@ -222,6 +222,8 @@ export function ClassesPage() {
         username={userData ? userData.username : ""}
         isExpanded={isNavExpanded}
         onToggle={setIsNavExpanded}
+        onJoinClass={() => setShowJoinModal(true)}
+        onCreateClass={() => setShowCreateModal(true)}
       />
 
       <div className="fixed top-4 right-4 z-50 flex flex-col gap-2 max-w-md transition-all duration-300">
