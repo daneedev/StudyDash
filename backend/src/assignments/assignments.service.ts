@@ -8,6 +8,9 @@ export class AssignmentsService {
     async getAssignmentsByClass(classId: string) {
         const assignments = await this.prisma.assignment.findMany({
             where: { classId },
+            include: {
+                subject: { omit: { classId: true, id: true } },
+            },
         });
         if (!assignments) {
             throw new HttpException('Class not found', 404);
@@ -26,6 +29,12 @@ export class AssignmentsService {
         });
         if (!classNotFound) {
             throw new HttpException('Class not found', 404);
+        }
+        const subjectNotFound = await this.prisma.subject.findUnique({
+            where: { id: createAssignmentDto.subjectId },
+        });
+        if (!subjectNotFound) {
+            throw new HttpException('Subject not found', 404);
         }
         const newAssignment = await this.prisma.assignment.create({
             data: {
