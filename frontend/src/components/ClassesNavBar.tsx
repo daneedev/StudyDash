@@ -1,5 +1,7 @@
 import { Link } from "@tanstack/react-router";
 import { useState } from "react";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faLink } from "@fortawesome/free-solid-svg-icons";
 
 type DashboardNavBarProps = {
   username: string;
@@ -27,7 +29,7 @@ export const ClassesNavBar = ({
   const navWidthClasses = isExpanded ? "w-48" : "w-14 md:w-18";
   const visibilityClass = isExpanded ? "block" : "hidden";
   const isExpandedClass = isExpanded
-    ? "w-[160px] justify-start gap-3"
+    ? "w-[160px] justify-start gap-3 pl-3"
     : "w-[38px]";
   const marginLeftClass = isExpanded ? "ml-3" : "ml-0";
   const toggleIcon = isExpanded
@@ -62,87 +64,32 @@ export const ClassesNavBar = ({
           />
 
           <div className="flex flex-col gap-4.5">
-            <Link className="cursor-pointer" to="/dashboard">
-              <div
-                className={`rounded-[14px] bg-[var(--card-bg)] ${isExpandedClass} h-[38px] flex justify-center items-center text-center shadow-[0_0_1.5px_0_#18B4A6]`}
-              >
-                <img
-                  src="/web_images/Home.svg"
-                  className={`${marginLeftClass} w-[24px] h-[24px] my-5`}
-                  alt="home"
-                />
-                <p
-                  className={`text-[var(--color-light-text)] font-montserrat font-md ${visibilityClass}`}
-                >
-                  Dashboard
-                </p>
-              </div>
-            </Link>
-
-            <Link className="cursor-pointer" to="/dashboard/notes">
-              <div
-                className={`rounded-[14px] bg-[var(--card-bg)] ${isExpandedClass} h-[38px] flex justify-center items-center text-center shadow-[0_0_1.5px_0_#18B4A6]`}
-              >
-                <img
-                  src="/web_images/Notebook2.svg"
-                  className={`${marginLeftClass} w-[24px] h-[24px] my-5`}
-                  alt="notes"
-                />
-                <p
-                  className={`text-[var(--color-light-text)] font-montserrat font-md ${visibilityClass}`}
-                >
-                  Poznámky
-                </p>
-              </div>
-            </Link>
-
-            <Link className="cursor-pointer" to="/dashboard/todo">
-              <div
-                className={`rounded-[14px] bg-[var(--card-bg)] ${isExpandedClass} h-[38px] flex justify-center items-center text-center shadow-[0_0_1.5px_0_#18B4A6]`}
-              >
-                <img
-                  src="/web_images/Checklist.svg"
-                  className={`${marginLeftClass} w-[24px] h-[24px] my-5`}
-                  alt="to-do"
-                />
-                <p
-                  className={`text-[var(--color-light-text)] font-montserrat font-md ${visibilityClass}`}
-                >
-                  To-do list
-                </p>
-              </div>
-            </Link>
-
-            <Link className="cursor-pointer" to="/dashboard/calendar">
-              <div
-                className={`rounded-[14px] bg-[var(--card-bg)] ${isExpandedClass} h-[38px] flex justify-center items-center text-center shadow-[0_0_1.5px_0_#18B4A6]`}
-              >
-                <img
-                  src="/web_images/Calendar.svg"
-                  className={`${marginLeftClass} w-[24px] h-[24px] my-5`}
-                  alt="calendar"
-                />
-                <p
-                  className={`text-[var(--color-light-text)] font-montserrat font-md ${visibilityClass}`}
-                >
-                  Kalendář
-                </p>
-              </div>
-            </Link>
-
             <Link className="cursor-pointer" to="/dashboard/settings">
               <div
                 className={`rounded-[14px] bg-[var(--card-bg)] ${isExpandedClass} h-[38px] flex justify-center items-center text-center shadow-[0_0_1.5px_0_#18B4A6]`}
               >
-                <img
-                  src="/web_images/Settings.svg"
-                  className={`${marginLeftClass} w-[24px] h-[24px] my-5`}
-                  alt="settings"
+                <FontAwesomeIcon
+                  icon={faLink}
+                  className="text-[#18b4a6] my-5"
                 />
+
                 <p
                   className={`text-[var(--color-light-text)] font-montserrat font-md ${visibilityClass}`}
                 >
-                  Nastavení
+                  Připojit se
+                </p>
+              </div>
+            </Link>
+            <Link className="cursor-pointer" to="/dashboard/settings">
+              <div
+                className={`rounded-[14px] bg-[var(--card-bg)] ${isExpandedClass} h-[38px] flex justify-center items-center text-center shadow-[0_0_1.5px_0_#18B4A6]`}
+              >
+                <span className="text-2xl font-bold text-[#18B4A6]">+</span>
+
+                <p
+                  className={`text-[var(--color-light-text)] font-montserrat font-md ${visibilityClass}`}
+                >
+                  Vytvořit třídu
                 </p>
               </div>
             </Link>

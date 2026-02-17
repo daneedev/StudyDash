@@ -67,7 +67,6 @@ export function ClassesPage() {
   const loadClasses = async () => {
     const token = localStorage.getItem("auth_token");
     if (!token) {
-      console.error("No auth token found");
       return;
     }
 
@@ -77,12 +76,10 @@ export function ClassesPage() {
       });
 
       if (!res.ok) {
-        console.error("Failed to fetch classes:", res.status, res.statusText);
         return;
       }
 
       const json = await res.json();
-      console.log("API Response JSON:", JSON.stringify(json, null, 2));
 
       const list = Array.isArray(json)
         ? json
@@ -92,8 +89,6 @@ export function ClassesPage() {
             ? json.data.classes
             : [];
 
-      console.log("Parsed class list JSON:", JSON.stringify(list, null, 2));
-
       const mappedClasses = list.map((item: any) => {
         const mapped = {
           id: item.class?.id || item.id,
@@ -101,15 +96,11 @@ export function ClassesPage() {
           inviteCode: item.class?.inviteCode || item.inviteCode,
           isAdmin: item.role === "admin",
         };
-        console.log("Mapping item:", item, "to:", mapped);
         return mapped;
       });
 
-      console.log("Final mapped classes:", mappedClasses);
       setClasses(mappedClasses);
-    } catch (error) {
-      console.error("Error loading classes:", error);
-    }
+    } catch (error) {}
   };
 
   useEffect(() => {
@@ -120,7 +111,6 @@ export function ClassesPage() {
         const payload = JSON.parse(atob(token.split(".")[1]));
         setUserData({ username: payload.username || "User" });
       } catch (error) {
-        console.error("Error parsing token:", error);
         setUserData({ username: "User" });
       }
     }
@@ -160,11 +150,8 @@ export function ClassesPage() {
   };
 
   const deleteClass = async (id: number) => {
-    console.log("Attempting to delete class with ID:", id);
-
     const token = getToken();
     if (!token) {
-      console.error("No auth token for deletion");
       return;
     }
 
@@ -177,22 +164,16 @@ export function ClassesPage() {
         },
       );
 
-      console.log("Delete response:", res.status, res.statusText);
-
       if (!res.ok) {
         const errorData = await res.json().catch(() => ({}));
-        console.error("Delete failed:", errorData);
         showAlert("Chyba", "Nepodařilo se smazat třídu");
         return;
       }
-
-      console.log("Class deleted successfully, reloading...");
 
       showAlert("Úspěch", "Třída byla úspěšně smazána");
 
       await loadClasses();
     } catch (error) {
-      console.error("Error deleting class:", error);
       showAlert("Chyba", "Chyba při mazání třídy");
     }
   };
