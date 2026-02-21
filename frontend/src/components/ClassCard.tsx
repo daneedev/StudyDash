@@ -1,15 +1,8 @@
-import {
-  createRoute,
-  redirect,
-  type AnyRoute,
-  Link,
-} from "@tanstack/react-router";
+import { Link } from "@tanstack/react-router";
 
 import { useEffect, useRef, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { library } from "@fortawesome/fontawesome-svg-core";
 import { faEllipsisVertical } from "@fortawesome/free-solid-svg-icons";
-library.add(faEllipsisVertical);
 type Props = {
   title: string;
   onDelete?: () => void;
@@ -70,7 +63,6 @@ export function ClassCard({
         return;
       }
 
-      // Fallback copy mechanism for environments without Clipboard API
       const textarea = document.createElement("textarea");
       textarea.value = inviteCode;
       textarea.style.position = "fixed";
@@ -78,7 +70,7 @@ export function ClassCard({
       document.body.appendChild(textarea);
       textarea.focus();
       textarea.select();
-      const successful = document.execCommand("copy");
+      const successful = document.execCommand("copy"); //fallback
       document.body.removeChild(textarea);
 
       if (successful) {

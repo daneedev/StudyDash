@@ -13,7 +13,7 @@ import { ClassesNavBar } from "../components/ClassesNavBar";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faLink } from "@fortawesome/free-solid-svg-icons";
 
-import { Alert, Button, Input } from "@heroui/react";
+import { Alert, Input } from "@heroui/react";
 
 const route = createRoute({
   getParentRoute: () => rootRoute,
@@ -39,6 +39,7 @@ type ClassItem = {
 };
 
 export function ClassesPage() {
+  const { userData } = route.useRouteContext();
   const [classes, setClasses] = useState<ClassItem[]>([]);
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [showJoinModal, setShowJoinModal] = useState(false);
@@ -46,7 +47,6 @@ export function ClassesPage() {
   const [inviteCode, setInviteCode] = useState("");
   const [loading, setLoading] = useState(false);
   const [isNavExpanded, setIsNavExpanded] = useState(true);
-  const [userData, setUserData] = useState<{ username: string } | null>(null);
   const [alerts, setAlerts] = useState<
     Array<{ id: number; title: string; message: string }>
   >([]);
@@ -105,15 +105,6 @@ export function ClassesPage() {
 
   useEffect(() => {
     loadClasses();
-    const token = localStorage.getItem("auth_token");
-    if (token) {
-      try {
-        const payload = JSON.parse(atob(token.split(".")[1]));
-        setUserData({ username: payload.username || "User" });
-      } catch (error) {
-        setUserData({ username: "User" });
-      }
-    }
   }, []);
 
   const createClass = async () => {
@@ -165,7 +156,6 @@ export function ClassesPage() {
       );
 
       if (!res.ok) {
-        const errorData = await res.json().catch(() => ({}));
         showAlert("Chyba", "Nepodařilo se smazat třídu");
         return;
       }
