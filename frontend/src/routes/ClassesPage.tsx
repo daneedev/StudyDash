@@ -13,7 +13,7 @@ import { ClassesNavBar } from "../components/ClassesNavBar";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faLink } from "@fortawesome/free-solid-svg-icons";
 
-import { Alert, Input } from "@heroui/react";
+import { Alert, Input, Spinner } from "@heroui/react";
 
 const route = createRoute({
   getParentRoute: () => rootRoute,
@@ -46,6 +46,7 @@ export function ClassesPage() {
   const [name, setName] = useState("");
   const [inviteCode, setInviteCode] = useState("");
   const [loading, setLoading] = useState(false);
+  const [isLoadingClasses, setIsLoadingClasses] = useState(true);
   const [isNavExpanded, setIsNavExpanded] = useState(true);
   const [alerts, setAlerts] = useState<
     Array<{ id: number; title: string; message: string }>
@@ -67,6 +68,7 @@ export function ClassesPage() {
   const loadClasses = async () => {
     const token = localStorage.getItem("auth_token");
     if (!token) {
+      setIsLoadingClasses(false);
       return;
     }
 
@@ -100,7 +102,10 @@ export function ClassesPage() {
       });
 
       setClasses(mappedClasses);
-    } catch (error) {}
+    } catch (error) {
+    } finally {
+      setIsLoadingClasses(false);
+    }
   };
 
   useEffect(() => {
@@ -268,17 +273,32 @@ export function ClassesPage() {
             gridTemplateColumns: "repeat(auto-fill, minmax(310px, 1fr))",
           }}
         >
-          {classes.map((c: ClassItem) => (
-            <div key={c.id} className="w-full aspect-square">
-              <ClassCard
-                title={c.name}
-                onDelete={c.isAdmin ? () => deleteClass(c.id) : undefined}
-                classId={c.id}
-                isAdmin={c.isAdmin}
-                showAlert={showAlert}
+          {isLoadingClasses ? (
+            <div
+              className="col-span-full flex justify-center items-center"
+              style={{ minHeight: "calc(100vh - 150px)" }}
+            >
+              <Spinner
+                size="lg"
+                classNames={{
+                  circle1: "border-b-[#18b4a6]",
+                  circle2: "border-b-[#18b4a6]",
+                }}
               />
             </div>
-          ))}
+          ) : (
+            classes.map((c: ClassItem) => (
+              <div key={c.id} className="w-full aspect-square">
+                <ClassCard
+                  title={c.name}
+                  onDelete={c.isAdmin ? () => deleteClass(c.id) : undefined}
+                  classId={c.id}
+                  isAdmin={c.isAdmin}
+                  showAlert={showAlert}
+                />
+              </div>
+            ))
+          )}
         </main>
       </article>
 
