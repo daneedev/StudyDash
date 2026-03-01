@@ -2,6 +2,7 @@ import {
   createRoute,
   Outlet,
   redirect,
+  notFound,
   type AnyRoute,
 } from "@tanstack/react-router";
 import "../assets/css/index.css";
@@ -11,7 +12,7 @@ import { DashboardNavBar } from "../components/DashboardNavBar";
 import { checkAuthToken } from "./rootRoute";
 
 import { DashboardOverview } from "../components/DashboardOverview";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 
 const route = createRoute({
   getParentRoute: () => rootRoute,
@@ -65,6 +66,34 @@ const classDetailRoute = createRoute({
   getParentRoute: () => route,
   path: "$classId",
   component: ClassDetailLayout, // Individual class page
+  beforeLoad: async ({ params }) => {
+    const token = localStorage.getItem("auth_token");
+    if (!token) {
+      throw redirect({ to: "/login" });
+    }
+
+    try {
+      const res = await fetch(
+        `${import.meta.env.VITE_API_BASE_URL}/classes/${params.classId}`,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        },
+      );
+
+      if (!res.ok) {
+        throw notFound();
+      }
+
+      const json = await res.json();
+      const name = json.data?.name || json.name || json.data?.class?.name;
+      return { className: name };
+    } catch (error) {
+      if (error instanceof Error && error.message === "notFound") {
+        throw error;
+      }
+      throw notFound();
+    }
+  },
 });
 
 function DashboardLayout() {
@@ -98,35 +127,8 @@ function SectionLayout() {
 }
 
 function ClassDetailLayout() {
-  const { classId } = classDetailRoute.useParams();
   const { userData } = route.useRouteContext();
-  const [className, setClassName] = useState<string | null>(null);
-
-  useEffect(() => {
-    const fetchClassName = async () => {
-      const token = localStorage.getItem("auth_token");
-      if (!token || !classId) return;
-
-      try {
-        const res = await fetch(
-          `${import.meta.env.VITE_API_BASE_URL}/classes/${classId}`,
-          {
-            headers: { Authorization: `Bearer ${token}` },
-          },
-        );
-
-        if (res.ok) {
-          const json = await res.json();
-          const name = json.data?.name || json.name || json.data?.class?.name;
-          setClassName(name);
-        }
-      } catch (error) {
-        console.error("Error fetching class name:", error);
-      }
-    };
-
-    fetchClassName();
-  }, [classId]);
+  const { className } = classDetailRoute.useRouteContext();
 
   return (
     <>
