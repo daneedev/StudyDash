@@ -7,10 +7,15 @@ type DashboardNavBarProps = {
   onToggle?: (expanded: boolean) => void;
 };
 
-export const DashboardNavBar = ({ username, isExpanded: externalIsExpanded, onToggle }: DashboardNavBarProps) => {
+export const DashboardNavBar = ({
+  username,
+  isExpanded: externalIsExpanded,
+  onToggle,
+}: DashboardNavBarProps) => {
   const [internalIsExpanded, setInternalIsExpanded] = useState(true);
-  const isExpanded = externalIsExpanded !== undefined ? externalIsExpanded : internalIsExpanded;
-  
+  const isExpanded =
+    externalIsExpanded !== undefined ? externalIsExpanded : internalIsExpanded;
+
   const handleToggle = () => {
     const newState = !isExpanded;
     if (onToggle) {
@@ -138,6 +143,22 @@ export const DashboardNavBar = ({ username, isExpanded: externalIsExpanded, onTo
                   className={`text-[var(--color-light-text)] font-montserrat font-md ${visibilityClass}`}
                 >
                   Nastavení
+                </p>
+              </div>
+            </Link>
+            <Link className="cursor-pointer" to="/classes">
+              <div
+                className={`rounded-[14px] bg-[var(--card-bg)] ${isExpandedClass} h-[38px] flex justify-center items-center text-center shadow-[0_0_1.5px_0_#18B4A6]`}
+              >
+                <img
+                  src="/web_images/Notebook2.svg"
+                  className={`${marginLeftClass} w-[24px] h-[24px] my-5`}
+                  alt="classes"
+                />
+                <p
+                  className={`text-[var(--color-light-text)] font-montserrat font-md ${visibilityClass}`}
+                >
+                  Třídy
                 </p>
               </div>
             </Link>
