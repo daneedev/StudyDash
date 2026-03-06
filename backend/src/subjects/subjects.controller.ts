@@ -7,6 +7,7 @@ import {
   Patch,
   UseGuards,
   Body,
+  Req,
 } from '@nestjs/common';
 import { SubjectsService } from './subjects.service';
 import { ApiBearerAuth, ApiOperation, ApiResponse } from '@nestjs/swagger';
@@ -16,10 +17,11 @@ import { CreateSubjectDto } from 'src/dto';
 
 @Controller('subjects')
 @ApiBearerAuth()
-@UseGuards(AuthGuard, ClassesGuard)
+@UseGuards(AuthGuard)
 export class SubjectsController {
   constructor(private subjectsService: SubjectsService) {}
 
+  @UseGuards(ClassesGuard)
   @ApiOperation({ summary: 'Get subjects by class ID' })
   @ApiResponse({
     status: 200,
@@ -88,8 +90,9 @@ export class SubjectsController {
     },
   })
   @Post('/')
-  createSubject(@Body() body: CreateSubjectDto) {
-    return this.subjectsService.createSubject(body);
+  createSubject(@Body() body: CreateSubjectDto, @Req() req) {
+    const userId = req.user.id;
+    return this.subjectsService.createSubject(body, userId);
   }
 
   @ApiOperation({ summary: 'Edit an existing subject' })
@@ -116,8 +119,9 @@ export class SubjectsController {
     },
   })
   @Patch('/:id')
-  editSubject(@Param('id') id: string, @Body() body: { name: string }) {
-    return this.subjectsService.editSubject(id, body.name);
+  editSubject(@Param('id') id: string, @Body() body: { name: string }, @Req() req) {
+    const userId = req.user.id;
+    return this.subjectsService.editSubject(id, body.name, userId);
   }
 
   @ApiOperation({ summary: 'Delete a subject' })
@@ -140,7 +144,8 @@ export class SubjectsController {
     },
   })
   @Delete('/:id')
-  deleteSubject(@Param('id') id: string) {
-    return this.subjectsService.deleteSubject(id);
+  deleteSubject(@Param('id') id: string, @Req() req) {
+    const userId = req.user.id;
+    return this.subjectsService.deleteSubject(id, userId);
   }
 }
