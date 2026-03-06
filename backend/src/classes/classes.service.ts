@@ -1,49 +1,58 @@
 import { HttpException, Injectable } from "@nestjs/common";
 import { ClassDto } from "src/dto";
-import ClassModel from "src/models/class.model";
-import ClassUserModel from "src/models/classuser.model";
-import UserModel from "src/models/user.model";
 import { generateInviteCode } from "src/utils/inviteGen";
+import { PrismaService } from "src/prisma/prisma.service";
 
 @Injectable()
 export class ClassesService {
+    constructor(private prisma: PrismaService) {}
     async createClass(dto: ClassDto, user: any) {
-        const newClass = await ClassModel.create({
-            name: dto.name,
-            inviteCode: generateInviteCode(8)
+        const newClass = await this.prisma.class.create({
+            data: {
+                name: dto.name,
+                inviteCode: generateInviteCode(8)
+            }
         })
-        const newClassUser = await ClassUserModel.create({
-            classId: newClass.id,
-            userId: user.id,
-            role: 'admin'
+        const newClassUser = await this.prisma.classUser.create({
+            data: {
+                classId: newClass.id,
+                userId: user.id,
+                role: 'admin'
+            }
         })
         return { class: newClass, classUser: newClassUser };
     }
 
     async getAllUserClasses(user: any) {
-        const classUsers = await ClassUserModel.findAll({
+        const classUsers = await this.prisma.classUser.findMany({
             where: { userId: user.id },
         });
         const userClasses = classUsers.map(async (classUser) => {
-            const classInfo = await ClassModel.findByPk(classUser.classId);
+            const classInfo = await this.prisma.class.findUnique({
+                where: { id: classUser.classId },
+            });
             return {
-                class: {...classInfo?.get(), inviteCode: undefined},
+                class: {...classInfo, inviteCode: undefined},
                 role: classUser.role,
             };
         });
         return Promise.all(userClasses);
     }
 
-    async getClassById(classId: number) {
-        const classInfo = await ClassModel.findByPk(classId);
+    async getClassById(classId: string) {
+        const classInfo = await this.prisma.class.findUnique({
+            where: { id: classId },
+        });
         if (!classInfo) {
             throw new HttpException('Class not found', 404);
         }
-        const classUsers = await ClassUserModel.findAll({
+        const classUsers = await this.prisma.classUser.findMany({
             where: { classId: classId },
         });
         const members = classUsers.map(async (classUser) => {
-            const user = await UserModel.findByPk(classUser.userId);
+            const user = await this.prisma.user.findUnique({
+                where: { id: classUser.userId },
+            });
             return {
                 username: user?.username,
                 id: user?.id,
@@ -51,33 +60,45 @@ export class ClassesService {
             };
         });
         return {
-            ...classInfo.get(),
+            ...classInfo,
             inviteCode: undefined,
             members: await Promise.all(members),
         };
     }
 
-    async updateClass(dto: ClassDto, classId: number) {
-        const classInfo = await ClassModel.findByPk(classId);
+    async updateClass(dto: ClassDto, classId: string) {
+        const classInfo = await this.prisma.class.findUnique({
+            where: { id: classId },
+        });
         if (!classInfo) {
             throw new HttpException('Class not found', 404);
         }
-        classInfo.name = dto.name || classInfo.name;
-        await classInfo.save();
-        return { ...classInfo.get(), inviteCode: undefined };
+        const updatedClass = await this.prisma.class.update({
+            where: { id: classId },
+            data: {
+                name: dto.name || classInfo.name,
+            },
+        });
+        return { ...updatedClass, inviteCode: undefined };
     }
-    async deleteClass(classId: number) {
-        const classInfo = await ClassModel.findByPk(classId);
+    async deleteClass(classId: string) {
+        const classInfo = await this.prisma.class.findUnique({
+            where: { id: classId },
+        });
         if (!classInfo) {
             throw new HttpException('Class not found', 404);
         }
-        const classUsers = await ClassUserModel.findAll({
+        const classUsers = await this.prisma.classUser.findMany({
             where: { classId: classId },
         });
         for (const classUser of classUsers) {
-            await classUser.destroy();
+            await this.prisma.classUser.delete({
+                where: { id: classUser.id },
+            });
         }
-        await classInfo.destroy();
+        await this.prisma.class.delete({
+            where: { id: classId },
+        });
         return { message: 'Class deleted successfully' };
     }
 
