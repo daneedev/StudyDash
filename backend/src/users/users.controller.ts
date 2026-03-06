@@ -45,7 +45,7 @@ export class UsersController {
     },
   })
   getProfile(@Req() req) {
-    return req.user;
+    return this.usersService.getUserProfile(req.user);
   }
 
   @Patch('profile')

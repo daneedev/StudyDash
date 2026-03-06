@@ -83,8 +83,8 @@ export class ClassesController {
       message: 'Class not found',
     },
   })
-  @ApiParam({ name: 'id', type: Number, description: 'Class ID' })
-  @Get(':id') getClassById(@Param('id') id: number) {
+  @ApiParam({ name: 'id', type: String, description: 'Class ID' })
+  @Get(':id') getClassById(@Param('id') id: string) {
     return this.classesService.getClassById(id);
   }
 
@@ -96,7 +96,7 @@ export class ClassesController {
       success: true,
       statusCode: 201,
       data: {
-        id: 1,
+        id: 'uuid-string',
         name: 'Math 101',
         inviteCode: 'ABCD1234',
       },
@@ -148,8 +148,8 @@ export class ClassesController {
       message: 'Admin access to class denied',
     },
   })
-  @ApiParam({ name: 'id', type: Number, description: 'Class ID' })
-  @Patch(':id') updateClass(@Body() dto: ClassDto, @Param('id') id: number) {
+  @ApiParam({ name: 'id', type: String, description: 'Class ID' })
+  @Patch(':id') updateClass(@Body() dto: ClassDto, @Param('id') id: string) {
     return this.classesService.updateClass(dto, id);
   }
 
@@ -188,14 +188,14 @@ export class ClassesController {
   })
   
   @UseGuards(ClassesAdminGuard)
-  @ApiParam({ name: 'id', type: Number, description: 'Class ID' })
-  @Delete(':id') deleteClass(@Param('id') id: number) {
+  @ApiParam({ name: 'id', type: String, description: 'Class ID' })
+  @Delete(':id') deleteClass(@Param('id') id: string) {
     return this.classesService.deleteClass(id);
   }
 
   @UseGuards(ClassesAdminGuard)
   @ApiOperation({ summary: 'Get invite code for a class by ID' })
-  @ApiParam({ name: 'id', type: Number, description: 'Class ID' })
+  @ApiParam({ name: 'id', type: String, description: 'Class ID' })
   @ApiResponse({
     status: 200,
     description: 'Invite code retrieved successfully',
@@ -234,13 +234,13 @@ export class ClassesController {
       message: 'Class not found',
     },
   })
-  @Get(':id/invite') getInviteCode(@Param('id') id: number) {
+  @Get(':id/invite') getInviteCode(@Param('id') id: string) {
     return this.invitesService.getInviteCode(id);
   }
  
   @UseGuards(AuthGuard, ClassesAdminGuard)
   @ApiOperation({ summary: 'Regenerate invite code for a class by ID' })
-  @ApiParam({ name: 'id', type: Number, description: 'Class ID' })
+  @ApiParam({ name: 'id', type: String, description: 'Class ID' })
   @ApiResponse({
     status: 200,
     description: 'Invite code regenerated successfully',
@@ -279,7 +279,7 @@ export class ClassesController {
       message: 'Class not found',
     },
   })
-  @Put(':id/invite') regenerateInviteCode(@Param('id') id: number) {
+  @Put(':id/invite') regenerateInviteCode(@Param('id') id: string) {
     return this.invitesService.regenerateInviteCode(id);
   }
 
@@ -324,7 +324,7 @@ export class ClassesController {
   }
 
   @ApiOperation({ summary: 'Leave a class by ID' })
-  @ApiParam({ name: 'id', type: Number, description: 'Class ID' })
+  @ApiParam({ name: 'id', type: String, description: 'Class ID' })
   @ApiResponse({
     status: 200,
     description: 'Left class successfully',
@@ -352,7 +352,7 @@ export class ClassesController {
       message: 'Class not found or user not part of the class',
     },
   })
-  @Post(':id/leave') leaveClass(@Param('id') id: number, @Req() req) {
+  @Post(':id/leave') leaveClass(@Param('id') id: string, @Req() req) {
     return this.invitesService.leaveClass(id, req.user);
   }
 }
