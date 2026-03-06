@@ -4,9 +4,19 @@ import { useDashboardNotes } from "../context/DashboardNotesContext";
 import type { KeyboardEvent } from "react";
 
 type DashboardNavBarProps = {
-    username: string;
-}
+  username: string;
+  isExpanded?: boolean;
+  onToggle?: (expanded: boolean) => void;
+};
 
+export const DashboardNavBar = ({
+  username,
+  isExpanded: externalIsExpanded,
+  onToggle,
+}: DashboardNavBarProps) => {
+  const [internalIsExpanded, setInternalIsExpanded] = useState(true);
+  const isExpanded =
+    externalIsExpanded !== undefined ? externalIsExpanded : internalIsExpanded;
 
 export const DashboardNavBar = ({username} : DashboardNavBarProps) => {
     const [isExpanded, setIsExpanded] = useState(false);
@@ -188,16 +198,23 @@ export const DashboardNavBar = ({username} : DashboardNavBarProps) => {
                 </div>
                 <img src="/web_images/dot.svg" className="w-[5px] h-[5px] my-5" alt="dot" />
 
-                <div className="flex flex-col gap-4.5">
-                    {navItems.map((item) => (
-                        <Link key={item.to} className="cursor-pointer" onClick={handleNavClick} to={item.to}>
-                            <div className={navItemBaseClass}>
-                                <img src={item.icon} className={`${marginLeftClass} w-[24px] h-[24px] my-5`} alt={item.alt} />
-                                <p className={`text-[var(--color-light-text)] font-montserrat font-md ${visibilityClass}`}>{item.label}</p>
-                            </div>
-                        </Link>
-                    ))}
-                </div>
+          <div className="flex flex-col gap-4.5">
+            <Link className="cursor-pointer" to="/dashboard">
+              <div
+                className={`rounded-[14px] bg-[var(--card-bg)] ${isExpandedClass} h-[38px] flex justify-center items-center text-center shadow-[0_0_1.5px_0_#18B4A6]`}
+              >
+                <img
+                  src="/web_images/Home.svg"
+                  className={`${marginLeftClass} w-[24px] h-[24px] my-5`}
+                  alt="home"
+                />
+                <p
+                  className={`text-[var(--color-light-text)] font-montserrat font-md ${visibilityClass}`}
+                >
+                  Dashboard
+                </p>
+              </div>
+            </Link>
 
                 <img src="/web_images/dot.svg" className="w-[5px] h-[5px] my-5" alt="dot" />
 
@@ -378,35 +395,73 @@ export const DashboardNavBar = ({username} : DashboardNavBarProps) => {
                 </div>
             </div>
 
-            <div
-                className={`fixed bottom-[78px] left-[15px] w-[172px] border-1 border-[var(--border-card)] flex justify-start items-center text-center flex-col rounded-lg bg-[var(--card-bg)] transition-opacity duration-150 ease-out ${isProfileOpen ? "opacity-100" : "opacity-0 pointer-events-none"}`}
-                onMouseDown={(event) => event.stopPropagation()}
-            >
-                <Link
-                    to="/dashboard/profile"
-                    className="flex w-full items-center justify-start gap-3 py-2 pl-3"
-                    onClick={() => {
-                        handleNavClick();
-                        setIsProfileOpen(false);
-                    }}
+            <Link className="cursor-pointer" to="/dashboard/todo">
+              <div
+                className={`rounded-[14px] bg-[var(--card-bg)] ${isExpandedClass} h-[38px] flex justify-center items-center text-center shadow-[0_0_1.5px_0_#18B4A6]`}
+              >
+                <img
+                  src="/web_images/Checklist.svg"
+                  className={`${marginLeftClass} w-[24px] h-[24px] my-5`}
+                  alt="to-do"
+                />
+                <p
+                  className={`text-[var(--color-light-text)] font-montserrat font-md ${visibilityClass}`}
                 >
-                    <img src="/web_images/User_Rounded.svg" alt="user" className="max-w-[28px]" />
-                    <p className={`text-[var(--color-text)] font-montserrat font-md font-medium`}>Správa profilu</p>
-                </Link>
+                  To-do list
+                </p>
+              </div>
+            </Link>
 
-
-                <Link
-                    to="/logout"
-                    className="flex w-full items-center justify-start gap-3 py-2 pl-2.5"
-                    onClick={() => {
-                        handleNavClick();
-                        setIsProfileOpen(false);
-                    }}
+            <Link className="cursor-pointer" to="/dashboard/calendar">
+              <div
+                className={`rounded-[14px] bg-[var(--card-bg)] ${isExpandedClass} h-[38px] flex justify-center items-center text-center shadow-[0_0_1.5px_0_#18B4A6]`}
+              >
+                <img
+                  src="/web_images/Calendar.svg"
+                  className={`${marginLeftClass} w-[24px] h-[24px] my-5`}
+                  alt="calendar"
+                />
+                <p
+                  className={`text-[var(--color-light-text)] font-montserrat font-md ${visibilityClass}`}
                 >
-                    <img src="/web_images/Arrows_ALogout_2.svg" alt="user" className="max-w-[26px]" />
-                    <p className={`text-[var(--color-text)] font-montserrat font-md font-medium`}>Odhlásit se</p>
-                </Link>
-            </div>
+                  Kalendář
+                </p>
+              </div>
+            </Link>
+
+            <Link className="cursor-pointer" to="/dashboard/settings">
+              <div
+                className={`rounded-[14px] bg-[var(--card-bg)] ${isExpandedClass} h-[38px] flex justify-center items-center text-center shadow-[0_0_1.5px_0_#18B4A6]`}
+              >
+                <img
+                  src="/web_images/Settings.svg"
+                  className={`${marginLeftClass} w-[24px] h-[24px] my-5`}
+                  alt="settings"
+                />
+                <p
+                  className={`text-[var(--color-light-text)] font-montserrat font-md ${visibilityClass}`}
+                >
+                  Nastavení
+                </p>
+              </div>
+            </Link>
+            <Link className="cursor-pointer" to="/classes">
+              <div
+                className={`rounded-[14px] bg-[var(--card-bg)] ${isExpandedClass} h-[38px] flex justify-center items-center text-center shadow-[0_0_1.5px_0_#18B4A6]`}
+              >
+                <img
+                  src="/web_images/Notebook2.svg"
+                  className={`${marginLeftClass} w-[24px] h-[24px] my-5`}
+                  alt="classes"
+                />
+                <p
+                  className={`text-[var(--color-light-text)] font-montserrat font-md ${visibilityClass}`}
+                >
+                  Třídy
+                </p>
+              </div>
+            </Link>
+          </div>
 
             <div
                 className="flex items-center text-center cursor-pointer z-auto"
@@ -431,6 +486,40 @@ export const DashboardNavBar = ({username} : DashboardNavBarProps) => {
             onClick={() => setIsExpanded(prev => !prev)}>
             <img src={`${toggleIcon}`} alt="arrow rigt" className="cursor-pointer" />
         </div>
+
+        <Link
+          className="flex items-center text-center cursor-pointer"
+          to="/dashboard/profile"
+        >
+          <div
+            className="w-[40px] h-[40px] rounded-[14px] flex justify-center text-center items-center"
+            style={{
+              backgroundImage: 'url("/web_images/pastel.png")',
+              backgroundSize: "cover",
+            }}
+          >
+            <h3 className="text-[#1B1919] font-inria font-bold text-xl ">
+              {zkratka}
+            </h3>
+          </div>
+          <div className={`ml-2 text-left w-[120px] ${visibilityClass}`}>
+            <p className="text-[var(--color-text)] whitespace-nowrap overflow-hidden text-ellipsis w-[120px] h-[24px]">
+              {user}
+            </p>
+            <p className="text-[var(--color-light-text)] text-sm whitespace-nowrap overflow-auto text-ellipsis">
+              {role}
+            </p>
+          </div>
+        </Link>
+      </div>
+
+      <div onClick={handleToggle}>
+        <img
+          src={`${toggleIcon}`}
+          alt={isExpanded ? "Collapse sidebar" : "Expand sidebar"}
+          className="cursor-pointer"
+        />
+      </div>
     </nav>
     )
 };

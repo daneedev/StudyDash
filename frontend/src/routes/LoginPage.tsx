@@ -19,7 +19,7 @@ const route = createRoute({
   beforeLoad: async () => {
     const authResult = await checkAuthToken();
     if (authResult.isValid) {
-      throw redirect({ to: "/dashboard" });
+      throw redirect({ to: "/classes" });
     }
   },
 });
@@ -40,19 +40,19 @@ function LoginPage() {
       const login = await fetch(
         `${import.meta.env.VITE_API_BASE_URL}/auth/login`,
         {
-          method: "POST", 
+          method: "POST",
           headers: {
             "Content-Type": "application/json",
           },
           body: JSON.stringify({ username, password }),
-        }
+        },
       );
       const data = await login.json();
       if (!login.ok) {
         throw new Error(data.message || "Nepodařilo se přihlásit");
       }
-      await setAuthToken(data.data.accessToken)
-      await navigate({ to: "/dashboard" });
+      await setAuthToken(data.data.accessToken);
+      await navigate({ to: "/classes" });
     } catch (err) {
       const message =
         err instanceof Error ? err.message : "Nepodařilo se přihlásit";

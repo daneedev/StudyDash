@@ -34,7 +34,7 @@ function RegisterPage() {
             "Content-Type": "application/json",
           },
           body: JSON.stringify({ username, password, email }),
-        }
+        },
       );
       const data = await response.json();
       if (!response.ok) {
@@ -190,7 +190,7 @@ const route = createRoute({
   beforeLoad: async () => {
     const authResult = await checkAuthToken();
     if (authResult.isValid) {
-      throw redirect({ to: "/dashboard" });
+      throw redirect({ to: "/classes" });
     }
   },
 });

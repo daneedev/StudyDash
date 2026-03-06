@@ -3,6 +3,7 @@ import {
   createRoute,
   Outlet,
   redirect,
+  notFound,
   type AnyRoute,
 } from "@tanstack/react-router";
 import "../assets/css/index.css";
@@ -14,6 +15,9 @@ import { DashboardProfilePage } from "./DashboardProfilePage";
 import { DashboardNotesPage } from "./DashboardNotesPage";
 import { DashboardLoader } from "../components/DashboardLoader";
 import { DashboardNotesProvider } from "../context/DashboardNotesContext";
+
+import { DashboardOverview } from "../components/DashboardOverview";
+import { useState } from "react";
 
 const route = createRoute({
   getParentRoute: () => rootRoute,
@@ -73,6 +77,40 @@ const profileRoute = createRoute({
   component: DashboardProfilePage,
 });
 
+const classDetailRoute = createRoute({
+  getParentRoute: () => route,
+  path: "$classId",
+  component: ClassDetailLayout, // Individual class page
+  beforeLoad: async ({ params }) => {
+    const token = localStorage.getItem("auth_token");
+    if (!token) {
+      throw redirect({ to: "/login" });
+    }
+
+    try {
+      const res = await fetch(
+        `${import.meta.env.VITE_API_BASE_URL}/classes/${params.classId}`,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        },
+      );
+
+      if (!res.ok) {
+        throw notFound();
+      }
+
+      const json = await res.json();
+      const name = json.data?.name || json.name || json.data?.class?.name;
+      return { className: name };
+    } catch (error) {
+      if (error instanceof Error && error.message === "notFound") {
+        throw error;
+      }
+      throw notFound();
+    }
+  },
+});
+
 function DashboardLayout() {
   const { userData } = route.useRouteContext();
   const getStoredProfile = () => {
@@ -119,6 +157,7 @@ function DashboardLayout() {
 }
 
 function SectionLayout() {
+  const { userData } = route.useRouteContext();
   return (
     <>
       <div className="flex flex-col justify-center items-center">
@@ -143,6 +182,20 @@ function DashboardNotePage() {
   return <></>;
 }
 
+function ClassDetailLayout() {
+  const { userData } = route.useRouteContext();
+  const { className } = classDetailRoute.useRouteContext();
+
+  return (
+    <>
+      <DashboardOverview
+        username={userData ? userData.username : ""}
+        className={className || undefined}
+      />
+    </>
+  );
+}
+
 export const dashboardRouteTree = route.addChildren([
   overallRoute,
   notesRoute,
@@ -152,6 +205,7 @@ export const dashboardRouteTree = route.addChildren([
   calendarRoute,
   tasksRoute,
   settingsRoute,
+  classDetailRoute,
 ]);
 
 type DashboardComponent = typeof DashboardLayout & { route?: AnyRoute };
