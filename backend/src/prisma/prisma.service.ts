@@ -11,7 +11,10 @@ export class PrismaService extends PrismaClient implements OnModuleInit {
     super({ adapter: pool });
   }
   async onModuleInit() {
-    await this.$connect();
-    console.log('Connected to PostgreSQL database');
+    const databaseUrl = process.env.DATABASE_URL;
+    if (!databaseUrl) {
+      throw new Error('DATABASE_URL environment variable is not set');
+    }
+    console.log('PrismaService initialized; DATABASE_URL is set');
   }
 }
