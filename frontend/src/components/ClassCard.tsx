@@ -1,16 +1,23 @@
+import { Link } from "@tanstack/react-router";
+
 import { useEffect, useRef, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { library } from "@fortawesome/fontawesome-svg-core";
 import { faEllipsisVertical } from "@fortawesome/free-solid-svg-icons";
-library.add(faEllipsisVertical);
 type Props = {
   title: string;
   onDelete?: () => void;
   classId?: number;
   isAdmin?: boolean;
+  showAlert?: (title: string, message: string) => void;
 };
 
-export function ClassCard({ title, onDelete, classId, isAdmin }: Props) {
+export function ClassCard({
+  title,
+  onDelete,
+  classId,
+  isAdmin,
+  showAlert,
+}: Props) {
   const [menuOpen, setMenuOpen] = useState(false);
   const [inviteCode, setInviteCode] = useState<string | null>(null);
   const [loadingInvite, setLoadingInvite] = useState(false);
@@ -51,12 +58,11 @@ export function ClassCard({ title, onDelete, classId, isAdmin }: Props) {
     try {
       if (navigator.clipboard && navigator.clipboard.writeText) {
         await navigator.clipboard.writeText(inviteCode);
-        alert(`Pozvánkový kód zkopírován: ${inviteCode}`);
+        showAlert?.("Úspěch", `Pozvánkový kód zkopírován: ${inviteCode}`);
         setMenuOpen(false);
         return;
       }
 
-      // Fallback copy mechanism for environments without Clipboard API
       const textarea = document.createElement("textarea");
       textarea.value = inviteCode;
       textarea.style.position = "fixed";
@@ -64,20 +70,22 @@ export function ClassCard({ title, onDelete, classId, isAdmin }: Props) {
       document.body.appendChild(textarea);
       textarea.focus();
       textarea.select();
-      const successful = document.execCommand("copy");
+      const successful = document.execCommand("copy"); //fallback
       document.body.removeChild(textarea);
 
       if (successful) {
-        alert(`Pozvánkový kód zkopírován: ${inviteCode}`);
+        showAlert?.("Úspěch", `Pozvánkový kód zkopírován: ${inviteCode}`);
         setMenuOpen(false);
       } else {
-        alert(
+        showAlert?.(
+          "Chyba",
           `Nepodařilo se zkopírovat pozvánkový kód. Zkopírujte jej prosím ručně: ${inviteCode}`,
         );
       }
     } catch (error) {
       console.error("Failed to copy invite code:", error);
-      alert(
+      showAlert?.(
+        "Chyba",
         `Nepodařilo se zkopírovat pozvánkový kód. Zkopírujte jej prosím ručně: ${inviteCode}`,
       );
     }
@@ -99,69 +107,82 @@ export function ClassCard({ title, onDelete, classId, isAdmin }: Props) {
     return () => document.removeEventListener("click", handleClickOutside);
   }, []);
 
+  const classInitials = title
+    .replace(/[^a-zA-Z0-9]/g, "")
+    .slice(0, 2)
+    .toUpperCase();
+
   return (
-    <div
-      ref={containerRef}
-      className="relative w-full h-full p-4 bg-[#272727]  rounded-lg shadow-lg hover:shadow-xl  hover:scale-99 transition duration-150 flex flex-col justify-center items-center"
-    >
-      {(onDelete || isAdmin) && (
-        <button
-          type="button"
-          aria-label="Otevřít nabídku"
-          onClick={(e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            handleMenuOpen();
-          }}
-          className="absolute top-2 right-2 z-30 inline-flex items-center justify-center p-1 rounded-full hover:bg-white/10"
-        >
-          <FontAwesomeIcon
-            icon={faEllipsisVertical}
-            className="text-white text-2xl"
-          />
-        </button>
-      )}
+    <Link to={`/dashboard/${classId}`}>
+      <div
+        ref={containerRef}
+        className="relative w-full h-full p-4 bg-[#272727] rounded-lg shadow-lg hover:shadow-xl hover:scale-99 transition duration-150 flex flex-col justify-center items-center gap-8 hover:cursor-pointer"
+      >
+        {(onDelete || isAdmin) && (
+          <button
+            type="button"
+            aria-label="Otevřít nabídku"
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              handleMenuOpen();
+            }}
+            className="absolute top-2 right-2 z-30 inline-flex items-center justify-center p-1 rounded-full hover:bg-white/10"
+          >
+            <FontAwesomeIcon
+              icon={faEllipsisVertical}
+              className="text-white text-2xl"
+            />
+          </button>
+        )}
 
-      {menuOpen && (
-        <div className="absolute top-12 right-2 z-40 w-48 bg-white text-black rounded shadow-md py-1">
-          {isAdmin && (
-            <button
-              type="button"
-              onClick={(e) => {
-                e.preventDefault();
-                e.stopPropagation();
-                copyInviteCode();
-              }}
-              disabled={loadingInvite || !inviteCode}
-              className="w-full text-left px-3 py-2 text-sm text-[#18b4a6] hover:bg-gray-100 disabled:opacity-50"
-            >
-              {loadingInvite
-                ? "Načítám..."
-                : inviteCode
-                  ? "Kopírovat pozvánku"
-                  : "Načítám..."}
-            </button>
-          )}
-          {onDelete && (
-            <button
-              type="button"
-              onClick={(e) => {
-                e.preventDefault();
-                e.stopPropagation();
-                onDelete();
-                setMenuOpen(false);
-              }}
-              className="w-full text-left px-3 py-2 text-sm text-red-600 hover:bg-red-50"
-            >
-              Smazat
-            </button>
-          )}
+        {menuOpen && (
+          <div className="absolute top-12 right-2 z-40 w-48 bg-white text-black rounded shadow-md py-1">
+            {isAdmin && (
+              <button
+                type="button"
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  copyInviteCode();
+                }}
+                disabled={loadingInvite || !inviteCode}
+                className="w-full text-left px-3 py-2 text-sm text-[#18b4a6] hover:bg-gray-100 disabled:opacity-50"
+              >
+                {loadingInvite
+                  ? "Načítám..."
+                  : inviteCode
+                    ? "Kopírovat pozvánku"
+                    : "Načítám..."}
+              </button>
+            )}
+            {onDelete && (
+              <button
+                type="button"
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  onDelete();
+                  setMenuOpen(false);
+                }}
+                className="w-full text-left px-3 py-2 text-sm text-red-600 hover:bg-red-50"
+              >
+                Smazat
+              </button>
+            )}
+          </div>
+        )}
+
+        <div className="w-[50%] aspect-square rounded-md flex justify-center items-center bg-[#18b4a6]">
+          <h3 className="text-text font-inria font-extrabold text-[5vw] md:text-[3vw] lg:text-[2.3vw]">
+            {classInitials}
+          </h3>
         </div>
-      )}
 
-      <div className="text-white text-xl font-semibold truncate text-center">
-        {title}
+        <div className="text-white text-2xl font-semibold truncate text-center">
+          {title}
+        </div>
       </div>
-    </div>
+    </Link>
   );
 }
