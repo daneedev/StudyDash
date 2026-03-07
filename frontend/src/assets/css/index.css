@@ -66,3 +66,19 @@ img {
     transform: translateX(320%);
   }
 }
+
+@keyframes sidebar-enter {
+  0% {
+    opacity: 0;
+    filter: blur(4px);
+  }
+  100% {
+    opacity: 1;
+    filter: blur(0);
+  }
+}
+
+.sidebar-shell-enter {
+  animation: sidebar-enter 220ms ease-out;
+  will-change: opacity, filter;
+}

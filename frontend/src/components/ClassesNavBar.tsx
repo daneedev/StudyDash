@@ -35,7 +35,6 @@ export const ClassesNavBar = ({
   const isExpandedClass = isExpanded
     ? "w-[160px] justify-start gap-3 pl-3"
     : "w-[38px]";
-  const marginLeftClass = isExpanded ? "ml-3" : "ml-0";
   const toggleIcon = isExpanded
     ? "/web_images/Arrow_Left.svg"
     : "/web_images/Arrow_Right.svg";
@@ -44,7 +43,7 @@ export const ClassesNavBar = ({
   const zkratka = user.slice(0, 2).toUpperCase();
 
   return (
-    <nav className="fixed h-dvh flex justify-center items-center">
+    <nav className="sidebar-shell-enter fixed h-dvh flex justify-center items-center">
       <div
         className={`flex justify-between items-center text-center flex-col h-dvh ${navWidthClasses} bg-[rgba(21,22,24,0.84)] border-r-1 border-[#353535] pt-5 pb-7 transition-all duration-200`}
       >
@@ -63,11 +62,11 @@ export const ClassesNavBar = ({
           </div>
           <img
             src="/web_images/dot.svg"
-            className="w-[5px] h-[5px] my-5"
+            className="w-[5px] h-[5px] my-6"
             alt="dot"
           />
 
-          <div className="flex flex-col gap-4.5">
+          <div className="flex flex-col gap-3.5">
             <button
               className="cursor-pointer"
               onClick={onJoinClass}
@@ -93,7 +92,7 @@ export const ClassesNavBar = ({
               <div
                 className={`rounded-[14px] bg-[var(--card-bg)] ${isExpandedClass} h-[38px] flex justify-center items-center text-center shadow-[0_0_1.5px_0_#18B4A6]`}
               >
-                <span className="text-2xl font-bold text-[#18B4A6]">+</span>
+                <img className="ml-0 w-[24px] h-[24px] my-5" src="/web_images/Add_Plus_light.svg" alt="plus" />
 
                 <p
                   className={`text-[var(--color-light-text)] font-montserrat font-md ${visibilityClass}`}

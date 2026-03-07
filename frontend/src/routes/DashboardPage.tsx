@@ -15,9 +15,13 @@ import { DashboardProfilePage } from "./DashboardProfilePage";
 import { DashboardNotesPage } from "./DashboardNotesPage";
 import { DashboardLoader } from "../components/DashboardLoader";
 import { DashboardNotesProvider } from "../context/DashboardNotesContext";
+import { DashboardAssignmentsPage } from "./DashboardAssignmentsPage";
+import {
+  getSelectedDashboardId,
+  setSelectedDashboardId,
+} from "../utils/selectedDashboard";
 
 import { DashboardOverview } from "../components/DashboardOverview";
-import { useState } from "react";
 
 const route = createRoute({
   getParentRoute: () => rootRoute,
@@ -38,6 +42,16 @@ const route = createRoute({
 const overallRoute = createRoute({
   getParentRoute: () => route,
   path: "/",
+  beforeLoad: () => {
+    const selectedDashboardId = getSelectedDashboardId();
+
+    throw redirect({
+      to: selectedDashboardId ? "/dashboard/$classId" : "/classes",
+      ...(selectedDashboardId
+        ? { params: { classId: selectedDashboardId } }
+        : {}),
+    });
+  },
   component: SectionLayout,
 });
 
@@ -59,7 +73,7 @@ const notesSubjectRoute = createRoute({
 const tasksRoute = createRoute({
   getParentRoute: () => route,
   path: "todo",
-  component: SectionLayout, // TODO: Replace with actual To-do component
+  component: DashboardAssignmentsPage,
 });
 const calendarRoute = createRoute({
   getParentRoute: () => route,
@@ -185,6 +199,11 @@ function DashboardNotePage() {
 function ClassDetailLayout() {
   const { userData } = route.useRouteContext();
   const { className } = classDetailRoute.useRouteContext();
+  const { classId } = classDetailRoute.useParams();
+
+  useEffect(() => {
+    setSelectedDashboardId(classId);
+  }, [classId]);
 
   return (
     <>
