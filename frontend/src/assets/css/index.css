@@ -16,6 +16,7 @@
   --color-lightgray: #2d2b2b;
   --font-montserrat: 'Montserrat', sans-serif;
   --card-bg: rgba(23, 27, 27, 0.7);
+  --card-bg-notp: rgba(23, 27, 27, 1);
   background-color: var(--color-background);
   --border-card: #353535;
   --text-white: #FDFAFA;

@@ -135,6 +135,7 @@ export function DashboardAssignmentsPage() {
   const [isEditorOpen, setIsEditorOpen] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
+  const [isDeleteConfirmOpen, setIsDeleteConfirmOpen] = useState(false);
   const [editorError, setEditorError] = useState<string | null>(null);
   const [editingAssignmentId, setEditingAssignmentId] = useState<number | null>(null);
   const [draftName, setDraftName] = useState("");
@@ -217,11 +218,13 @@ export function DashboardAssignmentsPage() {
     setDraftDueDateIso(nextDraftDateIso);
     setDraftType("exam");
     setEditingAssignmentId(null);
+    setIsDeleteConfirmOpen(false);
     setEditorError(null);
   };
 
   const closeEditor = () => {
     setIsEditorOpen(false);
+    setIsDeleteConfirmOpen(false);
     setEditorError(null);
     setIsSaving(false);
     setIsDeleting(false);
@@ -240,6 +243,7 @@ export function DashboardAssignmentsPage() {
     setDraftDueDate(formatIsoDateToDraftInput(assignment.dueDate.slice(0, 10)));
     setDraftDueDateIso(assignment.dueDate.slice(0, 10));
     setDraftType(assignment.type || "exam");
+    setIsDeleteConfirmOpen(false);
     setEditorError(null);
     setIsEditorOpen(true);
   };
@@ -389,6 +393,7 @@ export function DashboardAssignmentsPage() {
       setEditorError((deleteError as Error).message || "Mazání selhalo.");
     } finally {
       setIsDeleting(false);
+      setIsDeleteConfirmOpen(false);
     }
   };
 
@@ -407,8 +412,8 @@ export function DashboardAssignmentsPage() {
   }, [assignments]);
 
   return (
-    <div className="w-full max-w-[1160px] mx-[5%] mt-12">
-      <div className="flex flex-row justify-between">
+    <div className="mt-8 w-full max-w-[1160px] px-4 md:mx-[5%] md:mt-12 md:px-0">
+      <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
         <div className="flex flex-col text-start">
           <h1 className="text-3xl md:text-4xl font-semibold text-[var(--text-white)]">Úkoly & testy</h1>
           <p className="text-lg md:text-xl text-[var(--text-darkgray)] font-medium">Vítej zpět, dnes je {new Date().toLocaleDateString("cs-CZ", { day: "numeric", month: "long", year: "numeric" })}</p>
@@ -421,8 +426,9 @@ export function DashboardAssignmentsPage() {
             bg-transparent
             cursor-pointer
             rounded-xl
+            self-start
             max-h-[58px] md:max-h-[46px]
-            px-3 md:py-2
+            px-3 py-2
             hover:scale-105
             transition-all duration-250 ease-in-out
           "
@@ -447,14 +453,14 @@ export function DashboardAssignmentsPage() {
               <div
                 key={assignment.id}
                 onClick={() => openAssignmentEditor(assignment)}
-                className="flex flex-row border-t-1 border-[var(--border-card)] py-2 cursor-pointer"
+                className="flex flex-row border-t-1 border-[var(--border-card)] py-2 cursor-pointer pr-2"
               >
                 <div className="flex">
                   <div className="w-[16px] h-[16px] rounded-full bg-[var(--card-bg)] shadow-[0_0_1.5px_0_#18B4A6] m-2" ></div>
                 </div>
-                <div>
-                  <h3 className="text-[var(--text-white)] font-medium text-lg">{assignment.name}</h3>
-                  <div className="flex flex-row justify-start items-center gap-2">
+                <div className="min-w-0">
+                  <h3 className="truncate text-[var(--text-white)] font-medium text-lg">{assignment.name}</h3>
+                  <div className="flex flex-wrap justify-start items-center gap-2">
                     <div className="flex flex-row gap-0.5 items-center">
                       <img src="/web_images/Calendar.svg" alt="alarm" className="mr-1" />
                       <p className="text-[var(--text-darkgray)] text-md text-center ">
@@ -477,7 +483,7 @@ export function DashboardAssignmentsPage() {
             <h2 className="text-xl font-semibold text-[var(--text-semiwhite)]">Minulé deadliny</h2>
           </div>
 
-          <div className="flex flex-col pt-4 w-full max-h-[450px] overflow-y-auto border-b-1 { border-[var(--border-card)]">
+          <div className="flex flex-col pt-4 w-full max-h-[450px] overflow-y-auto border-b-1 border-[var(--border-card)]">
             {isLoading && <p className="text-[var(--text-darkgray)] text-sm">Načítám assignmenty...</p>}
             {error && <p className="text-red-400 text-sm">{error}</p>}
             {!isLoading && !error && pastAssignments.length === 0 && (
@@ -487,14 +493,14 @@ export function DashboardAssignmentsPage() {
               <div
                 key={assignment.id}
                 onClick={() => openAssignmentEditor(assignment)}
-                className="flex flex-row border-t-1 border-[var(--border-card)] py-2 cursor-pointer"
+                className="flex flex-row border-t-1 border-[var(--border-card)] py-2 cursor-pointer pr-2"
               >
                 <div className="flex">
                   <div className="w-[16px] h-[16px] rounded-full bg-[var(--dark-primary)] shadow-[0_0_1.5px_0_#18B4A6] m-2" ></div>
                 </div>
-                <div>
-                  <h3 className="text-[var(--text-white)] font-medium text-lg">{assignment.name}</h3>
-                  <div className="flex flex-row items-center gap-2 justify-start">
+                <div className="min-w-0">
+                  <h3 className="truncate text-[var(--text-white)] font-medium text-lg">{assignment.name}</h3>
+                  <div className="flex flex-wrap items-center gap-2 justify-start">
                     <div className="flex flex-row gap-0.5 items-center">
                       <img src="/web_images/Alarm.svg" alt="alarm" />
                       <p className="text-[var(--text-darkgray)] text-md text-center ">
@@ -521,15 +527,15 @@ export function DashboardAssignmentsPage() {
         >
           <div
             className="
-              fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2
+              fixed left-[calc(3.5rem+0.75rem)] right-3 top-1/2 -translate-y-1/2 md:top-1/2 md:left-1/2 md:right-auto md:bottom-auto md:-translate-x-1/2 md:-translate-y-1/2
               z-50
-              bg-[var(--card-bg)] border border-[var(--border-card)]
-              rounded-xl w-[380px] h-[170px] flex flex-row justify-between
+              bg-[var(--card-bg-notp)] border border-[var(--border-card)]
+              rounded-2xl md:rounded-xl w-auto md:w-[380px] min-h-[230px] md:min-h-[170px] max-h-[85vh] overflow-y-auto flex flex-col md:flex-row justify-between p-4 md:p-0
             "
             onClick={(event) => event.stopPropagation()}
           >
-            <div className="flex flex-col select-none">
-              <div className="flex flex-col mt-4 px-4">
+            <div className="flex flex-col select-none flex-1 min-w-0">
+              <div className="flex flex-col md:mt-4 md:px-4">
                 <input
                   type="text"
                   value={draftName}
@@ -541,10 +547,10 @@ export function DashboardAssignmentsPage() {
                   value={draftDescription}
                   onChange={(event) => setDraftDescription(event.target.value)}
                   placeholder="Detail deadlinu"
-                  className="placeholder:text-[var(--text-darkgray)] text-[var(--text-darkgray)] text-md mt-1 h-[80px] w-full text-left resize-none outline-none bg-transparent"
+                  className="placeholder:text-[var(--text-darkgray)] text-[var(--text-darkgray)] text-md mt-2 h-[96px] md:h-[80px] w-full text-left resize-none outline-none bg-transparent"
                 ></textarea>
-                <div className="flex flex-row items-center gap-2">
-                  <div className="relative">
+                <div className="flex flex-col items-stretch gap-2 sm:flex-row sm:items-center">
+                  <div className="relative w-full sm:w-auto">
                     <input
                       type="date"
                       value={draftDueDateIso}
@@ -571,7 +577,7 @@ export function DashboardAssignmentsPage() {
                       }}
                       placeholder="dd mm yyyy"
                       inputMode="numeric"
-                      className="w-[126px] rounded-md border border-[var(--border-card)] bg-transparent px-2 py-1 pr-9 text-sm text-[var(--text-darkgray)] outline-none placeholder:text-[var(--text-darkgray)]"
+                      className="w-full rounded-md border border-[var(--border-card)] bg-transparent px-2 py-1 pr-9 text-sm text-[var(--text-darkgray)] outline-none placeholder:text-[var(--text-darkgray)] sm:w-[126px]"
                     />
                     <button
                       type="button"
@@ -594,11 +600,11 @@ export function DashboardAssignmentsPage() {
                       />
                     </button>
                   </div>
-                  <img src="/web_images/dot.svg" className="w-[5px] h-[5px]" alt="dot" />
+                  <img src="/web_images/dot.svg" className="hidden h-[5px] w-[5px] sm:block" alt="dot" />
                   <select
                     value={draftType}
                     onChange={(event) => setDraftType(event.target.value)}
-                    className="rounded-md border border-[var(--border-card)] bg-[var(--card-bg)] px-2 py-1 text-sm text-[var(--text-semiwhite)] outline-none"
+                    className="w-full rounded-md border border-[var(--border-card)] bg-[var(--card-bg)] px-2 py-1 text-sm text-[var(--text-semiwhite)] outline-none sm:w-auto"
                   >
                     {ASSIGNMENT_TYPE_VALUES.map((type) => (
                       <option key={type} value={type}>
@@ -613,7 +619,7 @@ export function DashboardAssignmentsPage() {
               </div>
               <div className=""></div>
             </div>
-            <div className="m-2.5 flex flex-col gap-2.5">
+            <div className="mt-4 flex flex-row justify-start gap-2.5 md:m-2.5 md:flex-col">
               <button
                 type="button"
                 onClick={handleSave}
@@ -625,7 +631,7 @@ export function DashboardAssignmentsPage() {
               {editingAssignmentId !== null && (
                 <button
                   type="button"
-                  onClick={handleDelete}
+                  onClick={() => setIsDeleteConfirmOpen(true)}
                   disabled={isSaving || isDeleting}
                   className="rounded-[14px] bg-[var(--card-bg)] h-[38px] w-[38px] flex justify-center items-center text-center shadow-[0_0_1.5px_0_#18B4A6] cursor-pointer disabled:opacity-50"
                 >
@@ -634,6 +640,41 @@ export function DashboardAssignmentsPage() {
               )}
             </div>
           </div>
+
+          {isDeleteConfirmOpen && (
+            <div
+              className="fixed inset-0 z-[60] bg-[rgba(0,0,0,0.30)]"
+              onClick={() => setIsDeleteConfirmOpen(false)}
+            >
+              <div
+                className="fixed left-[calc(3.5rem+0.75rem)] right-3 top-1/2 z-[70] w-auto -translate-y-1/2 rounded-2xl border border-[var(--border-card)] bg-[var(--card-bg-notp)] p-5 md:top-1/2 md:left-1/2 md:right-auto md:bottom-auto md:w-[320px] md:-translate-x-1/2 md:-translate-y-1/2 md:rounded-xl"
+                onClick={(event) => event.stopPropagation()}
+              >
+                <h3 className="text-lg font-semibold text-[var(--text-white)]">Smazat assignment?</h3>
+                <p className="mt-2 text-sm text-[var(--text-darkgray)]">
+                  Tato akce je nevratná. Assignment <span className="text-[var(--text-semiwhite)]">"{draftName || "Bez názvu"}"</span> bude trvale odstraněn.
+                </p>
+                <div className="mt-5 flex flex-col-reverse gap-3 sm:flex-row sm:justify-start">
+                  <button
+                    type="button"
+                    onClick={() => setIsDeleteConfirmOpen(false)}
+                    disabled={isDeleting}
+                    className="cursor-pointer rounded-lg border border-[var(--border-card)] px-3 py-1.5 text-sm text-[var(--text-semiwhite)] transition-opacity hover:opacity-80 disabled:opacity-50"
+                  >
+                    Zrušit
+                  </button>
+                  <button
+                    type="button"
+                    onClick={handleDelete}
+                    disabled={isDeleting}
+                    className="cursor-pointer rounded-lg bg-red-500 px-3 py-1.5 text-sm text-white transition-opacity hover:opacity-90 disabled:opacity-50"
+                  >
+                    {isDeleting ? "Mazání..." : "Smazat"}
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
         </div>
       )}
     </div>
