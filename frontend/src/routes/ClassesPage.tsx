@@ -230,10 +230,13 @@ export function ClassesPage() {
             title={alert.title}
             variant="faded"
             onClose={() => removeAlert(alert.id)}
-            style={{
-              backgroundColor: "white",
-              borderColor: "#18b4a6",
-              color: "#18b4a6",
+            classNames={{
+              base: "border bg-[#2d2b2b] border-[#18b4a6]",
+              title: "text-[#18b4a6] font-semibold",
+              description: "text-white",
+              iconWrapper: "text-[#18b4a6] border-none shadow-none bg-transparent",
+              alertIcon: "text-[#18b4a6]",
+              closeButton: "text-zinc-400 hover:text-white",
             }}
           />
         ))}
