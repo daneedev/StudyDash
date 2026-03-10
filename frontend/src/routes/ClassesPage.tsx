@@ -1,17 +1,9 @@
-import {
-  createRoute,
-  redirect,
-  type AnyRoute,
-  Link,
-} from "@tanstack/react-router";
+import { createRoute, redirect, type AnyRoute } from "@tanstack/react-router";
 import "../assets/css/index.css";
 import { rootRoute, checkAuthToken } from "./rootRoute";
 import { useEffect, useState } from "react";
 import { ClassCard } from "../components/ClassCard";
 import { ClassesNavBar } from "../components/ClassesNavBar";
-
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faLink } from "@fortawesome/free-solid-svg-icons";
 
 import { Alert, Input, Spinner } from "@heroui/react";
 
@@ -231,11 +223,12 @@ export function ClassesPage() {
             variant="faded"
             onClose={() => removeAlert(alert.id)}
             classNames={{
-              base: "border bg-[#2d2b2b] border-[#18b4a6]",
+              base: "border bg-[#2d2b2b] border-[#3a3a3a]",
               title: "text-[#18b4a6] font-semibold",
               description: "text-white",
-              iconWrapper: "text-[#18b4a6] border-none shadow-none bg-transparent",
-              alertIcon: "text-[#18b4a6]",
+              iconWrapper:
+                "text-[#18b4a6] border-none shadow-none bg-transparent",
+              alertIcon: "text-white",
               closeButton: "text-zinc-400 hover:text-white",
             }}
           />
@@ -247,27 +240,6 @@ export function ClassesPage() {
       >
         <header className="flex items-center justify-between p-6 pt-4">
           <h1 className="text-4xl font-semibold text-text">Třídy</h1>
-
-          <Link to="/dashboard" className="text-white">
-            provizorní odkaz na dashboard zde
-          </Link>
-
-          <div className="flex gap-2">
-            <button
-              type="button"
-              onClick={() => setShowJoinModal(true)}
-              className="px-4 py-2 bg-[#18b4a6] text-white rounded-md shadow-lg hover:scale-95"
-            >
-              <FontAwesomeIcon icon={faLink} />
-            </button>
-            <button
-              type="button"
-              onClick={() => setShowCreateModal(true)}
-              className="inline-flex items-center justify-center w-12 h-12 rounded-md bg-[var(--color-primary)] text-white shadow-lg hover:scale-95"
-            >
-              <span className="text-2xl font-bold">+</span>
-            </button>
-          </div>
         </header>
 
         <main
