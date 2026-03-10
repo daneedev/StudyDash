@@ -19,6 +19,7 @@ export function ClassCard({
   showAlert,
 }: Props) {
   const [menuOpen, setMenuOpen] = useState(false);
+  const [confirmDelete, setConfirmDelete] = useState(false);
   const [inviteCode, setInviteCode] = useState<string | null>(null);
   const [loadingInvite, setLoadingInvite] = useState(false);
   const containerRef = useRef<HTMLDivElement | null>(null);
@@ -166,8 +167,8 @@ export function ClassCard({
                 onClick={(e) => {
                   e.preventDefault();
                   e.stopPropagation();
-                  onDelete();
                   setMenuOpen(false);
+                  setConfirmDelete(true);
                 }}
                 className="w-full text-left px-3 py-2 text-sm text-red-400 hover:bg-white/10"
               >
@@ -187,6 +188,59 @@ export function ClassCard({
           {title}
         </div>
       </div>
+
+      {confirmDelete && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 cursor-default"
+          onClick={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            setConfirmDelete(false);
+          }}
+        >
+          <div
+            className="bg-[#272727] border border-[#3a3a3a] rounded-xl p-6 w-80 text-center shadow-xl"
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+            }}
+          >
+            <h2 className="text-white text-lg font-semibold mb-2">
+              Smazat třídu
+            </h2>
+            <p className="text-zinc-400 text-sm mb-6">
+              Opravdu chcete smazat třídu{" "}
+              <span className="text-white font-medium">{title}</span>? Tuto akci
+              nelze vrátit zpět.
+            </p>
+            <div className="flex gap-3 justify-center">
+              <button
+                type="button"
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  setConfirmDelete(false);
+                }}
+                className="px-4 py-2 rounded-lg bg-[#3a3a3a] text-white text-sm hover:bg-[#4a4a4a] transition-colors hover:cursor-pointer"
+              >
+                Zrušit
+              </button>
+              <button
+                type="button"
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  setConfirmDelete(false);
+                  onDelete?.();
+                }}
+                className="px-4 py-2 rounded-lg bg-red-600 text-white text-sm hover:bg-red-700 transition-colors hover:cursor-pointer"
+              >
+                Smazat
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </Link>
   );
 }
