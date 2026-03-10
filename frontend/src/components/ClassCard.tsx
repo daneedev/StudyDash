@@ -92,6 +92,10 @@ export function ClassCard({
   };
 
   const handleMenuOpen = () => {
+    if (menuOpen) {
+      setMenuOpen(false);
+      return;
+    }
     setMenuOpen(true);
     if (isAdmin && !inviteCode) {
       fetchInviteCode();
@@ -137,7 +141,7 @@ export function ClassCard({
         )}
 
         {menuOpen && (
-          <div className="absolute top-12 right-2 z-40 w-48 bg-white text-black rounded shadow-md py-1">
+          <div className="absolute top-12 right-2 z-40 w-48 bg-[#2d2b2b] border border-[#3a3a3a] text-white rounded-lg shadow-lg py-1">
             {isAdmin && (
               <button
                 type="button"
@@ -147,7 +151,7 @@ export function ClassCard({
                   copyInviteCode();
                 }}
                 disabled={loadingInvite || !inviteCode}
-                className="w-full text-left px-3 py-2 text-sm text-[#18b4a6] hover:bg-gray-100 disabled:opacity-50"
+                className="w-full text-left px-3 py-2 text-sm text-[#18b4a6] hover:bg-white/10 disabled:opacity-50"
               >
                 {loadingInvite
                   ? "Načítám..."
@@ -165,7 +169,7 @@ export function ClassCard({
                   onDelete();
                   setMenuOpen(false);
                 }}
-                className="w-full text-left px-3 py-2 text-sm text-red-600 hover:bg-red-50"
+                className="w-full text-left px-3 py-2 text-sm text-red-400 hover:bg-white/10"
               >
                 Smazat
               </button>
