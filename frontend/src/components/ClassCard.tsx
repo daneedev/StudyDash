@@ -199,7 +199,7 @@ export function ClassCard({
           }}
         >
           <div
-            className="bg-[#272727] border border-[#3a3a3a] rounded-xl p-6 w-80 text-center shadow-xl"
+            className="bg-[#272727] border border-[#3a3a3a] rounded-xl p-4 sm:p-6 w-[calc(100vw-2rem)] max-w-80 text-center shadow-xl"
             onClick={(e) => {
               e.preventDefault();
               e.stopPropagation();

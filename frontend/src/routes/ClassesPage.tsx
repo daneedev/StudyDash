@@ -213,7 +213,7 @@ export function ClassesPage() {
         onCreateClass={() => setShowCreateModal(true)}
       />
 
-      <div className="fixed top-4 right-4 z-50 flex flex-col gap-2 max-w-md transition-all duration-300">
+      <div className="fixed top-4 right-4 z-50 flex flex-col gap-2 max-w-[calc(100vw-2rem)] sm:max-w-md transition-all duration-300">
         {alerts.map((alert) => (
           <Alert
             key={alert.id}
@@ -236,16 +236,19 @@ export function ClassesPage() {
       </div>
 
       <article
-        className={`bg-[#141414] min-h-screen transition-all duration-200 ${isNavExpanded ? "ml-48" : "ml-14 md:ml-18"}`}
+        className={`bg-[#141414] min-h-screen transition-all duration-200 ${isNavExpanded ? "ml-18 sm:ml-48" : "ml-18 md:ml-22"}`}
       >
-        <header className="flex items-center justify-between p-6 pt-4">
-          <h1 className="text-4xl font-semibold text-text">Třídy</h1>
+        <header className="flex items-center justify-between p-4 sm:p-6 pt-4">
+          <h1 className="text-2xl sm:text-4xl font-semibold text-text">
+            Třídy
+          </h1>
         </header>
 
         <main
-          className="grid gap-4 p-6 pl-7"
+          className="grid gap-4 p-4 sm:p-6 sm:pl-7"
           style={{
-            gridTemplateColumns: "repeat(auto-fill, minmax(310px, 1fr))",
+            gridTemplateColumns:
+              "repeat(auto-fill, minmax(min(100%, 310px), 1fr))",
           }}
         >
           {isLoadingClasses ? (
@@ -260,6 +263,15 @@ export function ClassesPage() {
                   circle2: "border-b-[#18b4a6]",
                 }}
               />
+            </div>
+          ) : classes.length === 0 ? (
+            <div
+              className="col-span-full flex justify-center items-center"
+              style={{ minHeight: "calc(100vh - 150px)" }}
+            >
+              <p className="text-zinc-500 text-2xl">
+                Tady se objeví tvoje třídy
+              </p>
             </div>
           ) : (
             classes.map((c: ClassItem) => (
@@ -279,7 +291,7 @@ export function ClassesPage() {
 
       {showCreateModal && (
         <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50">
-          <div className="bg-[#272727] rounded-xl p-6 w-96">
+          <div className="bg-[#272727] rounded-xl p-4 sm:p-6 w-[calc(100vw-2rem)] max-w-96">
             <h2 className="text-xl font-semibold mb-4 text-white">
               Nová třída
             </h2>
@@ -318,7 +330,7 @@ export function ClassesPage() {
 
       {showJoinModal && (
         <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50">
-          <div className="bg-[#272727] rounded-xl p-6 w-96">
+          <div className="bg-[#272727] rounded-xl p-4 sm:p-6 w-[calc(100vw-2rem)] max-w-96">
             <h2 className="text-xl font-semibold mb-4 text-white">
               Připojit se do třídy
             </h2>
