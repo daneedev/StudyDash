@@ -4,7 +4,7 @@ import { useDashboardNotes } from "../context/DashboardNotesContext";
 
 export function DashboardNotesPage() {
   const navigate = useNavigate({ from: "/dashboard/notes" });
-  const { subjects, notes } = useDashboardNotes();
+  const { subjects, notes, addSubject } = useDashboardNotes();
 
   const subjectMap = useMemo(
     () => new Map(subjects.map((subject) => [subject.id, subject])),
@@ -25,6 +25,10 @@ export function DashboardNotesPage() {
   const [hasOverflow, setHasOverflow] = useState(false);
   const [canScrollLeft, setCanScrollLeft] = useState(false);
   const [canScrollRight, setCanScrollRight] = useState(false);
+  const [isSubjectEditorOpen, setIsSubjectEditorOpen] = useState(false);
+  const [draftSubjectName, setDraftSubjectName] = useState("");
+  const [isSavingSubject, setIsSavingSubject] = useState(false);
+  const [subjectEditorError, setSubjectEditorError] = useState<string | null>(null);
 
   const updateScrollState = useCallback(() => {
     const el = subjectsScrollerRef.current;
@@ -67,6 +71,33 @@ export function DashboardNotesPage() {
     if (!el) return;
     const stepPx = 162 * 2;
     el.scrollBy({ left: -stepPx, behavior: "smooth" });
+  };
+
+  const closeSubjectEditor = () => {
+    setIsSubjectEditorOpen(false);
+    setDraftSubjectName("");
+    setSubjectEditorError(null);
+    setIsSavingSubject(false);
+  };
+
+  const handleSaveSubject = async () => {
+    if (!draftSubjectName.trim()) {
+      setSubjectEditorError("Vyplň název předmětu.");
+      return;
+    }
+
+    setIsSavingSubject(true);
+    setSubjectEditorError(null);
+
+    try {
+      await addSubject(draftSubjectName);
+      closeSubjectEditor();
+    } catch (error) {
+      setSubjectEditorError(
+        (error as Error).message || "Nepodařilo se vytvořit předmět.",
+      );
+      setIsSavingSubject(false);
+    }
   };
 
   return (
@@ -140,7 +171,7 @@ export function DashboardNotesPage() {
 
               <div
                 className="bg-[var(--card-bg)] border-1 border-[var(--border-card)] cursor-pointer flex flex-col justify-center items-center w-[150px] h-[170px] px-6 py-10 rounded-3xl flex-none"
-                onClick={() => navigate({ to: "/dashboard/notes/subj/new" })}
+                onClick={() => setIsSubjectEditorOpen(true)}
               >
                 <img src="/web_images/Add_Plus.svg" alt="plus" className="pt-6 pb-1" />
                 <p className="text-[var(--text-darkgray)] text-center text-md">Přidat nový předmět</p>
@@ -231,6 +262,48 @@ export function DashboardNotesPage() {
           </div>
         </div>
       </section>
+
+      {isSubjectEditorOpen && (
+        <div
+          className="fixed inset-0 z-[60] bg-[rgba(0,0,0,0.30)]"
+          onClick={closeSubjectEditor}
+        >
+          <div
+            className="fixed left-[calc(3.5rem+0.75rem)] right-3 top-1/2 z-[70] w-auto -translate-y-1/2 rounded-2xl border border-[var(--border-card)] bg-[var(--card-bg-notp)] p-5 md:top-1/2 md:left-1/2 md:right-auto md:bottom-auto md:w-[360px] md:-translate-x-1/2 md:-translate-y-1/2 md:rounded-xl"
+            onClick={(event) => event.stopPropagation()}
+          >
+            <h3 className="text-lg font-semibold text-[var(--text-white)]">Nový předmět</h3>
+            <input
+              type="text"
+              value={draftSubjectName}
+              onChange={(event) => setDraftSubjectName(event.target.value)}
+              placeholder="Název předmětu"
+              className="mt-4 w-full border-b border-[var(--border-card)] bg-transparent pb-2 text-[var(--text-semiwhite)] outline-none placeholder:text-[var(--text-darkgray)]"
+            />
+            {subjectEditorError && (
+              <p className="mt-2 text-sm text-red-400">{subjectEditorError}</p>
+            )}
+            <div className="mt-5 flex flex-col-reverse gap-3 sm:flex-row sm:justify-start">
+              <button
+                type="button"
+                onClick={closeSubjectEditor}
+                disabled={isSavingSubject}
+                className="cursor-pointer rounded-lg border border-[var(--border-card)] px-3 py-1.5 text-sm text-[var(--text-semiwhite)] transition-opacity hover:opacity-80 disabled:opacity-50"
+              >
+                Zrušit
+              </button>
+              <button
+                type="button"
+                onClick={handleSaveSubject}
+                disabled={isSavingSubject}
+                className="cursor-pointer rounded-lg bg-[var(--color-primary)] px-3 py-1.5 text-sm text-black transition-opacity hover:opacity-90 disabled:opacity-50"
+              >
+                {isSavingSubject ? "Ukládám..." : "Vytvořit a uložit"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

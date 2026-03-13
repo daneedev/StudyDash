@@ -34,7 +34,7 @@ const route = createRoute({
 });
 
 type ClassItem = {
-  id: number;
+  id: string;
   name: string;
   inviteCode: string;
   isAdmin: boolean;
@@ -151,7 +151,7 @@ export function ClassesPage() {
     }
   };
 
-  const deleteClass = async (id: number) => {
+  const deleteClass = async (id: string) => {
     const token = getToken();
     if (!token) {
       return;

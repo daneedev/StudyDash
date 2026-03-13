@@ -1,6 +1,6 @@
 const SELECTED_DASHBOARD_ID_KEY = "selected_dashboard_id";
 
-export function getSelectedDashboardId() {
+export function getSelectedDashboardId(): string | null {
   if (typeof window === "undefined") {
     return null;
   }
@@ -8,10 +8,16 @@ export function getSelectedDashboardId() {
   return localStorage.getItem(SELECTED_DASHBOARD_ID_KEY);
 }
 
-export function setSelectedDashboardId(classId: string | number) {
+export function setSelectedDashboardId(dashboardId: string) {
   if (typeof window === "undefined") {
     return;
   }
 
-  localStorage.setItem(SELECTED_DASHBOARD_ID_KEY, String(classId));
+  const nextDashboardId = String(dashboardId);
+  localStorage.setItem(SELECTED_DASHBOARD_ID_KEY, nextDashboardId);
+  window.dispatchEvent(
+    new CustomEvent("selected-dashboard-changed", {
+      detail: { dashboardId: nextDashboardId },
+    }),
+  );
 }

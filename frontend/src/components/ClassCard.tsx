@@ -7,7 +7,7 @@ import { setSelectedDashboardId } from "../utils/selectedDashboard";
 type Props = {
   title: string;
   onDelete?: () => void;
-  classId?: number;
+  classId?: string;
   isAdmin?: boolean;
   showAlert?: (title: string, message: string) => void;
 };

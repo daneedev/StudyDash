@@ -171,7 +171,6 @@ function DashboardLayout() {
 }
 
 function SectionLayout() {
-  const { userData } = route.useRouteContext();
   return (
     <>
       <div className="flex flex-col justify-center items-center">

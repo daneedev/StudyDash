@@ -1,15 +1,17 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { getSelectedDashboardId } from "../utils/selectedDashboard";
+import { useDashboardNotes } from "../context/DashboardNotesContext";
 
 type Assignment = {
-  id: number;
+  id: string | number;
   name: string;
-  subject: string;
+  subjectId: string;
+  subjectName: string;
   description: string;
   dueDate: string;
-  classId: number;
+  classId: string;
   type: string;
-  addedBy: number;
+  addedBy: string | number;
   createdAt: string;
   updatedAt: string;
 };
@@ -23,25 +25,38 @@ type AssignmentsResponse = {
 
 type AssignmentPayload = {
   name: string;
-  subject: string;
+  subjectId: string;
   description: string;
   dueDate: string;
-  classId: number;
+  classId: string;
   type: string;
 };
 
 const ASSIGNMENT_TYPE_VALUES = ["homework", "exam"] as const;
+const CREATE_SUBJECT_OPTION = "__create_subject__";
 
-function normalizeAssignment(item: Partial<Assignment> & { title?: string }): Assignment {
+function normalizeAssignment(
+  item: Partial<Assignment> & {
+    title?: string;
+    subject?: string | { id?: string; name?: string };
+  },
+): Assignment {
+  const nestedSubject =
+    typeof item.subject === "object" && item.subject !== null ? item.subject : null;
+
   return {
-    id: Number(item.id ?? 0),
+    id: item.id ?? "",
     name: item.name ?? item.title ?? "Bez názvu",
-    subject: item.subject ?? "General",
+    subjectId: item.subjectId ?? nestedSubject?.id ?? "",
+    subjectName:
+      typeof item.subject === "string"
+        ? item.subject
+        : nestedSubject?.name ?? item.subjectName ?? "Bez názvu",
     description: item.description ?? "",
     dueDate: item.dueDate ?? new Date().toISOString(),
-    classId: Number(item.classId ?? 0),
+    classId: item.classId ?? "",
     type: item.type?.toLowerCase() ?? "homework",
-    addedBy: Number(item.addedBy ?? 0),
+    addedBy: item.addedBy ?? "",
     createdAt: item.createdAt ?? new Date().toISOString(),
     updatedAt: item.updatedAt ?? new Date().toISOString(),
   };
@@ -67,14 +82,8 @@ function getAssignmentTypeLabel(type: string): string {
   }
 }
 
-function resolveSelectedClassId(): number | null {
-  const rawDashboardId = getSelectedDashboardId();
-  if (!rawDashboardId) {
-    return null;
-  }
-
-  const parsedDashboardId = Number(rawDashboardId);
-  return Number.isFinite(parsedDashboardId) ? parsedDashboardId : null;
+function resolveSelectedClassId(): string | null {
+  return getSelectedDashboardId();
 }
 
 function formatDraftDateInput(value: string): string {
@@ -128,6 +137,7 @@ function formatAssignmentDate(date: string): string {
 }
 
 export function DashboardAssignmentsPage() {
+  const { subjects, addSubject } = useDashboardNotes();
   const selectedClassId = resolveSelectedClassId();
   const [assignments, setAssignments] = useState<Assignment[]>([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -137,17 +147,28 @@ export function DashboardAssignmentsPage() {
   const [isDeleting, setIsDeleting] = useState(false);
   const [isDeleteConfirmOpen, setIsDeleteConfirmOpen] = useState(false);
   const [editorError, setEditorError] = useState<string | null>(null);
-  const [editingAssignmentId, setEditingAssignmentId] = useState<number | null>(null);
+  const [editingAssignmentId, setEditingAssignmentId] = useState<string | number | null>(null);
   const [draftName, setDraftName] = useState("");
   const [draftDescription, setDraftDescription] = useState("");
-  const [draftSubject, setDraftSubject] = useState("General");
+  const [draftSubjectId, setDraftSubjectId] = useState("");
   const initialDraftDateIso = new Date().toISOString().slice(0, 10);
   const [draftDueDate, setDraftDueDate] = useState(
     formatIsoDateToDraftInput(initialDraftDateIso),
   );
   const [draftDueDateIso, setDraftDueDateIso] = useState(initialDraftDateIso);
   const [draftType, setDraftType] = useState<string>("exam");
+  const [isSubjectEditorOpen, setIsSubjectEditorOpen] = useState(false);
+  const [draftSubjectName, setDraftSubjectName] = useState("");
+  const [subjectEditorError, setSubjectEditorError] = useState<string | null>(null);
   const draftDatePickerRef = useRef<HTMLInputElement | null>(null);
+
+  useEffect(() => {
+    if (!isEditorOpen || editingAssignmentId !== null || draftSubjectId || subjects.length === 0) {
+      return;
+    }
+
+    setDraftSubjectId(subjects[0].id);
+  }, [draftSubjectId, editingAssignmentId, isEditorOpen, subjects]);
 
   useEffect(() => {
     if (selectedClassId === null) {
@@ -213,21 +234,26 @@ export function DashboardAssignmentsPage() {
     const nextDraftDateIso = new Date().toISOString().slice(0, 10);
     setDraftName("");
     setDraftDescription("");
-    setDraftSubject("General");
+    setDraftSubjectId(subjects[0]?.id ?? "");
     setDraftDueDate(formatIsoDateToDraftInput(nextDraftDateIso));
     setDraftDueDateIso(nextDraftDateIso);
     setDraftType("exam");
     setEditingAssignmentId(null);
     setIsDeleteConfirmOpen(false);
     setEditorError(null);
+    setDraftSubjectName("");
+    setSubjectEditorError(null);
+    setIsSubjectEditorOpen(false);
   };
 
   const closeEditor = () => {
     setIsEditorOpen(false);
     setIsDeleteConfirmOpen(false);
     setEditorError(null);
+    setSubjectEditorError(null);
     setIsSaving(false);
     setIsDeleting(false);
+    setIsSubjectEditorOpen(false);
   };
 
   const openNewAssignmentEditor = () => {
@@ -239,16 +265,18 @@ export function DashboardAssignmentsPage() {
     setEditingAssignmentId(assignment.id);
     setDraftName(assignment.name);
     setDraftDescription(assignment.description);
-    setDraftSubject(assignment.subject || "General");
+    setDraftSubjectId(assignment.subjectId);
     setDraftDueDate(formatIsoDateToDraftInput(assignment.dueDate.slice(0, 10)));
     setDraftDueDateIso(assignment.dueDate.slice(0, 10));
     setDraftType(assignment.type || "exam");
     setIsDeleteConfirmOpen(false);
     setEditorError(null);
+    setDraftSubjectName("");
+    setSubjectEditorError(null);
     setIsEditorOpen(true);
   };
 
-  const handleSave = async () => {
+  const saveAssignment = async (subjectId: string) => {
     const token = localStorage.getItem("auth_token");
     if (!token) {
       setEditorError("Chybí přihlašovací token.");
@@ -271,42 +299,31 @@ export function DashboardAssignmentsPage() {
       return;
     }
 
-    const payload: AssignmentPayload = {
-      name: draftName.trim(),
-      subject: draftSubject.trim() || "General",
-      description: draftDescription.trim(),
-      dueDate: createDueDateFromIsoDate(parsedIsoDate),
-      classId: selectedClassId,
-      type: draftType,
-    };
-
     setIsSaving(true);
     setEditorError(null);
 
     try {
-      const response = await fetch(
-        editingAssignmentId === null
-          ? `${import.meta.env.VITE_API_BASE_URL}/assignments`
-          : `${import.meta.env.VITE_API_BASE_URL}/assignments/${editingAssignmentId}`,
-        {
-          method: editingAssignmentId === null ? "POST" : "PATCH",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-          body: JSON.stringify(
-            editingAssignmentId === null
-              ? payload
-              : {
-                  name: payload.name,
-                  subject: payload.subject,
-                  description: payload.description,
-                  dueDate: payload.dueDate,
-                  type: payload.type,
-                },
-          ),
+      const selectedSubject = subjects.find((subject) => subject.id === subjectId);
+      if (!selectedSubject) {
+        throw new Error("Vyber platný předmět.");
+      }
+
+      const createPayload: AssignmentPayload = {
+        name: draftName.trim(),
+        subjectId,
+        description: draftDescription.trim(),
+        dueDate: createDueDateFromIsoDate(parsedIsoDate),
+        classId: selectedClassId,
+        type: draftType,
+      };
+      const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/assignments`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
         },
-      );
+        body: JSON.stringify(createPayload),
+      });
 
       const responsePayload = (await response.json().catch(() => null)) as
         | AssignmentsResponse
@@ -321,8 +338,32 @@ export function DashboardAssignmentsPage() {
           ? normalizeAssignment(responsePayload.data)
           : normalizeAssignment({
               id: editingAssignmentId ?? Date.now(),
-              ...payload,
+              ...createPayload,
+              subjectName: selectedSubject.name,
             });
+
+      if (editingAssignmentId !== null) {
+        const deleteResponse = await fetch(
+          `${import.meta.env.VITE_API_BASE_URL}/assignments/${editingAssignmentId}`,
+          {
+            method: "DELETE",
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          },
+        );
+
+        const deletePayload = (await deleteResponse.json().catch(() => null)) as
+          | AssignmentsResponse
+          | null;
+
+        if (!deleteResponse.ok) {
+          throw new Error(
+            deletePayload?.message ??
+              "Původní deadline se nepodařilo odstranit po vytvoření nové verze.",
+          );
+        }
+      }
 
       setAssignments((currentAssignments) => {
         if (editingAssignmentId === null) {
@@ -346,6 +387,45 @@ export function DashboardAssignmentsPage() {
     } catch (saveError) {
       setEditorError((saveError as Error).message || "Uložení selhalo.");
     } finally {
+      setIsSaving(false);
+    }
+  };
+
+  const handleSave = async () => {
+    if (draftSubjectId === CREATE_SUBJECT_OPTION) {
+      setIsSubjectEditorOpen(true);
+      setSubjectEditorError(null);
+      return;
+    }
+
+    if (!draftSubjectId) {
+      setEditorError("Vyber předmět.");
+      return;
+    }
+
+    await saveAssignment(draftSubjectId);
+  };
+
+  const handleCreateSubjectAndSave = async () => {
+    if (!draftSubjectName.trim()) {
+      setSubjectEditorError("Vyplň název předmětu.");
+      return;
+    }
+
+    setIsSaving(true);
+    setSubjectEditorError(null);
+    setEditorError(null);
+
+    try {
+      const createdSubject = await addSubject(draftSubjectName);
+      setDraftSubjectId(createdSubject.id);
+      setIsSubjectEditorOpen(false);
+      setDraftSubjectName("");
+      await saveAssignment(createdSubject.id);
+    } catch (error) {
+      setSubjectEditorError(
+        (error as Error).message || "Nepodařilo se vytvořit předmět.",
+      );
       setIsSaving(false);
     }
   };
@@ -502,7 +582,7 @@ export function DashboardAssignmentsPage() {
                   <h3 className="truncate text-[var(--text-white)] font-medium text-lg">{assignment.name}</h3>
                   <div className="flex flex-wrap items-center gap-2 justify-start">
                     <div className="flex flex-row gap-0.5 items-center">
-                      <img src="/web_images/Alarm.svg" alt="alarm" />
+                      <img src="/web_images/Calendar.svg" alt="alarm" />
                       <p className="text-[var(--text-darkgray)] text-md text-center ">
                         {formatAssignmentDate(assignment.dueDate)}
                       </p>
@@ -530,7 +610,7 @@ export function DashboardAssignmentsPage() {
               fixed left-[calc(3.5rem+0.75rem)] right-3 top-1/2 -translate-y-1/2 md:top-1/2 md:left-1/2 md:right-auto md:bottom-auto md:-translate-x-1/2 md:-translate-y-1/2
               z-50
               bg-[var(--card-bg-notp)] border border-[var(--border-card)]
-              rounded-2xl md:rounded-xl w-auto md:w-[380px] min-h-[230px] md:min-h-[170px] max-h-[85vh] overflow-y-auto flex flex-col md:flex-row justify-between p-4 md:p-0
+              rounded-2xl md:rounded-xl w-auto md:w-[520px] min-h-[230px] md:min-h-[186px] max-h-[85vh] overflow-y-auto flex flex-col md:flex-row justify-between p-4 md:p-0
             "
             onClick={(event) => event.stopPropagation()}
           >
@@ -549,7 +629,22 @@ export function DashboardAssignmentsPage() {
                   placeholder="Detail deadlinu"
                   className="placeholder:text-[var(--text-darkgray)] text-[var(--text-darkgray)] text-md mt-2 h-[96px] md:h-[80px] w-full text-left resize-none outline-none bg-transparent"
                 ></textarea>
-                <div className="flex flex-col items-stretch gap-2 sm:flex-row sm:items-center">
+                <div className="mt-3 grid gap-2 md:grid-cols-[minmax(0,1.25fr)_minmax(0,1fr)_minmax(0,0.9fr)]">
+                  <select
+                    value={draftSubjectId}
+                    onChange={(event) => setDraftSubjectId(event.target.value)}
+                    className="w-full rounded-md border border-[var(--border-card)] bg-[var(--card-bg)] px-2 py-1 text-sm text-[var(--text-semiwhite)] outline-none"
+                  >
+                    <option value="" disabled>
+                      Vyber předmět
+                    </option>
+                    {subjects.map((subject) => (
+                      <option key={subject.id} value={subject.id}>
+                        {subject.name}
+                      </option>
+                    ))}
+                    <option value={CREATE_SUBJECT_OPTION}>Nový předmět</option>
+                  </select>
                   <div className="relative w-full sm:w-auto">
                     <input
                       type="date"
@@ -577,7 +672,7 @@ export function DashboardAssignmentsPage() {
                       }}
                       placeholder="dd mm yyyy"
                       inputMode="numeric"
-                      className="w-full rounded-md border border-[var(--border-card)] bg-transparent px-2 py-1 pr-9 text-sm text-[var(--text-darkgray)] outline-none placeholder:text-[var(--text-darkgray)] sm:w-[126px]"
+                      className="w-full rounded-md border border-[var(--border-card)] bg-transparent px-2 py-1 pr-9 text-sm text-[var(--text-darkgray)] outline-none placeholder:text-[var(--text-darkgray)]"
                     />
                     <button
                       type="button"
@@ -600,11 +695,10 @@ export function DashboardAssignmentsPage() {
                       />
                     </button>
                   </div>
-                  <img src="/web_images/dot.svg" className="hidden h-[5px] w-[5px] sm:block" alt="dot" />
                   <select
                     value={draftType}
                     onChange={(event) => setDraftType(event.target.value)}
-                    className="w-full rounded-md border border-[var(--border-card)] bg-[var(--card-bg)] px-2 py-1 text-sm text-[var(--text-semiwhite)] outline-none sm:w-auto"
+                    className="w-full rounded-md border border-[var(--border-card)] bg-[var(--card-bg)] px-2 py-1 text-sm text-[var(--text-semiwhite)] outline-none"
                   >
                     {ASSIGNMENT_TYPE_VALUES.map((type) => (
                       <option key={type} value={type}>
@@ -675,6 +769,56 @@ export function DashboardAssignmentsPage() {
               </div>
             </div>
           )}
+        </div>
+      )}
+
+      {isSubjectEditorOpen && (
+        <div
+          className="fixed inset-0 z-[60] bg-[rgba(0,0,0,0.30)]"
+          onClick={() => {
+            if (!isSaving) {
+              setIsSubjectEditorOpen(false);
+              setSubjectEditorError(null);
+            }
+          }}
+        >
+          <div
+            className="fixed left-[calc(3.5rem+0.75rem)] right-3 top-1/2 z-[70] w-auto -translate-y-1/2 rounded-2xl border border-[var(--border-card)] bg-[var(--card-bg-notp)] p-5 md:top-1/2 md:left-1/2 md:right-auto md:bottom-auto md:w-[360px] md:-translate-x-1/2 md:-translate-y-1/2 md:rounded-xl"
+            onClick={(event) => event.stopPropagation()}
+          >
+            <h3 className="text-lg font-semibold text-[var(--text-white)]">Nový předmět</h3>
+            <input
+              type="text"
+              value={draftSubjectName}
+              onChange={(event) => setDraftSubjectName(event.target.value)}
+              placeholder="Název předmětu"
+              className="mt-4 w-full border-b border-[var(--border-card)] bg-transparent pb-2 text-[var(--text-semiwhite)] outline-none placeholder:text-[var(--text-darkgray)]"
+            />
+            {subjectEditorError && (
+              <p className="mt-2 text-sm text-red-400">{subjectEditorError}</p>
+            )}
+            <div className="mt-5 flex flex-col-reverse gap-3 sm:flex-row sm:justify-start">
+              <button
+                type="button"
+                onClick={() => {
+                  setIsSubjectEditorOpen(false);
+                  setSubjectEditorError(null);
+                }}
+                disabled={isSaving}
+                className="cursor-pointer rounded-lg border border-[var(--border-card)] px-3 py-1.5 text-sm text-[var(--text-semiwhite)] transition-opacity hover:opacity-80 disabled:opacity-50"
+              >
+                Zrušit
+              </button>
+              <button
+                type="button"
+                onClick={handleCreateSubjectAndSave}
+                disabled={isSaving}
+                className="cursor-pointer rounded-lg bg-[var(--color-primary)] px-3 py-1.5 text-sm text-black transition-opacity hover:opacity-90 disabled:opacity-50"
+              >
+                {isSaving ? "Ukládám..." : "Vytvořit a uložit"}
+              </button>
+            </div>
+          </div>
         </div>
       )}
     </div>
