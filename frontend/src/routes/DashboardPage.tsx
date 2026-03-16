@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import {
   createRoute,
   Outlet,
@@ -10,9 +11,17 @@ import "../assets/css/index.css";
 import { rootRoute } from "./rootRoute";
 import { DashboardNavBar } from "../components/DashboardNavBar";
 import { checkAuthToken } from "./rootRoute";
+import { DashboardProfilePage } from "./DashboardProfilePage";
+import { DashboardNotesPage } from "./DashboardNotesPage";
+import { DashboardLoader } from "../components/DashboardLoader";
+import { DashboardNotesProvider } from "../context/DashboardNotesContext";
+import { DashboardAssignmentsPage } from "./DashboardAssignmentsPage";
+import {
+  getSelectedDashboardId,
+  setSelectedDashboardId,
+} from "../utils/selectedDashboard";
 
 import { DashboardOverview } from "../components/DashboardOverview";
-import { useState } from "react";
 
 const route = createRoute({
   getParentRoute: () => rootRoute,
@@ -33,18 +42,38 @@ const route = createRoute({
 const overallRoute = createRoute({
   getParentRoute: () => route,
   path: "/",
+  beforeLoad: () => {
+    const selectedDashboardId = getSelectedDashboardId();
+
+    throw redirect({
+      to: selectedDashboardId ? "/dashboard/$classId" : "/classes",
+      ...(selectedDashboardId
+        ? { params: { classId: selectedDashboardId } }
+        : {}),
+    });
+  },
   component: SectionLayout,
 });
 
 const notesRoute = createRoute({
   getParentRoute: () => route,
   path: "notes",
-  component: SectionLayout, // TODO: Replace with actual Notes component
+  component: DashboardNotesPage, // TODO: Replace with actual Notes component
+});
+const noteRoute = createRoute({
+  getParentRoute: () => route,
+  path: "notes/$noteId",
+  component: DashboardNotePage,
+});
+const notesSubjectRoute = createRoute({
+  getParentRoute: () => route,
+  path: "notes/subj/$subjectId",
+  component: DashboardSubjectNotesPage,
 });
 const tasksRoute = createRoute({
   getParentRoute: () => route,
   path: "todo",
-  component: SectionLayout, // TODO: Replace with actual To-do component
+  component: DashboardAssignmentsPage,
 });
 const calendarRoute = createRoute({
   getParentRoute: () => route,
@@ -59,7 +88,7 @@ const settingsRoute = createRoute({
 const profileRoute = createRoute({
   getParentRoute: () => route,
   path: "profile",
-  component: SectionLayout, // TODO: Replace with actual Profile component
+  component: DashboardProfilePage,
 });
 
 const classDetailRoute = createRoute({
@@ -98,37 +127,82 @@ const classDetailRoute = createRoute({
 
 function DashboardLayout() {
   const { userData } = route.useRouteContext();
-  const [isNavExpanded, setIsNavExpanded] = useState(true);
-  const marginClass = isNavExpanded ? "ml-48" : "ml-14 md:ml-18";
+  const getStoredProfile = () => {
+    const raw = localStorage.getItem("user_profile");
+    if (!raw) {
+      return null;
+    }
+    try {
+      return JSON.parse(raw) as { username?: string };
+    } catch {
+      return null;
+    }
+  };
+  const [profileUsername, setProfileUsername] = useState(
+    userData?.username ?? getStoredProfile()?.username ?? ""
+  );
+
+  useEffect(() => {
+    setProfileUsername(userData?.username ?? getStoredProfile()?.username ?? "");
+  }, [userData]);
+
+  useEffect(() => {
+    const handler = (event: Event) => {
+      const detail = (event as CustomEvent).detail as { username?: string } | undefined;
+      if (detail?.username) {
+        setProfileUsername(detail.username);
+      }
+    };
+    window.addEventListener("user-profile-updated", handler);
+    return () => window.removeEventListener("user-profile-updated", handler);
+  }, []);
 
   return (
-    <>
-      <DashboardNavBar
-        username={userData ? userData.username : ""}
-        isExpanded={isNavExpanded}
-        onToggle={setIsNavExpanded}
-      />
-      <main
-        className={`${marginClass} pt-6 pb-6 px-6 h-screen transition-all duration-200`}
-      >
-        <Outlet />
-      </main>
-    </>
+    <DashboardNotesProvider>
+      <>
+        <DashboardNavBar username={profileUsername} />
+        <main className="relative z-0 flex min-h-screen justify-center p-6 ml-[72px]">
+          <DashboardLoader />
+          <Outlet />
+        </main>
+      </>
+    </DashboardNotesProvider>
   );
 }
 
 function SectionLayout() {
-  const { userData } = route.useRouteContext();
   return (
     <>
-      <DashboardOverview username={userData ? userData.username : ""} />
+      <div className="flex flex-col justify-center items-center">
+        <h1 className="text-2xl font-semibold">Dashboard</h1>
+        <p className="text-gray-500">
+          Protected dashboard placeholder. Users must be authenticated to view
+          this route.
+        </p>
+      </div>
+      
     </>
   );
+}
+
+function DashboardSubjectNotesPage() {
+  return (
+    <></>
+  );
+}
+
+function DashboardNotePage() {
+  return <></>;
 }
 
 function ClassDetailLayout() {
   const { userData } = route.useRouteContext();
   const { className } = classDetailRoute.useRouteContext();
+  const { classId } = classDetailRoute.useParams();
+
+  useEffect(() => {
+    setSelectedDashboardId(classId);
+  }, [classId]);
 
   return (
     <>
@@ -143,6 +217,8 @@ function ClassDetailLayout() {
 export const dashboardRouteTree = route.addChildren([
   overallRoute,
   notesRoute,
+  noteRoute,
+  notesSubjectRoute,
   profileRoute,
   calendarRoute,
   tasksRoute,

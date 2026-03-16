@@ -3,10 +3,11 @@ import { Link } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEllipsisVertical } from "@fortawesome/free-solid-svg-icons";
+import { setSelectedDashboardId } from "../utils/selectedDashboard";
 type Props = {
   title: string;
   onDelete?: () => void;
-  classId?: number;
+  classId?: string;
   isAdmin?: boolean;
   showAlert?: (title: string, message: string) => void;
 };
@@ -113,7 +114,14 @@ export function ClassCard({
     .toUpperCase();
 
   return (
-    <Link to={`/dashboard/${classId}`}>
+    <Link
+      to={`/dashboard/${classId}`}
+      onClick={() => {
+        if (classId) {
+          setSelectedDashboardId(classId);
+        }
+      }}
+    >
       <div
         ref={containerRef}
         className="relative w-full h-full p-4 bg-[#272727] rounded-lg shadow-lg hover:shadow-xl hover:scale-99 transition duration-150 flex flex-col justify-center items-center gap-8 hover:cursor-pointer"
