@@ -49,7 +49,7 @@ export const LandingPage = () => {
             StudyDash – přehled o studiu
           </h1>
           <p className="pt-2 text-center text-lg font-semibold sm:pt-4 sm:text-xl md:text-2xl">
-            Vše důležité ze školy na jednom místě
+            Třídy, předměty, poznámky a úkoly na jednom místě
           </p>
           <div className="flex flex-wrap items-stretch justify-center gap-8 px-3 pt-28">
             <div className="krok flex flex-col items-center md:items-start">
@@ -71,7 +71,7 @@ export const LandingPage = () => {
               <div className="flex items-center">
                 <img
                   loading="lazy"
-                  src="/web_images/Notebook.svg"
+                  src="/web_images/landing-academic.svg"
                   alt="Přidej si předměty"
                 />
                 <h3 className="pl-3 text-2xl font-semibold">
@@ -79,15 +79,15 @@ export const LandingPage = () => {
                 </h3>
               </div>
               <p className="pb-4 pt-1 text-center text-xl font-medium md:text-left">
-                Vyber si předměty a začni k nim přidávat poznámky, úkoly i testy
-                – podle sebe.
+                Vytvoř nebo se připoj do třídy, přidej si předměty a měj pro
+                každý z nich vlastní prostor.
               </p>
             </div>
             <div className="krok flex flex-col items-center md:items-start">
               <div className="flex items-center">
                 <img
                   loading="lazy"
-                  src="/web_images/Calendar_Days.svg"
+                  src="/web_images/landing-checklist.svg"
                   alt="Nic ti neuteče"
                 />
                 <h3 className="pl-3 text-2xl font-semibold">
@@ -95,8 +95,8 @@ export const LandingPage = () => {
                 </h3>
               </div>
               <p className="pb-4 pt-1 text-center text-xl font-medium md:text-left">
-                Sleduj termíny, testy, změny v rozvrhu i školní akce – přehledně
-                a bez stresu.
+                V dashboardu máš přehled o úkolech, testech i termínech, takže
+                víš, co tě čeká.
               </p>
             </div>
           </div>
@@ -107,7 +107,7 @@ export const LandingPage = () => {
             Co ti StudyDash umožní
           </h2>
           <p className="pt-2 text-center text-lg font-semibold sm:pt-4 sm:text-xl md:text-2xl">
-            Víc než jen přehled – tvoje školní paměť
+            Místo, kde máš studium pod kontrolou
           </p>
 
           <div className="vyhody flex flex-wrap items-center justify-center gap-8 px-5 pt-28">
@@ -115,14 +115,14 @@ export const LandingPage = () => {
               <img
                 loading="lazy"
                 src="/web_images/Note_Edit.svg"
-                alt="Sdílej zápisky"
+                alt="Poznámky podle předmětů"
               />
               <h3 className="text-xl font-semibold text-[var(--color-primary)]">
-                Sdílej zápisky a pomáhej ostatním
+                Poznámky rozdělené podle předmětů
               </h3>
               <p className="pt-1 text-lg text-[var(--color-text)]">
-                Nahraj své poznámky a zpřístupni je spolužákům. Vše přehledně
-                podle předmětu, tématu a data.
+                Předměty se načítají pro vybranou třídu a můžeš si k nim
+                vytvářet vlastní poznámky v přehledném rozhraní.
               </p>
             </div>
 
@@ -130,44 +130,44 @@ export const LandingPage = () => {
               <img
                 loading="lazy"
                 src="/web_images/Calendar_Check.svg"
-                alt="Přehled o testech"
+                alt="Úkoly a testy"
               />
               <h3 className="text-xl font-semibold text-[var(--color-primary)]">
-                Měj přehled o testech a úkolech
+                Úkoly a testy na jednom místě
               </h3>
               <p className="pt-1 text-lg text-[var(--color-text)]">
-                Všechny termíny testů a úkolů na jednom místě. Připomeneme ti,
-                co se blíží, takže tě nic nezaskočí.
+                To-do sekce umožňuje přidávat a spravovat úkoly i
+                testy v rámci konkrétní třídy.
+              </p>
+            </div>
+
+            <div className="vyhoda flex-2 max-w-xs border border-[rgba(81,83,89,1)] p-4">
+                <img
+                loading="lazy"
+                src="/web_images/landing-academic.svg"
+                alt="Třídy a dashboardy"
+              />
+              <h3 className="text-xl font-semibold text-[var(--color-primary)]">
+                Třídy, dashboardy a rychlé přepínání
+              </h3>
+              <p className="pt-1 text-lg text-[var(--color-text)]">
+                Vytvoř si třídu nebo se do ní připoj přes kód a pracuj vždy v
+                dashboardu ve správné skupině.
               </p>
             </div>
 
             <div className="vyhoda flex-2 max-w-xs border border-[rgba(81,83,89,1)] p-4">
               <img
                 loading="lazy"
-                src="/web_images/Arrows_Reload_01.svg"
-                alt="Změny v rozvrhu"
+                src="/web_images/landing-settings.svg"
+                alt="Profil a účet"
               />
               <h3 className="text-xl font-semibold text-[var(--color-primary)]">
-                Změny v rozvrhu? Hned o nich víš
+                Správa profilu a účtu
               </h3>
               <p className="pt-1 text-lg text-[var(--color-text)]">
-                Změnila se ti hodina? Rozvrh se změnil? StudyDash tě včas
-                upozorní a automaticky upraví, co je potřeba.
-              </p>
-            </div>
-
-            <div className="vyhoda flex-2 max-w-xs border border-[rgba(81,83,89,1)] p-4">
-              <img
-                loading="lazy"
-                src="/web_images/Users_Group.svg"
-                alt="Školní akce"
-              />
-              <h3 className="text-xl font-semibold text-[var(--color-primary)]">
-                Školní akce? Už o žádnou nepřijdeš
-              </h3>
-              <p className="pt-1 text-lg text-[var(--color-text)]">
-                Výlet, projekt nebo den otevřených dveří – nic ti neunikne.
-                Všechno máš přehledně na jednom místě.
+                V aplikaci lze upravovat profilové údaje a spravovat svůj
+                účet bez přecházení jinam.
               </p>
             </div>
           </div>
@@ -178,7 +178,7 @@ export const LandingPage = () => {
             Tvoje poznámky, tvůj styl.
           </h2>
           <p className="pt-2 text-center text-lg font-semibold sm:pt-4 sm:text-xl md:text-2xl">
-            StudyDash se přizpůsobí tomu, co právě potřebuješ.
+            Editor ti dá přesně ty nástroje, které při psaní poznámek potřebuješ.
           </p>
 
           <div className="funkcee flex flex-wrap items-center justify-center gap-8 pt-28">
@@ -186,78 +186,78 @@ export const LandingPage = () => {
               <div className="flex items-center">
                 <img
                   loading="lazy"
-                  src="/web_images/mic-new.svg"
+                  src="/web_images/landing-bold.svg"
                   className="w-16"
-                  alt="Převod řeči na text"
+                  alt="Formátování textu"
                 />
                 <h3 className="pl-3 text-2xl font-semibold">
-                  Převod řeči na text
+                  Formátování textu
                 </h3>
               </div>
               <p className="py-4 text-xl italic">
-                Učitel mluví, poznámky se zapisují samy.
+                Tučné písmo, kurzíva, podtržení i přeškrtnutí přímo v editoru.
               </p>
             </div>
             <div className="funkce max-w-s rounded-3xl p-7">
               <div className="flex items-center">
                 <img
                   loading="lazy"
-                  src="/web_images/bulb-new.svg"
+                  src="/web_images/landing-link.svg"
                   className="w-16"
-                  alt="Zvýrazňování textu"
+                  alt="Zarovnání a odkazy"
                 />
                 <h3 className="pl-3 text-2xl font-semibold">
-                  Zvýrazňování textu
+                  Zarovnání a odkazy
                 </h3>
               </div>
               <p className="py-4 text-xl italic">
-                Používej barevné zvýraznění a stylizaci textu.
+                Text si srovnáš podle potřeby a doplníš ho o odkazy.
               </p>
             </div>
             <div className="funkce max-w-s rounded-3xl p-7">
               <div className="flex items-center">
                 <img
                   loading="lazy"
-                  src="/web_images/img-new.svg"
+                  src="/web_images/landing-upload.svg"
                   className="w-16"
-                  alt="Vkládání obrázků"
+                  alt="Přílohy"
                 />
                 <h3 className="pl-3 text-2xl font-semibold">
-                  Vkládání obrázků
+                  Přílohy k poznámkám
                 </h3>
               </div>
               <p className="py-4 text-xl italic">
-                Vkládej obrázky a diagramy přímo do poznámek.
+                Obrázky, soubory i další materiály přidáš přímo k poznámce.
               </p>
             </div>
             <div className="funkce max-w-s rounded-3xl p-7">
               <div className="flex items-center">
                 <img
                   loading="lazy"
-                  src="/web_images/list-new.svg"
+                  src="/web_images/landing-list.svg"
                   className="w-16"
-                  alt="Strukturované poznámky"
+                  alt="Seznamy a citace"
                 />
                 <h3 className="pl-3 text-2xl font-semibold">
-                  Strukturované poznámky
+                  Seznamy a citace
                 </h3>
               </div>
               <p className="py-4 text-xl italic">
-                Vytvářej seznamy, odrážky a tabulky pro dokonalý přehled.
+                Odrážky, číslované seznamy a citace pomůžou udržet obsah jasný a čitelný.
               </p>
             </div>
             <div className="funkce max-w-s rounded-3xl p-7">
               <div className="flex items-center">
                 <img
                   loading="lazy"
-                  src="/web_images/code-new.svg"
+                  src="/web_images/landing-code.svg"
                   className="w-16"
-                  alt="Vkládání kódu"
+                  alt="Bloky kódu"
                 />
-                <h3 className="pl-3 text-2xl font-semibold">Vkládání kódu</h3>
+                <h3 className="pl-3 text-2xl font-semibold">Bloky kódu</h3>
               </div>
               <p className="py-4 text-xl italic">
-                Vkládej zdrojový kód s podporou zvýraznění syntaxe.
+                Pro technické předměty už editor obsahuje i samostatný blok pro kód.
               </p>
             </div>
           </div>
@@ -290,7 +290,7 @@ export const LandingPage = () => {
 
       <footer className="flex h-16 w-full items-center justify-center mt-8">
         <p className="text-center text-md font-semibold">
-          © 2025 StudyDash. Všechna práva vyhrazena.
+          © 2026 StudyDash. Všechna práva vyhrazena.
         </p>
       </footer>
     </div>

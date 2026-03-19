@@ -91,23 +91,59 @@ html.landing-theme {
 
 .landing-page .vyhody {
     --webkit-column-count: 2;
+    align-items: stretch;
 }
 
 .landing-page .vyhoda {
     border: 1px solid rgba(81, 83, 89, 1);
     max-width: 324px;
     min-width: 303px;
+    display: flex;
+    flex-direction: column;
+    align-self: stretch;
+}
+
+.landing-page .vyhoda h3 {
+    margin-top: 0.75rem;
+}
+
+.landing-page .vyhoda p {
+    flex: 1;
+}
+
+.landing-page .vyhoda img {
+    width: min(66px, 100%);
+    max-width: 66px;
+    max-height: 66px;
+    height: auto;
+    flex-shrink: 0;
 }
 
 .landing-page .funkcee {
     max-width: 1500px;
     margin-right: auto;
     margin-left: auto;
+    align-items: stretch;
 }
 
 .landing-page .funkce {
     background-color: var(--color-darkgray);
     width: 400px;
+    display: flex;
+    flex-direction: column;
+    align-self: stretch;
+}
+
+.landing-page .funkce img {
+    width: min(72px, 100%);
+    max-width: 72px;
+    max-height: 72px;
+    height: auto;
+    flex-shrink: 0;
+}
+
+.landing-page .funkce p {
+    flex: 1;
 }
 
 .landing-page .flex-2 {
