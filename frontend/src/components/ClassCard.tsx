@@ -118,11 +118,12 @@ export function ClassCard({
     .toUpperCase();
 
   return (
-    <Link to={`/dashboard/${classId}`}>
-      <div
-        ref={containerRef}
-        className="relative w-full h-full p-4 bg-[#272727] rounded-lg shadow-lg hover:shadow-xl hover:scale-99 transition duration-150 flex flex-col justify-center items-center gap-8 hover:cursor-pointer"
-      >
+    <>
+      <Link to={`/dashboard/${classId}`}>
+        <div
+          ref={containerRef}
+          className="relative w-full h-full p-4 bg-[#272727] rounded-lg shadow-lg hover:shadow-xl hover:scale-99 transition duration-150 flex flex-col justify-center items-center gap-8 hover:cursor-pointer"
+        >
         {(onDelete || isAdmin) && (
           <button
             type="button"
@@ -187,7 +188,8 @@ export function ClassCard({
         <div className="text-white text-2xl font-semibold truncate text-center">
           {title}
         </div>
-      </div>
+        </div>
+      </Link>
 
       {confirmDelete && (
         <div
@@ -241,6 +243,6 @@ export function ClassCard({
           </div>
         </div>
       )}
-    </Link>
+    </>
   );
 }
