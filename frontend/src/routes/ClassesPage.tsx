@@ -6,8 +6,10 @@ import { ClassCard } from "../components/ClassCard";
 import { ClassesNavBar } from "../components/ClassesNavBar";
 import { DashboardLoader } from "../components/DashboardLoader";
 import { getSelectedDashboardId } from "../utils/selectedDashboard";
-
+import { Link } from "@tanstack/react-router";
 import { Alert, Input, Spinner } from "@heroui/react";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faLink } from "@fortawesome/free-solid-svg-icons";
 
 const route = createRoute({
   getParentRoute: () => rootRoute,
