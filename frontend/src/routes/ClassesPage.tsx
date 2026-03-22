@@ -4,6 +4,8 @@ import { rootRoute, checkAuthToken } from "./rootRoute";
 import { useEffect, useState } from "react";
 import { ClassCard } from "../components/ClassCard";
 import { ClassesNavBar } from "../components/ClassesNavBar";
+import { DashboardLoader } from "../components/DashboardLoader";
+import { getSelectedDashboardId } from "../utils/selectedDashboard";
 
 import { Alert, Input, Spinner } from "@heroui/react";
 
@@ -24,7 +26,7 @@ const route = createRoute({
 });
 
 type ClassItem = {
-  id: number;
+  id: string;
   name: string;
   inviteCode: string;
   isAdmin: boolean;
@@ -39,11 +41,15 @@ export function ClassesPage() {
   const [inviteCode, setInviteCode] = useState("");
   const [loading, setLoading] = useState(false);
   const [isLoadingClasses, setIsLoadingClasses] = useState(true);
-  const [isNavExpanded, setIsNavExpanded] = useState(true);
+  const [isNavExpanded, setIsNavExpanded] = useState(false);
   const [alerts, setAlerts] = useState<
     Array<{ id: number; title: string; message: string }>
   >([]);
   const [nextAlertId, setNextAlertId] = useState(0);
+  const selectedDashboardId = getSelectedDashboardId();
+  const dashboardLink = selectedDashboardId
+    ? `/dashboard/${selectedDashboardId}`
+    : "/dashboard";
 
   const showAlert = (title: string, message: string) => {
     const id = nextAlertId;
@@ -137,7 +143,7 @@ export function ClassesPage() {
     }
   };
 
-  const deleteClass = async (id: number) => {
+  const deleteClass = async (id: string) => {
     const token = getToken();
     if (!token) {
       return;
@@ -238,10 +244,33 @@ export function ClassesPage() {
       <article
         className={`bg-[#141414] min-h-screen transition-all duration-200 ${isNavExpanded ? "ml-18 sm:ml-48" : "ml-18 md:ml-22"}`}
       >
-        <header className="flex items-center justify-between p-4 sm:p-6 pt-4">
-          <h1 className="text-2xl sm:text-4xl font-semibold text-text">
-            Třídy
-          </h1>
+        <DashboardLoader
+          forceVisible={isLoadingClasses}
+          leftOffsetClassName={isNavExpanded ? "left-48" : "left-14 md:left-18"}
+        />
+        <header className="flex items-center justify-between p-6 pt-4">
+          <h1 className="text-4xl font-semibold text-text">Třídy</h1>
+
+          <Link to={dashboardLink} className="text-white">
+            provizorní odkaz na dashboard zde
+          </Link>
+
+          <div className="flex gap-2">
+            <button
+              type="button"
+              onClick={() => setShowJoinModal(true)}
+              className="px-4 py-2 bg-[#18b4a6] text-white rounded-md shadow-lg hover:scale-95"
+            >
+              <FontAwesomeIcon icon={faLink} />
+            </button>
+            <button
+              type="button"
+              onClick={() => setShowCreateModal(true)}
+              className="inline-flex items-center justify-center w-12 h-12 rounded-md bg-[var(--color-primary)] text-white shadow-lg hover:scale-95"
+            >
+              <span className="text-2xl font-bold">+</span>
+            </button>
+          </div>
         </header>
 
         <main
