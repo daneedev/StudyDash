@@ -31,10 +31,10 @@ export const ClassesNavBar = ({
       setInternalIsExpanded(newState);
     }
   };
-  const navWidthClasses = isExpanded ? "w-48" : "w-14 md:w-18";
-  const visibilityClass = isExpanded ? "block" : "hidden";
+  const navWidthClasses = isExpanded ? "w-14 sm:w-48" : "w-14 md:w-18";
+  const visibilityClass = isExpanded ? "hidden sm:block" : "hidden";
   const isExpandedClass = isExpanded
-    ? "w-[160px] justify-start gap-3 pl-3"
+    ? "w-[38px] sm:w-[160px] justify-center sm:justify-start sm:gap-3 sm:pl-3"
     : "w-[38px]";
   const toggleIcon = isExpanded
     ? "/web_images/Arrow_Left.svg"
