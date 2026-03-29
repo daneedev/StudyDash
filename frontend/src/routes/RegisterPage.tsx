@@ -52,7 +52,7 @@ function RegisterPage() {
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-[#1c1c1c]">
-      <Snowfall snowflakeCount={100} />
+      {/* <Snowfall snowflakeCount={100} /> */}
       <div className="w-full max-w-md space-y-8 rounded-lg bg-[#272727] p-8 shadow-lg">
         <div className="flex flex-col items-center">
           <img
