@@ -253,26 +253,10 @@ export function ClassesPage() {
         <header className="flex items-center justify-between p-6 pt-4">
           <h1 className="text-4xl font-semibold text-text">Třídy</h1>
 
-          <Link to={dashboardLink} className="text-white">
-            provizorní odkaz na dashboard zde
-          </Link>
+          
 
-          <div className="flex gap-2">
-            <button
-              type="button"
-              onClick={() => setShowJoinModal(true)}
-              className="px-4 py-2 bg-[#18b4a6] text-white rounded-md shadow-lg hover:scale-95"
-            >
-              <FontAwesomeIcon icon={faLink} />
-            </button>
-            <button
-              type="button"
-              onClick={() => setShowCreateModal(true)}
-              className="inline-flex items-center justify-center w-12 h-12 rounded-md bg-[var(--color-primary)] text-white shadow-lg hover:scale-95"
-            >
-              <span className="text-2xl font-bold">+</span>
-            </button>
-          </div>
+          
+          
         </header>
 
         <main
