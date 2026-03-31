@@ -208,6 +208,7 @@ function ClassDetailLayout() {
     <>
       <DashboardOverview
         username={userData ? userData.username : ""}
+        classId={classId}
         className={className || undefined}
       />
     </>
