@@ -1,16 +1,36 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post, Put, Req, UseGuards } from "@nestjs/common";
-import { ClassesService } from "./classes.service";
-import { ClassDto } from "src/dto/";
-import { AuthGuard } from "src/auth/auth.guard";
-import { ApiBearerAuth, ApiBody, ApiOperation, ApiParam, ApiResponse } from "@nestjs/swagger";
-import { ClassesAdminGuard, ClassesGuard } from "./classes.guard";
-import { InvitesService } from "./invites.service";
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Patch,
+  Post,
+  Put,
+  Req,
+  UseGuards,
+} from '@nestjs/common';
+import { ClassesService } from './classes.service';
+import { ClassDto } from 'src/dto/';
+import { AuthGuard } from 'src/auth/auth.guard';
+import {
+  ApiBearerAuth,
+  ApiBody,
+  ApiOperation,
+  ApiParam,
+  ApiResponse,
+} from '@nestjs/swagger';
+import { ClassesAdminGuard, ClassesGuard } from './classes.guard';
+import { InvitesService } from './invites.service';
 
 @Controller('classes')
 @ApiBearerAuth()
 @UseGuards(AuthGuard)
 export class ClassesController {
-  constructor(private classesService: ClassesService, private invitesService: InvitesService) {}
+  constructor(
+    private classesService: ClassesService,
+    private invitesService: InvitesService,
+  ) {}
   // Controller methods will go here
   @ApiOperation({ summary: 'Get list of all users classes' })
   @ApiResponse({
@@ -37,7 +57,8 @@ export class ClassesController {
       message: 'Invalid or missing authorization token',
     },
   })
-  @Get() getClasses(@Req() req) {
+  @Get()
+  getClasses(@Req() req) {
     return this.classesService.getAllUserClasses(req.user);
   }
 
@@ -84,7 +105,8 @@ export class ClassesController {
     },
   })
   @ApiParam({ name: 'id', type: String, description: 'Class ID' })
-  @Get(':id') getClassById(@Param('id') id: string) {
+  @Get(':id')
+  getClassById(@Param('id') id: string) {
     return this.classesService.getClassById(id);
   }
 
@@ -111,7 +133,8 @@ export class ClassesController {
       message: 'Invalid or missing authorization token',
     },
   })
-  @Post() createClass(@Body() dto: ClassDto, @Req() req) {
+  @Post()
+  createClass(@Body() dto: ClassDto, @Req() req) {
     return this.classesService.createClass(dto, req.user);
   }
 
@@ -149,7 +172,8 @@ export class ClassesController {
     },
   })
   @ApiParam({ name: 'id', type: String, description: 'Class ID' })
-  @Patch(':id') updateClass(@Body() dto: ClassDto, @Param('id') id: string) {
+  @Patch(':id')
+  updateClass(@Body() dto: ClassDto, @Param('id') id: string) {
     return this.classesService.updateClass(dto, id);
   }
 
@@ -186,10 +210,10 @@ export class ClassesController {
       message: 'Admin access to class denied',
     },
   })
-  
   @UseGuards(ClassesAdminGuard)
   @ApiParam({ name: 'id', type: String, description: 'Class ID' })
-  @Delete(':id') deleteClass(@Param('id') id: string) {
+  @Delete(':id')
+  deleteClass(@Param('id') id: string) {
     return this.classesService.deleteClass(id);
   }
 
@@ -234,10 +258,11 @@ export class ClassesController {
       message: 'Class not found',
     },
   })
-  @Get(':id/invite') getInviteCode(@Param('id') id: string) {
+  @Get(':id/invite')
+  getInviteCode(@Param('id') id: string) {
     return this.invitesService.getInviteCode(id);
   }
- 
+
   @UseGuards(AuthGuard, ClassesAdminGuard)
   @ApiOperation({ summary: 'Regenerate invite code for a class by ID' })
   @ApiParam({ name: 'id', type: String, description: 'Class ID' })
@@ -279,7 +304,8 @@ export class ClassesController {
       message: 'Class not found',
     },
   })
-  @Put(':id/invite') regenerateInviteCode(@Param('id') id: string) {
+  @Put(':id/invite')
+  regenerateInviteCode(@Param('id') id: string) {
     return this.invitesService.regenerateInviteCode(id);
   }
 
@@ -296,8 +322,8 @@ export class ClassesController {
           id: 1,
           classId: 2,
           userId: 3,
-          role: 'member'
-        }
+          role: 'member',
+        },
       },
     },
   })
@@ -319,7 +345,8 @@ export class ClassesController {
       message: 'Invalid invite code',
     },
   })
-  @Post('join/:inviteCode') joinClassViaInviteCode(@Param('inviteCode') inviteCode: string, @Req() req) {
+  @Post('join/:inviteCode')
+  joinClassViaInviteCode(@Param('inviteCode') inviteCode: string, @Req() req) {
     return this.invitesService.joinClassViaInviteCode(inviteCode, req.user);
   }
 
@@ -352,7 +379,28 @@ export class ClassesController {
       message: 'Class not found or user not part of the class',
     },
   })
-  @Post(':id/leave') leaveClass(@Param('id') id: string, @Req() req) {
+  @Post(':id/leave')
+  leaveClass(@Param('id') id: string, @Req() req) {
     return this.invitesService.leaveClass(id, req.user);
+  }
+
+  @UseGuards(ClassesAdminGuard)
+  @ApiOperation({ summary: 'Kick a user from a class by ID' })
+  @ApiParam({ name: 'id', type: String, description: 'Class ID' })
+  @ApiBody({
+    schema: {
+      type: 'object',
+      properties: {
+        userId: {
+          type: 'string',
+          description: 'UUID of the user to be kicked',
+          example: 'UUID string of the user',
+        },
+      },
+    },
+  })
+  @Post(':id/kick')
+  kickUser(@Param('id') id: string, @Body('userId') userId: string) {
+    return this.invitesService.kickUserFromClass(id, userId);
   }
 }
