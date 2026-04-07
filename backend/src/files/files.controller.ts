@@ -1,15 +1,16 @@
 import {
+  Body,
   Controller,
+  Delete,
+  Get,
   Param,
+  Patch,
   Post,
   Req,
+  Res,
   UploadedFile,
   UseGuards,
   UseInterceptors,
-  Get,
-  Patch,
-  Body,
-  Delete,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import {
@@ -18,6 +19,7 @@ import {
   ApiConsumes,
   ApiOperation,
   ApiParam,
+  ApiProduces,
 } from '@nestjs/swagger';
 import { AuthGuard } from 'src/auth/auth.guard';
 import { FilesService } from './files.service';
@@ -102,5 +104,17 @@ export class FilesController {
   })
   deleteFile(@Param('fileId') fileId: string, @Req() req) {
     return this.filesService.deleteFile(fileId, req.user.id);
+  }
+
+  @Get('/:fileId/download')
+  @ApiOperation({ summary: 'Download a file attachment' })
+  @ApiProduces('application/octet-stream')
+  @ApiParam({
+    name: 'fileId',
+    description: 'ID of the file to download',
+  })
+  async downloadFile(@Param('fileId') fileId: string, @Req() req, @Res() res) {
+    const file = await this.filesService.downloadFile(fileId, req.user.id);
+    return res.download(file.filePath, file.originalName);
   }
 }

@@ -199,4 +199,58 @@ export class FilesService {
     }
     return { message: 'File deleted successfully' };
   }
+
+  async downloadFile(fileId: string, userId: string) {
+    const file = await this.prisma.file.findUnique({
+      where: { id: fileId },
+      select: {
+        originalName: true,
+        mimetype: true,
+        note: {
+          select: {
+            id: true,
+            subjectId: true,
+          },
+        },
+      },
+    });
+    if (!file) {
+      throw new HttpException('File not found', 404);
+    }
+
+    const isInClass = await this.prisma.classUser.findFirst({
+      where: {
+        userId,
+        class: {
+          subjects: {
+            some: {
+              notes: {
+                some: {
+                  files: {
+                    some: { id: fileId },
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+    });
+    if (!isInClass) {
+      throw new HttpException('Access to file denied', 403);
+    }
+
+    const filePath = path.join(
+      process.cwd(),
+      `../${process.env.UPLOAD_DIR}/${file.note.subjectId}/${file.note.id}/${fileId}${path.extname(file.originalName)}`,
+    );
+    if (!fs.existsSync(filePath)) {
+      throw new HttpException('File not found on server', 404);
+    }
+    return {
+      filePath,
+      originalName: file.originalName,
+      mimetype: file.mimetype,
+    };
+  }
 }
