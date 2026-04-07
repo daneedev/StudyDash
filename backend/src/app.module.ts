@@ -8,9 +8,20 @@ import { ClassesModule } from './classes/classes.module';
 import { AssignmentsModule } from './assignments/assignments.module';
 import { SubjectsModule } from './subjects/subjects.module';
 import { PrismaModule } from './prisma/prisma.module';
+import { FilesModule } from './files/files.module';
+import { NotesModule } from './notes/notes.module';
 
 @Module({
-  imports: [PrismaModule, AuthModule, UsersModule, ClassesModule, AssignmentsModule, SubjectsModule],
+  imports: [
+    PrismaModule,
+    AuthModule,
+    UsersModule,
+    ClassesModule,
+    AssignmentsModule,
+    SubjectsModule,
+    NotesModule,
+    FilesModule,
+  ],
   providers: [
     {
       provide: APP_INTERCEPTOR,
