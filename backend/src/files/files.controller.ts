@@ -24,6 +24,7 @@ import {
 } from '@nestjs/swagger';
 import { AuthGuard } from 'src/auth/auth.guard';
 import { FilesService } from './files.service';
+import sanitize from 'sanitize-filename';
 
 @UseGuards(AuthGuard)
 @Controller('files')
@@ -50,7 +51,7 @@ export class FilesController {
     description: 'Note not found',
   })
   getFilesByNoteId(@Param('noteId') noteId: string, @Req() req) {
-    return this.filesService.getFilesByNoteId(noteId, req.user.id);
+    return this.filesService.getFilesByNoteId(sanitize(noteId), req.user.id);
   }
 
   @Post('/:noteId')
@@ -95,7 +96,7 @@ export class FilesController {
     @Req() req,
     @Param('noteId') noteId: string,
   ) {
-    return this.filesService.uploadFile(file, req.user.id, noteId);
+    return this.filesService.uploadFile(file, req.user.id, sanitize(noteId));
   }
 
   @Patch('/:fileId')
@@ -138,7 +139,11 @@ export class FilesController {
     @Req() req,
     @Body() body: { name: string },
   ) {
-    return this.filesService.updateFileMetadata(fileId, req.user.id, body.name);
+    return this.filesService.updateFileMetadata(
+      sanitize(fileId),
+      req.user.id,
+      body.name,
+    );
   }
 
   @Delete('/:fileId')
@@ -160,7 +165,7 @@ export class FilesController {
     description: 'File not found',
   })
   deleteFile(@Param('fileId') fileId: string, @Req() req) {
-    return this.filesService.deleteFile(fileId, req.user.id);
+    return this.filesService.deleteFile(sanitize(fileId), req.user.id);
   }
 
   @Get('/:fileId/download')
@@ -183,7 +188,10 @@ export class FilesController {
     description: 'File not found',
   })
   async downloadFile(@Param('fileId') fileId: string, @Req() req, @Res() res) {
-    const file = await this.filesService.downloadFile(fileId, req.user.id);
+    const file = await this.filesService.downloadFile(
+      sanitize(fileId),
+      req.user.id,
+    );
     return res.download(file.filePath, file.originalName);
   }
 }
