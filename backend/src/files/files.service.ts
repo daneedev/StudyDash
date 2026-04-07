@@ -47,6 +47,13 @@ export class FilesService {
       throw new HttpException('Access to note denied', 403);
     }
 
+    if (file.size > (Number(process.env.MAX_FILE_SIZE) || 5) * 1024 * 1024) {
+      throw new HttpException(
+        `File size exceeds the limit of ${process.env.MAX_FILE_SIZE || 5} MB`,
+        400,
+      );
+    }
+
     const sanitizedOriginalName = this.repairFileNameEncoding(
       file.originalname,
     );
