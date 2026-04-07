@@ -20,6 +20,7 @@ import {
   ApiOperation,
   ApiParam,
   ApiProduces,
+  ApiResponse,
 } from '@nestjs/swagger';
 import { AuthGuard } from 'src/auth/auth.guard';
 import { FilesService } from './files.service';
@@ -35,6 +36,18 @@ export class FilesController {
   @ApiParam({
     name: 'noteId',
     description: 'ID of the note to retrieve files for',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Files retrieved successfully',
+  })
+  @ApiResponse({
+    status: 403,
+    description: 'Forbidden',
+  })
+  @ApiResponse({
+    status: 404,
+    description: 'Note not found',
   })
   getFilesByNoteId(@Param('noteId') noteId: string, @Req() req) {
     return this.filesService.getFilesByNoteId(noteId, req.user.id);
@@ -60,6 +73,22 @@ export class FilesController {
   @ApiParam({
     name: 'noteId',
     description: 'ID of the note to attach the file to',
+  })
+  @ApiResponse({
+    status: 201,
+    description: 'File uploaded successfully',
+  })
+  @ApiResponse({
+    status: 400,
+    description: 'Bad request (e.g., missing file, file too large)',
+  })
+  @ApiResponse({
+    status: 403,
+    description: 'Forbidden',
+  })
+  @ApiResponse({
+    status: 404,
+    description: 'Note not found',
   })
   uploadFile(
     @UploadedFile() file: Express.Multer.File,
@@ -88,6 +117,22 @@ export class FilesController {
       },
     },
   })
+  @ApiResponse({
+    status: 200,
+    description: 'File metadata updated successfully',
+  })
+  @ApiResponse({
+    status: 400,
+    description: 'Bad request (e.g., missing name, invalid file ID)',
+  })
+  @ApiResponse({
+    status: 403,
+    description: 'Forbidden',
+  })
+  @ApiResponse({
+    status: 404,
+    description: 'File not found',
+  })
   updateFileMetadata(
     @Param('fileId') fileId: string,
     @Req() req,
@@ -102,6 +147,18 @@ export class FilesController {
     name: 'fileId',
     description: 'ID of the file to delete',
   })
+  @ApiResponse({
+    status: 200,
+    description: 'File deleted successfully',
+  })
+  @ApiResponse({
+    status: 403,
+    description: 'Forbidden',
+  })
+  @ApiResponse({
+    status: 404,
+    description: 'File not found',
+  })
   deleteFile(@Param('fileId') fileId: string, @Req() req) {
     return this.filesService.deleteFile(fileId, req.user.id);
   }
@@ -112,6 +169,18 @@ export class FilesController {
   @ApiParam({
     name: 'fileId',
     description: 'ID of the file to download',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'File downloaded successfully',
+  })
+  @ApiResponse({
+    status: 403,
+    description: 'Forbidden',
+  })
+  @ApiResponse({
+    status: 404,
+    description: 'File not found',
   })
   async downloadFile(@Param('fileId') fileId: string, @Req() req, @Res() res) {
     const file = await this.filesService.downloadFile(fileId, req.user.id);
