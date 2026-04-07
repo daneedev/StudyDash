@@ -27,6 +27,10 @@ export class FilesService {
       throw new HttpException('Note not found', 404);
     }
 
+    if (!file) {
+      throw new HttpException('No file uploaded', 400);
+    }
+
     const isInClass = await this.prisma.classUser.findFirst({
       where: {
         userId,
