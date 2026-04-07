@@ -5,9 +5,9 @@
 // Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
 
 generator client {
-  provider = "prisma-client"
-  output   = "../src/generated/prisma"
-  moduleFormat    = "cjs"
+  provider     = "prisma-client"
+  output       = "../src/generated/prisma"
+  moduleFormat = "cjs"
 }
 
 datasource db {
@@ -33,6 +33,7 @@ model User {
   updatedAt   DateTime     @updatedAt
   assignments Assignment[] @relation("UserAssignments")
   classes     ClassUser[]
+  notes       Note[]
 }
 
 model Class {
@@ -41,9 +42,9 @@ model Class {
   inviteCode  String       @unique
   createdAt   DateTime     @default(now())
   updatedAt   DateTime     @updatedAt
-  assignments Assignment[]
   subjects    Subject[]
   users       ClassUser[]
+  assignments Assignment[]
 }
 
 model ClassUser {
@@ -79,6 +80,32 @@ model Subject {
   classId     String
   class       Class        @relation(fields: [classId], references: [id])
   assignments Assignment[]
+  notes       Note[]
   createdAt   DateTime     @default(now())
   updatedAt   DateTime     @updatedAt
+}
+
+model Note {
+  id        String   @id @default(uuid())
+  subjectId String
+  subject   Subject  @relation(fields: [subjectId], references: [id])
+  authorId  String
+  author    User     @relation(fields: [authorId], references: [id])
+  content   String
+  files     File[]
+  name      String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model File {
+  id           String   @id @default(uuid())
+  originalName String
+  mimetype     String
+  size         Int
+  storage      String   @default("local")
+  noteId       String
+  note         Note     @relation(fields: [noteId], references: [id])
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
 }
