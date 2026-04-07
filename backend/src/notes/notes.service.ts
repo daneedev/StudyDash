@@ -4,10 +4,7 @@ import { PrismaService } from 'src/prisma/prisma.service';
 
 @Injectable()
 export class NotesService {
-  private prisma: PrismaService;
-  constructor() {
-    this.prisma = new PrismaService();
-  }
+  constructor(private readonly prisma: PrismaService) {}
   async getNotesBySubject(subjectId: string, userId: string) {
     const notes = await this.prisma.note.findMany({
       where: { subjectId },
@@ -91,9 +88,13 @@ export class NotesService {
     if (!isInClass) {
       throw new HttpException('Access to note denied', 403);
     }
+    const updateData = {
+      ...(body.name !== undefined ? { name: body.name } : {}),
+      ...(body.content !== undefined ? { content: body.content } : {}),
+    };
     const updatedNote = await this.prisma.note.update({
       where: { id: noteId },
-      data: body,
+      data: updateData,
     });
     return updatedNote;
   }
@@ -124,8 +125,13 @@ export class NotesService {
     if (!isInClass) {
       throw new HttpException('Access to note denied', 403);
     }
-    await this.prisma.note.delete({
-      where: { id: noteId },
-    });
+    await this.prisma.$transaction([
+      this.prisma.file.deleteMany({
+        where: { noteId },
+      }),
+      this.prisma.note.delete({
+        where: { id: noteId },
+      }),
+    ]);
   }
 }

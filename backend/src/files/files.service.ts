@@ -71,12 +71,12 @@ export class FilesService {
       process.cwd(),
       `../${process.env.UPLOAD_DIR}/${note.subjectId}/${noteId}`,
     );
-    fs.mkdirSync(fileDir, { recursive: true });
+    await fs.promises.mkdir(fileDir, { recursive: true });
     const filePath = path.join(
       fileDir,
       newFile.id + path.extname(file.originalname),
     );
-    fs.writeFileSync(filePath, file.buffer);
+    await fs.promises.writeFile(filePath, file.buffer);
 
     return { message: 'File uploaded successfully', file: newFile };
   }
