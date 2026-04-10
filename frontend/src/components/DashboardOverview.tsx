@@ -277,11 +277,11 @@ export function DashboardOverview({
               return (
                 <div
                   key={i}
-                  className={`aspect-square w-full flex items-center justify-center rounded-md ${
+                  className={`aspect-square w-full flex items-center justify-center rounded-md cursor-pointer ${
                     isToday
-                      ? "bg-[#18b4a6] text-white transition-colors duration-150"
+                      ? "bg-[#18b4a6] text-white transition-colors duration-150 "
                       : cell.inMonth
-                        ? "hover:bg-black/5 transition-colors duration-150 text-[#e6e6e6]"
+                        ? "hover:bg-black/3 transition-colors duration-150 text-[#e6e6e6]"
                         : "text-gray-400"
                   }`}
                 >
