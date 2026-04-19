@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
+import { useNavigate, useSearch } from "@tanstack/react-router";
 import { getSelectedDashboardId } from "../utils/selectedDashboard";
 import { useDashboardNotes } from "../context/DashboardNotesContext";
 
@@ -137,6 +138,11 @@ function formatAssignmentDate(date: string): string {
 }
 
 export function DashboardAssignmentsPage() {
+  const navigate = useNavigate({ from: "/dashboard/todo" });
+  const search = useSearch({ from: "/dashboard/todo" }) as {
+    open?: string;
+    create?: string;
+  };
   const { subjects, addSubject } = useDashboardNotes();
   const selectedClassId = resolveSelectedClassId();
   const [assignments, setAssignments] = useState<Assignment[]>([]);
@@ -161,6 +167,7 @@ export function DashboardAssignmentsPage() {
   const [draftSubjectName, setDraftSubjectName] = useState("");
   const [subjectEditorError, setSubjectEditorError] = useState<string | null>(null);
   const draftDatePickerRef = useRef<HTMLInputElement | null>(null);
+  const newDeadlineButtonRef = useRef<HTMLButtonElement | null>(null);
 
   useEffect(() => {
     if (!isEditorOpen || editingAssignmentId !== null || draftSubjectId || subjects.length === 0) {
@@ -229,6 +236,54 @@ export function DashboardAssignmentsPage() {
     loadAssignments();
     return () => controller.abort();
   }, [selectedClassId]);
+
+  useEffect(() => {
+    const requestedId = search?.open;
+    if (!requestedId) {
+      return;
+    }
+
+    if (isLoading || assignments.length === 0) {
+      return;
+    }
+
+    if (isEditorOpen) {
+      return;
+    }
+
+    const match = assignments.find(
+      (assignment) => String(assignment.id) === String(requestedId),
+    );
+
+    if (match) {
+      openAssignmentEditor(match);
+      navigate({ to: "/dashboard/todo", search: {}, replace: true });
+    }
+  }, [assignments, isEditorOpen, isLoading, search?.open]);
+
+  useEffect(() => {
+    if (search?.open) {
+      return;
+    }
+
+    const shouldCreate = search?.create;
+    if (!shouldCreate) {
+      return;
+    }
+
+    if (isLoading || isEditorOpen) {
+      return;
+    }
+
+    newDeadlineButtonRef.current?.scrollIntoView({
+      behavior: "smooth",
+      block: "center",
+    });
+    newDeadlineButtonRef.current?.focus();
+
+    openNewAssignmentEditor();
+    navigate({ to: "/dashboard/todo", search: {}, replace: true });
+  }, [isEditorOpen, isLoading, search?.create, search?.open]);
 
   const resetDraft = () => {
     const nextDraftDateIso = new Date().toISOString().slice(0, 10);
@@ -501,6 +556,8 @@ export function DashboardAssignmentsPage() {
 
         <button
           onClick={openNewAssignmentEditor}
+          ref={newDeadlineButtonRef}
+          id="new-deadline"
           className="
             border-2 border-[var(--color-primary)] text-[var(--color-primary)] font-normal
             bg-transparent
