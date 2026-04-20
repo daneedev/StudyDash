@@ -152,11 +152,11 @@ input:-webkit-autofill:active {
 .note-editor .ProseMirror blockquote {
   border-left: 3px solid var(--dark-primary);
   padding-left: 1rem;
-  color: var(--text-darkgray);
+  color: var(--text-semiwhite);
 }
 
 .note-editor .ProseMirror blockquote p {
-  color: var(--text-darkgray);
+  color: var(--text-semiwhite);
 }
 
 .note-editor .ProseMirror code {

@@ -5,7 +5,14 @@ import Placeholder from "@tiptap/extension-placeholder";
 import TextAlign from "@tiptap/extension-text-align";
 import Underline from "@tiptap/extension-underline";
 import StarterKit from "@tiptap/starter-kit";
-import { useEffect, useState } from "react";
+import { useNavigate } from "@tanstack/react-router";
+import {
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+  type ChangeEvent,
+} from "react";
 import { useDashboardNotes } from "../context/DashboardNotesContext";
 
 const noteToolbarGroups = [
@@ -301,20 +308,61 @@ const StudyDashCodeBlock = CodeBlock.extend({
 });
 
 type PropertiesPanelProps = {
+  attachedFiles: {
+    id: string;
+    name: string;
+    size: number;
+  }[];
+  attachmentsError: string | null;
+  canChangeSubject: boolean;
+  canUploadAttachment: boolean;
+  canDeleteNote: boolean;
+  fileActionId: string | null;
+  isFilesLoading: boolean;
+  isUploadingAttachment: boolean;
   readingMinutes: number;
+  saveError: string | null;
+  saveState: "idle" | "saving" | "saved" | "error";
   selectedSubjectId: string;
   subjects: { id: string; name: string }[];
   wordsCount: number;
+  onDeleteAttachment: (fileId: string) => void;
+  onDownloadAttachment: (fileId: string, filename: string) => void;
   onSubjectChange: (subjectId: string) => void;
+  onUploadAttachment: () => void;
+  onDeleteNote: () => void;
 };
 
 function PropertiesPanel({
+  attachedFiles,
+  attachmentsError,
+  canChangeSubject,
+  canDeleteNote,
+  canUploadAttachment,
+  fileActionId,
+  isFilesLoading,
+  isUploadingAttachment,
   readingMinutes,
+  saveError,
+  saveState,
   selectedSubjectId,
   subjects,
   wordsCount,
+  onDeleteAttachment,
+  onDownloadAttachment,
   onSubjectChange,
+  onUploadAttachment,
+  onDeleteNote,
 }: PropertiesPanelProps) {
+  const saveStatusLabel =
+    saveState === "saving"
+      ? "Ukládám..."
+      : saveState === "saved"
+        ? "Uloženo"
+        : saveState === "error"
+          ? "Neuloženo"
+          : "Koncept";
+
   return (
     <>
       <h2 className="text-lg font-medium tracking-[0.75px] text-[var(--text-darkgray)]">
@@ -325,7 +373,8 @@ function PropertiesPanel({
         <select
           value={selectedSubjectId}
           onChange={(event) => onSubjectChange(event.target.value)}
-          className="max-w-[calc(80%-3rem)] text-right truncate bg-transparent text-[15px] text-[var(--color-primary)] outline-none"
+          disabled={!canChangeSubject}
+          className="max-w-[calc(80%-3rem)] cursor-pointer rounded-md border border-[var(--border-card)] bg-[var(--card-bg)] px-2 py-1 text-right truncate text-[15px] text-[var(--color-primary)] outline-none [color-scheme:dark] disabled:cursor-not-allowed disabled:opacity-60"
         >
           {subjects.length === 0 ? (
             <option value="">Žádný</option>
@@ -338,6 +387,11 @@ function PropertiesPanel({
           )}
         </select>
       </div>
+      {!canChangeSubject ? (
+        <p className="mt-2 text-sm text-[var(--text-darkgray)]">
+          Po prvním uložení už předmět nejde změnit.
+        </p>
+      ) : null}
       <div className="mt-3 flex flex-row items-center justify-between">
         <p className="text-[15px] text-[var(--text-darkgray)]">Počet slov:</p>
         <p className="text-[15px] text-[var(--text-semiwhite)]">{wordsCount} slov</p>
@@ -348,28 +402,49 @@ function PropertiesPanel({
       </div>
       <div className="mt-3 flex flex-row items-center justify-between">
         <p className="text-[15px] text-[var(--text-darkgray)]">Stav:</p>
-        <span
-          aria-label="Uloženo"
-          role="img"
-          className="h-5 w-5 bg-[var(--color-primary)]"
-          style={{
-            WebkitMaskImage: "url(/web_images/Cloud_Check.svg)",
-            maskImage: "url(/web_images/Cloud_Check.svg)",
-            WebkitMaskRepeat: "no-repeat",
-            maskRepeat: "no-repeat",
-            WebkitMaskPosition: "center",
-            maskPosition: "center",
-            WebkitMaskSize: "contain",
-            maskSize: "contain",
-          }}
-        />
+        <div className="flex items-center gap-2">
+          <span className="text-[15px] text-[var(--text-semiwhite)]">{saveStatusLabel}</span>
+          <span
+            aria-label={saveStatusLabel}
+            role="img"
+            className={[
+              "h-5 w-5",
+              saveState === "error"
+                ? "bg-red-400"
+                : saveState === "saving"
+                  ? "bg-[var(--text-darkgray)]"
+                  : "bg-[var(--color-primary)]",
+            ].join(" ")}
+            style={{
+              WebkitMaskImage:
+                saveState === "error"
+                  ? "url(/web_images/Close_MD.svg)"
+                  : "url(/web_images/Cloud_Check.svg)",
+              maskImage:
+                saveState === "error"
+                  ? "url(/web_images/Close_MD.svg)"
+                  : "url(/web_images/Cloud_Check.svg)",
+              WebkitMaskRepeat: "no-repeat",
+              maskRepeat: "no-repeat",
+              WebkitMaskPosition: "center",
+              maskPosition: "center",
+              WebkitMaskSize: "contain",
+              maskSize: "contain",
+            }}
+          />
+        </div>
       </div>
+      {saveError ? (
+        <p className="mt-3 text-sm text-red-400">{saveError}</p>
+      ) : null}
       <h2 className="mt-7 text-lg font-medium tracking-[0.75px] text-[var(--text-darkgray)]">
         PŘÍLOHY
       </h2>
       <button
         type="button"
-        className="mt-4 flex items-center gap-2 rounded-xl border border-[rgba(24,180,166,0.18)] px-3 py-2 text-left text-[15px] text-[var(--text-semiwhite)]"
+        onClick={onUploadAttachment}
+        disabled={!canUploadAttachment || isUploadingAttachment}
+        className="mt-4 flex cursor-pointer items-center gap-2 rounded-xl border border-[rgba(24,180,166,0.18)] px-3 py-2 text-left text-[15px] text-[var(--text-semiwhite)] disabled:cursor-not-allowed disabled:opacity-60"
       >
         <span
           aria-hidden="true"
@@ -385,17 +460,236 @@ function PropertiesPanel({
             maskSize: "contain",
           }}
         />
-        Nahrát přílohu
+        {isUploadingAttachment ? "Nahrávám..." : "Nahrát přílohu"}
       </button>
+      {!canUploadAttachment ? (
+        <p className="mt-3 text-sm text-[var(--text-darkgray)]">
+          Přílohy lze nahrát až po prvním uložení poznámky.
+        </p>
+      ) : null}
+      {attachmentsError ? (
+        <p className="mt-3 text-sm text-red-400">{attachmentsError}</p>
+      ) : null}
+      {isFilesLoading ? (
+        <p className="mt-3 text-sm text-[var(--text-darkgray)]">Načítám přílohy...</p>
+      ) : null}
+      {attachedFiles.length > 0 ? (
+        <div className="mt-4 flex flex-col gap-2">
+          {attachedFiles.map((file) => (
+            <div
+              key={file.id}
+              className="rounded-xl border border-[rgba(24,180,166,0.18)] px-3 py-2"
+            >
+              <p className="truncate text-sm text-[var(--text-semiwhite)]">{file.name}</p>
+              <p className="mt-1 text-xs text-[var(--text-darkgray)]">
+                {formatFileSize(file.size)}
+              </p>
+              <div className="mt-2 flex items-center gap-3 text-xs">
+                <button
+                  type="button"
+                  onClick={() => onDownloadAttachment(file.id, file.name)}
+                  disabled={fileActionId === file.id}
+                  className="cursor-pointer text-[var(--color-primary)] disabled:opacity-50"
+                >
+                  Stáhnout
+                </button>
+                <button
+                  type="button"
+                  onClick={() => onDeleteAttachment(file.id)}
+                  disabled={fileActionId === file.id}
+                  className="cursor-pointer text-red-400 disabled:opacity-50"
+                >
+                  Smazat
+                </button>
+              </div>
+            </div>
+          ))}
+        </div>
+      ) : canUploadAttachment && !isFilesLoading ? (
+        <p className="mt-3 text-sm text-[var(--text-darkgray)]">Zatím bez příloh.</p>
+      ) : null}
+      {canDeleteNote ? <div className="mt-auto pt-6" /> : null}
+      {canDeleteNote ? (
+        <button
+          type="button"
+          onClick={onDeleteNote}
+          className="mt-4 flex cursor-pointer items-center gap-2 rounded-xl border border-red-500/40 px-3 py-2 text-left text-[15px] text-red-400 justify-center content-center"
+        >
+          <span
+            aria-hidden="true"
+            className="h-5 w-5 shrink-0 bg-red-400"
+            style={{
+              WebkitMaskImage: "url(/web_images/Trash.svg)",
+              maskImage: "url(/web_images/Trash.svg)",
+              WebkitMaskRepeat: "no-repeat",
+              maskRepeat: "no-repeat",
+              WebkitMaskPosition: "center",
+              maskPosition: "center",
+              WebkitMaskSize: "contain",
+              maskSize: "contain",
+            }}
+          />
+          Smazat
+        </button>
+      ) : null}
     </>
   );
 }
 
-export function DashboardNewNotePage() {
-  const { subjects } = useDashboardNotes();
-  const [, setToolbarStateVersion] = useState(0);
+type ConfirmModalProps = {
+  confirmLabel: string;
+  confirmVariant?: "danger" | "primary";
+  description: string;
+  isLoading?: boolean;
+  loadingLabel?: string;
+  onCancel: () => void;
+  onConfirm: () => void;
+  title: string;
+};
+
+function ConfirmModal({
+  confirmLabel,
+  confirmVariant = "danger",
+  description,
+  isLoading = false,
+  loadingLabel = "Mazání...",
+  onCancel,
+  onConfirm,
+  title,
+}: ConfirmModalProps) {
+  return (
+    <div
+      className="fixed inset-0 z-[60] bg-[rgba(0,0,0,0.30)]"
+      onClick={onCancel}
+    >
+      <div
+        className="fixed left-[calc(3.5rem+0.75rem)] right-3 top-1/2 z-[70] w-auto -translate-y-1/2 rounded-2xl border border-[var(--border-card)] bg-[var(--card-bg-notp)] p-5 md:top-1/2 md:left-1/2 md:right-auto md:bottom-auto md:w-[320px] md:-translate-x-1/2 md:-translate-y-1/2 md:rounded-xl"
+        onClick={(event) => event.stopPropagation()}
+      >
+        <h3 className="text-lg font-semibold text-[var(--text-white)]">{title}</h3>
+        <p className="mt-2 text-sm text-[var(--text-darkgray)]">{description}</p>
+        <div className="mt-5 flex flex-col-reverse gap-3 sm:flex-row sm:justify-start">
+          <button
+            type="button"
+            onClick={onCancel}
+            disabled={isLoading}
+            className="cursor-pointer rounded-lg border border-[var(--border-card)] px-3 py-1.5 text-sm text-[var(--text-semiwhite)] transition-opacity hover:opacity-80 disabled:cursor-not-allowed disabled:opacity-50"
+          >
+            Zrušit
+          </button>
+          <button
+            type="button"
+            onClick={onConfirm}
+            disabled={isLoading}
+            className={[
+              "cursor-pointer rounded-lg px-3 py-1.5 text-sm text-white transition-opacity hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50 font-bold",
+              confirmVariant === "danger"
+                ? "bg-red-500"
+                : "bg-[var(--color-primary)]",
+            ].join(" ")}
+          >
+            {isLoading ? loadingLabel : confirmLabel}
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+type DashboardNewNotePageProps = {
+  noteId?: string;
+};
+
+const EMPTY_EDITOR_JSON = JSON.stringify({
+  type: "doc",
+  content: [{ type: "paragraph" }],
+});
+
+function parseEditorContent(content: string) {
+  if (!content.trim()) {
+    return JSON.parse(EMPTY_EDITOR_JSON) as Record<string, unknown>;
+  }
+
+  try {
+    const parsed = JSON.parse(content) as unknown;
+    if (parsed && typeof parsed === "object") {
+      return parsed;
+    }
+  } catch {
+    // plain text/html fallback
+  }
+
+  return content;
+}
+
+function formatFileSize(size: number) {
+  if (size <= 0) {
+    return "0 B";
+  }
+
+  if (size < 1024) {
+    return `${size} B`;
+  }
+
+  if (size < 1024 * 1024) {
+    return `${(size / 1024).toFixed(1)} KB`;
+  }
+
+  return `${(size / 1024 / 1024).toFixed(1)} MB`;
+}
+
+export function DashboardNewNotePage({ noteId }: DashboardNewNotePageProps) {
+  const navigate = useNavigate();
+  const {
+    subjects,
+    notes,
+    notesLoading,
+    getNoteById,
+    createNote,
+    updateNote,
+    deleteNote,
+    noteFilesByNoteId,
+    filesLoadingNoteIds,
+    loadFiles,
+    uploadFile,
+    deleteFile,
+    downloadFile,
+  } = useDashboardNotes();
+  const [toolbarStateVersion, setToolbarStateVersion] = useState(0);
   const [isMobilePanelOpen, setIsMobilePanelOpen] = useState(false);
   const [selectedSubjectId, setSelectedSubjectId] = useState("");
+  const [draftName, setDraftName] = useState("");
+  const [activeNoteId, setActiveNoteId] = useState<string | null>(noteId ?? null);
+  const [saveState, setSaveState] = useState<"idle" | "saving" | "saved" | "error">("idle");
+  const [saveError, setSaveError] = useState<string | null>(null);
+  const [attachmentsError, setAttachmentsError] = useState<string | null>(null);
+  const [isUploadingAttachment, setIsUploadingAttachment] = useState(false);
+  const [fileActionId, setFileActionId] = useState<string | null>(null);
+  const [pendingAttachmentDelete, setPendingAttachmentDelete] = useState<{
+    id: string;
+    name: string;
+  } | null>(null);
+  const [isDeletingNote, setIsDeletingNote] = useState(false);
+  const [isDeleteNoteConfirmOpen, setIsDeleteNoteConfirmOpen] = useState(false);
+  const [isFirstNoteWarningOpen, setIsFirstNoteWarningOpen] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
+  const isApplyingRemoteStateRef = useRef(false);
+  const isSaveRequestInFlightRef = useRef(false);
+  const pendingSaveAfterFlightRef = useRef(false);
+  const hydratedNoteIdRef = useRef<string | null>(null);
+  const hasInitializedNewDraftRef = useRef(false);
+  const lastSavedDraftRef = useRef<{
+    noteId: string | null;
+    name: string;
+    subjectId: string;
+    content: string;
+  }>({
+    noteId: noteId ?? null,
+    name: "",
+    subjectId: "",
+    content: EMPTY_EDITOR_JSON,
+  });
+  const existingNote = noteId ? getNoteById(noteId) : undefined;
 
   const editor = useEditor({
     extensions: [
@@ -451,10 +745,96 @@ export function DashboardNewNotePage() {
   }, [editor]);
 
   useEffect(() => {
-    if (!selectedSubjectId && subjects.length > 0) {
+    if (!noteId && !selectedSubjectId && subjects.length > 0) {
       setSelectedSubjectId(subjects[0].id);
     }
-  }, [selectedSubjectId, subjects]);
+  }, [noteId, selectedSubjectId, subjects]);
+
+  useEffect(() => {
+    if (noteId || activeNoteId || notesLoading) {
+      setIsFirstNoteWarningOpen(false);
+      return;
+    }
+
+    setIsFirstNoteWarningOpen(notes.length === 0);
+  }, [activeNoteId, noteId, notes.length, notesLoading]);
+
+  useEffect(() => {
+    if (!editor) {
+      return;
+    }
+
+    if (noteId) {
+      hasInitializedNewDraftRef.current = false;
+
+      if (!existingNote) {
+        return;
+      }
+
+      if (hydratedNoteIdRef.current === noteId) {
+        return;
+      }
+
+      isApplyingRemoteStateRef.current = true;
+      hydratedNoteIdRef.current = noteId;
+      setDraftName(existingNote.name);
+      setSelectedSubjectId(existingNote.subjectId);
+      setActiveNoteId(existingNote.id);
+      editor.commands.setContent(parseEditorContent(existingNote.content), {
+        emitUpdate: false,
+      });
+      lastSavedDraftRef.current = {
+        noteId: existingNote.id,
+        name: existingNote.name,
+        subjectId: existingNote.subjectId,
+        content: existingNote.content || EMPTY_EDITOR_JSON,
+      };
+      setSaveState("saved");
+      setSaveError(null);
+      queueMicrotask(() => {
+        isApplyingRemoteStateRef.current = false;
+      });
+      return;
+    }
+
+    hydratedNoteIdRef.current = null;
+    if (hasInitializedNewDraftRef.current) {
+      return;
+    }
+
+    hasInitializedNewDraftRef.current = true;
+    isApplyingRemoteStateRef.current = true;
+    setDraftName("");
+    setActiveNoteId(null);
+    editor.commands.setContent(parseEditorContent(""), {
+      emitUpdate: false,
+    });
+    lastSavedDraftRef.current = {
+      noteId: null,
+      name: "",
+      subjectId: subjects[0]?.id ?? "",
+      content: EMPTY_EDITOR_JSON,
+    };
+    setSaveState("idle");
+    setSaveError(null);
+    queueMicrotask(() => {
+      isApplyingRemoteStateRef.current = false;
+    });
+  }, [editor, existingNote, noteId, subjects]);
+
+  useEffect(() => {
+    setAttachmentsError(null);
+
+    if (!activeNoteId) {
+      return;
+    }
+
+    void loadFiles(activeNoteId).catch((error) => {
+      setAttachmentsError(
+        (error as Error).message || "Nepodařilo se načíst přílohy.",
+      );
+    });
+  }, [activeNoteId, loadFiles]);
 
   const handleToolbarAction = (action: ToolbarAction) => {
     if (!editor) {
@@ -552,8 +932,224 @@ export function DashboardNewNotePage() {
     }
   };
 
+  const serializedContent = useMemo(() => {
+    if (!editor) {
+      return EMPTY_EDITOR_JSON;
+    }
+
+    return JSON.stringify(editor.getJSON());
+  }, [editor, toolbarStateVersion]);
+
   const wordsCount = editor?.getText().trim().split(/\s+/).filter(Boolean).length ?? 0;
   const readingMinutes = Math.max(1, Math.ceil(wordsCount / 180));
+  const attachedFiles = activeNoteId ? noteFilesByNoteId[activeNoteId] ?? [] : [];
+  const isFilesLoading = activeNoteId
+    ? filesLoadingNoteIds.includes(activeNoteId)
+    : false;
+  const canChangeSubject = activeNoteId === null;
+  const handleSubjectChange = (subjectId: string) => {
+    if (!canChangeSubject) {
+      return;
+    }
+
+    setSelectedSubjectId(subjectId);
+  };
+
+  useEffect(() => {
+    if (!editor || isApplyingRemoteStateRef.current) {
+      return;
+    }
+
+    const hasContent = editor.getText().trim().length > 0;
+    if (!hasContent && !draftName.trim()) {
+      if (!activeNoteId) {
+        setSaveState("idle");
+        setSaveError(null);
+      }
+      return;
+    }
+
+    if (!selectedSubjectId) {
+      return;
+    }
+
+    if (!draftName.trim()) {
+      setSaveState("error");
+      setSaveError("Doplň název poznámky.");
+      return;
+    }
+
+    const lastSaved = lastSavedDraftRef.current;
+    if (
+      lastSaved.noteId === activeNoteId &&
+      lastSaved.name === draftName.trim() &&
+      lastSaved.subjectId === selectedSubjectId &&
+      lastSaved.content === serializedContent
+    ) {
+      return;
+    }
+
+    if (isSaveRequestInFlightRef.current) {
+      pendingSaveAfterFlightRef.current = true;
+      return;
+    }
+
+    setSaveState("saving");
+    setSaveError(null);
+
+    const timeoutId = window.setTimeout(() => {
+      isSaveRequestInFlightRef.current = true;
+      pendingSaveAfterFlightRef.current = false;
+
+      void (async () => {
+        try {
+          if (activeNoteId) {
+            const updatedNote = await updateNote(activeNoteId, {
+              name: draftName.trim(),
+              content: serializedContent,
+            });
+
+            lastSavedDraftRef.current = {
+              noteId: updatedNote.id,
+              name: updatedNote.name,
+              subjectId: updatedNote.subjectId,
+              content: updatedNote.content || serializedContent,
+            };
+            setSaveState("saved");
+            return;
+          }
+
+          const createdNote = await createNote({
+            name: draftName.trim(),
+            subjectId: selectedSubjectId,
+            content: serializedContent,
+          });
+
+          setActiveNoteId(createdNote.id);
+          lastSavedDraftRef.current = {
+            noteId: createdNote.id,
+            name: createdNote.name,
+            subjectId: createdNote.subjectId,
+            content: createdNote.content || serializedContent,
+          };
+          setSaveState("saved");
+          await navigate({
+            to: "/dashboard/notes/$noteId",
+            params: { noteId: createdNote.id },
+            replace: true,
+          });
+        } catch (error) {
+          setSaveState("error");
+          setSaveError(
+            (error as Error).message || "Nepodařilo se uložit poznámku.",
+          );
+        } finally {
+          isSaveRequestInFlightRef.current = false;
+          if (pendingSaveAfterFlightRef.current) {
+            pendingSaveAfterFlightRef.current = false;
+            setToolbarStateVersion((currentVersion) => currentVersion + 1);
+          }
+        }
+      })();
+    }, 800);
+
+    return () => window.clearTimeout(timeoutId);
+  }, [
+    activeNoteId,
+    createNote,
+    draftName,
+    editor,
+    navigate,
+    selectedSubjectId,
+    serializedContent,
+    updateNote,
+  ]);
+
+  const handleUploadAttachment = async (event: ChangeEvent<HTMLInputElement>) => {
+    const nextFile = event.target.files?.[0];
+    event.target.value = "";
+
+    if (!nextFile || !activeNoteId) {
+      return;
+    }
+
+    setIsUploadingAttachment(true);
+    setAttachmentsError(null);
+
+    try {
+      await uploadFile(activeNoteId, nextFile);
+    } catch (error) {
+      setAttachmentsError(
+        (error as Error).message || "Nepodařilo se nahrát přílohu.",
+      );
+    } finally {
+      setIsUploadingAttachment(false);
+    }
+  };
+
+  const handleDeleteAttachment = async (fileId: string) => {
+    if (!activeNoteId) {
+      return;
+    }
+
+    setFileActionId(fileId);
+    setAttachmentsError(null);
+
+    try {
+      await deleteFile(fileId, activeNoteId);
+    } catch (error) {
+      setAttachmentsError(
+        (error as Error).message || "Nepodařilo se smazat přílohu.",
+      );
+    } finally {
+      setFileActionId(null);
+    }
+  };
+
+  const handleDeleteNote = async () => {
+    if (!activeNoteId) {
+      return;
+    }
+
+    setIsDeletingNote(true);
+    setSaveError(null);
+
+    try {
+      await deleteNote(activeNoteId);
+      setIsDeleteNoteConfirmOpen(false);
+      await navigate({ to: "/dashboard/notes" });
+    } catch (error) {
+      setSaveState("error");
+      setSaveError(
+        (error as Error).message || "Nepodařilo se smazat poznámku.",
+      );
+    } finally {
+      setIsDeletingNote(false);
+    }
+  };
+
+  const handleDownloadAttachment = async (fileId: string, filename: string) => {
+    setFileActionId(fileId);
+    setAttachmentsError(null);
+
+    try {
+      await downloadFile(fileId, filename);
+    } catch (error) {
+      setAttachmentsError(
+        (error as Error).message || "Nepodařilo se stáhnout přílohu.",
+      );
+    } finally {
+      setFileActionId(null);
+    }
+  };
+
+  if (noteId && !existingNote) {
+    return (
+      <div className="mx-auto w-full max-w-[1000px] pt-24 text-[var(--text-darkgray)]">
+        {notesLoading ? "Načítám poznámku..." : "Poznámka nebyla nalezena."}
+      </div>
+    );
+  }
 
   const renderToolbar = () => (
     <>
@@ -566,7 +1162,7 @@ export function DashboardNewNotePage() {
                   type="button"
                   onClick={() => handleToolbarAction(item.type)}
                   className={[
-                    "flex h-8 w-8 items-center justify-center rounded-lg bg-transparent transition-colors duration-150 hover:bg-[rgba(255,255,255,0.04)] md:h-[34px] md:w-[34px] lg:h-9 lg:w-9",
+                    "flex h-8 w-8 cursor-pointer items-center justify-center rounded-lg bg-transparent transition-colors duration-150 hover:bg-[rgba(255,255,255,0.04)] md:h-[34px] md:w-[34px] lg:h-9 lg:w-9",
                     isToolbarActionActive(item.type)
                       ? "bg-[rgba(255,255,255,0.06)]"
                       : "",
@@ -636,11 +1232,20 @@ export function DashboardNewNotePage() {
             id="nazev"
             placeholder="Název poznámky"
             spellCheck={false}
+            value={draftName}
+            onChange={(event) => setDraftName(event.target.value)}
             className="w-full text-3xl font-bold text-[var(--text-white)] outline-none placeholder:text-[var(--text-darkgray)] sm:text-4xl lg:text-5xl"
           />
           <EditorContent editor={editor} className="note-editor mt-5" />
         </div>
       </div>
+
+      <input
+        ref={fileInputRef}
+        type="file"
+        className="hidden"
+        onChange={handleUploadAttachment}
+      />
 
       <div className="fixed right-0 top-0 z-40 flex h-full w-fit items-center md:hidden">
         <button
@@ -664,11 +1269,31 @@ export function DashboardNewNotePage() {
         >
           <aside className="flex h-full w-[260px] select-none flex-col border-l border-[#353535] bg-[#151616] px-4 pb-6 pt-5">
             <PropertiesPanel
+              attachedFiles={attachedFiles}
+              attachmentsError={attachmentsError}
+              canChangeSubject={canChangeSubject}
+              canDeleteNote={activeNoteId !== null}
+              canUploadAttachment={activeNoteId !== null}
+              fileActionId={fileActionId}
+              isFilesLoading={isFilesLoading}
+              isUploadingAttachment={isUploadingAttachment}
               readingMinutes={readingMinutes}
+              saveError={saveError}
+              saveState={saveState}
               selectedSubjectId={selectedSubjectId}
               subjects={subjects}
               wordsCount={wordsCount}
-              onSubjectChange={setSelectedSubjectId}
+              onDeleteAttachment={(fileId) => {
+                const targetFile = attachedFiles.find((file) => file.id === fileId);
+                if (!targetFile) {
+                  return;
+                }
+                setPendingAttachmentDelete({ id: targetFile.id, name: targetFile.name });
+              }}
+              onDownloadAttachment={handleDownloadAttachment}
+              onDeleteNote={() => setIsDeleteNoteConfirmOpen(true)}
+              onSubjectChange={handleSubjectChange}
+              onUploadAttachment={() => fileInputRef.current?.click()}
             />
           </aside>
         </div>
@@ -678,20 +1303,88 @@ export function DashboardNewNotePage() {
         <button
           type="button"
           onClick={() => setIsMobilePanelOpen(false)}
-          className="fixed inset-0 z-20 bg-black/40 md:hidden"
+          className="fixed inset-0 z-20 cursor-pointer bg-black/40 md:hidden"
           aria-label="Zavřít panel"
         />
       ) : null}
 
       <aside className="fixed right-0 top-0 z-20 hidden h-full w-[200px] select-none flex-col border-l border-[#353535] bg-[var(--nav-bg)] px-4 pb-6 pt-5 md:flex">
         <PropertiesPanel
+          attachedFiles={attachedFiles}
+          attachmentsError={attachmentsError}
+          canChangeSubject={canChangeSubject}
+          canDeleteNote={activeNoteId !== null}
+          canUploadAttachment={activeNoteId !== null}
+          fileActionId={fileActionId}
+          isFilesLoading={isFilesLoading}
+          isUploadingAttachment={isUploadingAttachment}
           readingMinutes={readingMinutes}
+          saveError={saveError}
+          saveState={saveState}
           selectedSubjectId={selectedSubjectId}
           subjects={subjects}
           wordsCount={wordsCount}
-          onSubjectChange={setSelectedSubjectId}
+          onDeleteAttachment={(fileId) => {
+            const targetFile = attachedFiles.find((file) => file.id === fileId);
+            if (!targetFile) {
+              return;
+            }
+            setPendingAttachmentDelete({ id: targetFile.id, name: targetFile.name });
+          }}
+          onDownloadAttachment={handleDownloadAttachment}
+          onDeleteNote={() => setIsDeleteNoteConfirmOpen(true)}
+          onSubjectChange={handleSubjectChange}
+          onUploadAttachment={() => fileInputRef.current?.click()}
         />
       </aside>
+
+      {isFirstNoteWarningOpen ? (
+        <ConfirmModal
+          title="Nejdřív vyber předmět"
+          description="Před začátkem si jako první vyber předmět. Jakmile se poznámka poprvé uloží, předmět už nepůjde změnit!"
+          confirmLabel="Rozumím"
+          confirmVariant="primary"
+          loadingLabel="Potvrzuji..."
+          onCancel={() => setIsFirstNoteWarningOpen(false)}
+          onConfirm={() => setIsFirstNoteWarningOpen(false)}
+        />
+      ) : null}
+
+      {pendingAttachmentDelete ? (
+        <ConfirmModal
+          title="Smazat přílohu?"
+          description={`Tato akce je nevratná. Příloha "${pendingAttachmentDelete.name}" bude trvale odstraněna.`}
+          confirmLabel="Smazat"
+          isLoading={fileActionId === pendingAttachmentDelete.id}
+          onCancel={() => {
+            if (!fileActionId) {
+              setPendingAttachmentDelete(null);
+            }
+          }}
+          onConfirm={() => {
+            void handleDeleteAttachment(pendingAttachmentDelete.id).finally(() => {
+              setPendingAttachmentDelete(null);
+            });
+          }}
+        />
+      ) : null}
+
+      {isDeleteNoteConfirmOpen ? (
+        <ConfirmModal
+          title="Smazat poznámku?"
+          description={`Tato akce je nevratná. Poznámka "${draftName || "Bez názvu"}" bude trvale odstraněna.`}
+          confirmLabel="Smazat"
+          isLoading={isDeletingNote}
+          onCancel={() => {
+            if (!isDeletingNote) {
+              setIsDeleteNoteConfirmOpen(false);
+            }
+          }}
+          onConfirm={() => {
+            void handleDeleteNote();
+          }}
+        />
+      ) : null}
     </div>
   );
 }

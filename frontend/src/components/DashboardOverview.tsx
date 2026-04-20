@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
+import { useNavigate } from "@tanstack/react-router";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { library } from "@fortawesome/fontawesome-svg-core";
@@ -12,6 +13,8 @@ import { faDna } from "@fortawesome/free-solid-svg-icons";
 library.add(faGreaterThan, faLessThan, faSquarePlus, faDna);
 
 import { isWoman, vocative } from "czech-vocative";
+import { useDashboardNotes } from "../context/DashboardNotesContext";
+import { createContentPreview } from "../utils/notePreview";
 
 type DashboardOverviewProps = {
   username: string;
@@ -22,6 +25,8 @@ export function DashboardOverview({
   username,
   className,
 }: DashboardOverviewProps) {
+  const navigate = useNavigate();
+  const { notes, subjects } = useDashboardNotes();
   const usernameVocative = username
     ? capitalizeFirstLetter(vocative(username, isWoman(username)))
     : "Uživateli";
@@ -47,6 +52,11 @@ export function DashboardOverview({
     year: "numeric",
   });
   const dayLabels = ["Po", "Út", "St", "Čt", "Pá", "So", "Ne"];
+  const subjectMap = useMemo(
+    () => new Map(subjects.map((subject) => [subject.id, subject])),
+    [subjects],
+  );
+  const latestNotes = useMemo(() => notes.slice(0, 2), [notes]);
 
   // Build 5x7 grid (35 cells) and include previous/next month days.
   type Cell = { day: number; inMonth: boolean };
@@ -77,7 +87,7 @@ export function DashboardOverview({
   }
 
   return (
-    <main className="h-full w-full flex flex-col ">
+    <main className="h-full w-full max-w-325 flex flex-col ">
       <h1 className="text-3xl shrink-0 mb-1 font-semibold">
         Ahoj {usernameVocative}
         {className && ` - ${className}`},
@@ -172,46 +182,52 @@ export function DashboardOverview({
               className="text-[#18b4a6] scale-200 hover:scale-190 cursor-pointer transition-transform duration-100"
             />
           </div>
-          <article className=" flex flex-col flex-1 mb-4 ml-4  border border-[#353535] rounded-lg">
-            <section className="flex justify-between items-center m-4">
-              <h4 className="font-semibold text-xl">
-                Fyzika - Výpočet kapacity kondenzátorů
-              </h4>
-              <FontAwesomeIcon
-                icon={faDna}
-                className="text-[#18b4a6] scale-200 hover:scale-190 cursor-pointer transition-transform duration-100"
-              />
-            </section>
-            <section className="m-4 pt-6 flex-1">
-              <p>
-                Kapacita kondenzátoru se vypočítá jako poměr náboje a napětí: C
-                rovná se Q děleno U, jednotka farad v SI soustavě...
-              </p>
-            </section>
-            <section className="flex flex-1 justify-end items-center pr-2 text-md">
-              <p>25-1-26</p>
-            </section>
-          </article>
-          <article className="flex flex-col flex-1 mb-4 mr-4  border border-[#353535] rounded-lg">
-            <section className="flex justify-between items-center m-4">
-              <h4 className="font-semibold text-xl">
-                Fyzika - Výpočet kapacity kondenzátorů
-              </h4>
-              <FontAwesomeIcon
-                icon={faDna}
-                className="text-[#18b4a6] scale-200 hover:scale-190 cursor-pointer transition-transform duration-100"
-              />
-            </section>
-            <section className="m-4 pt-6 flex-1">
-              <p>
-                Kapacita kondenzátoru se vypočítá jako poměr náboje a napětí: C
-                rovná se Q děleno U, jednotka farad v SI soustavě...
-              </p>
-            </section>
-            <section className="flex flex-1 justify-end items-center pr-2 text-md">
-              <p>25-1-26</p>
-            </section>
-          </article>
+          {latestNotes.length === 0 ? (
+            <div className="col-span-2 flex items-center px-4 pb-6 text-[var(--text-darkgray)]">
+              Zatím tu nejsou žádné poznámky.
+            </div>
+          ) : (
+            latestNotes.map((note, index) => {
+              const subject = subjectMap.get(note.subjectId);
+
+              return (
+                <article
+                  key={note.id}
+                  onClick={() =>
+                    navigate({
+                      to: "/dashboard/notes/$noteId",
+                      params: { noteId: note.id },
+                    })
+                  }
+                  className={[
+                    "flex flex-col flex-1 mb-4 border border-[#353535] rounded-lg cursor-pointer",
+                    index === 0 ? "ml-4" : "mr-4",
+                  ].join(" ")}
+                >
+                  <section className="flex justify-between items-center m-4 gap-4">
+                    <h4 className="font-semibold text-xl truncate">{note.name}</h4>
+                    <FontAwesomeIcon
+                      icon={faDna}
+                      className="text-[#18b4a6] scale-200 hover:scale-190 cursor-pointer transition-transform duration-100"
+                    />
+                  </section>
+                  <section className="m-4 pt-2 flex-1">
+                    <p className="line-clamp-4">
+                      {createContentPreview(note.content)}
+                    </p>
+                  </section>
+                  <section className="flex flex-1 justify-between items-center px-4 pb-4 text-md text-[var(--text-darkgray)]">
+                    <p>{subject?.name ?? "Bez předmětu"}</p>
+                    <p>
+                      {note.updatedAt
+                        ? new Date(note.updatedAt).toLocaleDateString("cs-CZ")
+                        : ""}
+                    </p>
+                  </section>
+                </article>
+              );
+            })
+          )}
         </section>
       </article>
     </main>

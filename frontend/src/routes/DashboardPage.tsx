@@ -192,13 +192,13 @@ function SectionLayout() {
 }
 
 function DashboardSubjectNotesPage() {
-  return (
-    <></>
-  );
+  const { subjectId } = notesSubjectRoute.useParams();
+  return <DashboardNotesPage subjectId={subjectId} />;
 }
 
 function DashboardNotePage() {
-  return <></>;
+  const { noteId } = noteRoute.useParams();
+  return <DashboardNewNotePage noteId={noteId} />;
 }
 
 function ClassDetailLayout() {
