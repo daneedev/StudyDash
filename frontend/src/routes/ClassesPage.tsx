@@ -1,9 +1,4 @@
-import {
-  createRoute,
-  redirect,
-  type AnyRoute,
-  Link,
-} from "@tanstack/react-router";
+import { createRoute, redirect, type AnyRoute } from "@tanstack/react-router";
 import "../assets/css/index.css";
 import { rootRoute, checkAuthToken } from "./rootRoute";
 import { useEffect, useState } from "react";
@@ -11,11 +6,10 @@ import { ClassCard } from "../components/ClassCard";
 import { ClassesNavBar } from "../components/ClassesNavBar";
 import { DashboardLoader } from "../components/DashboardLoader";
 import { getSelectedDashboardId } from "../utils/selectedDashboard";
-
+import { Link } from "@tanstack/react-router";
+import { Alert, Input, Spinner } from "@heroui/react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faLink } from "@fortawesome/free-solid-svg-icons";
-
-import { Alert, Input, Spinner } from "@heroui/react";
 
 const route = createRoute({
   getParentRoute: () => rootRoute,
@@ -227,7 +221,7 @@ export function ClassesPage() {
         onCreateClass={() => setShowCreateModal(true)}
       />
 
-      <div className="fixed top-4 right-4 z-50 flex flex-col gap-2 max-w-md transition-all duration-300">
+      <div className="fixed top-4 right-4 z-50 flex flex-col gap-2 max-w-[calc(100vw-2rem)] sm:max-w-md transition-all duration-300">
         {alerts.map((alert) => (
           <Alert
             key={alert.id}
@@ -236,17 +230,21 @@ export function ClassesPage() {
             title={alert.title}
             variant="faded"
             onClose={() => removeAlert(alert.id)}
-            style={{
-              backgroundColor: "white",
-              borderColor: "#18b4a6",
-              color: "#18b4a6",
+            classNames={{
+              base: "border bg-[#2d2b2b] border-[#3a3a3a]",
+              title: "text-[#18b4a6] font-semibold",
+              description: "text-white",
+              iconWrapper:
+                "text-[#18b4a6] border-none shadow-none bg-transparent",
+              alertIcon: "text-white",
+              closeButton: "text-zinc-400 hover:text-white",
             }}
           />
         ))}
       </div>
 
       <article
-        className={`bg-[#141414] min-h-screen transition-all duration-200 ${isNavExpanded ? "ml-48" : "ml-14 md:ml-18"}`}
+        className={`bg-[#141414] min-h-screen transition-all duration-200 ${isNavExpanded ? "ml-18 sm:ml-48" : "ml-18 md:ml-22"}`}
       >
         <DashboardLoader
           forceVisible={isLoadingClasses}
@@ -255,32 +253,17 @@ export function ClassesPage() {
         <header className="flex items-center justify-between p-6 pt-4">
           <h1 className="text-4xl font-semibold text-text">Třídy</h1>
 
-          <Link to={dashboardLink} className="text-white">
-            provizorní odkaz na dashboard zde
-          </Link>
+          
 
-          <div className="flex gap-2">
-            <button
-              type="button"
-              onClick={() => setShowJoinModal(true)}
-              className="px-4 py-2 bg-[#18b4a6] text-white rounded-md shadow-lg hover:scale-95"
-            >
-              <FontAwesomeIcon icon={faLink} />
-            </button>
-            <button
-              type="button"
-              onClick={() => setShowCreateModal(true)}
-              className="inline-flex items-center justify-center w-12 h-12 rounded-md bg-[var(--color-primary)] text-white shadow-lg hover:scale-95"
-            >
-              <span className="text-2xl font-bold">+</span>
-            </button>
-          </div>
+          
+          
         </header>
 
         <main
-          className="grid gap-4 p-6 pl-7"
+          className="grid gap-4 p-4 sm:p-6 sm:pl-7"
           style={{
-            gridTemplateColumns: "repeat(auto-fill, minmax(310px, 1fr))",
+            gridTemplateColumns:
+              "repeat(auto-fill, minmax(min(100%, 310px), 1fr))",
           }}
         >
           {isLoadingClasses ? (
@@ -295,6 +278,15 @@ export function ClassesPage() {
                   circle2: "border-b-[#18b4a6]",
                 }}
               />
+            </div>
+          ) : classes.length === 0 ? (
+            <div
+              className="col-span-full flex justify-center items-center"
+              style={{ minHeight: "calc(100vh - 150px)" }}
+            >
+              <p className="text-zinc-500 text-2xl">
+                Tady se objeví tvoje třídy
+              </p>
             </div>
           ) : (
             classes.map((c: ClassItem) => (
@@ -314,7 +306,7 @@ export function ClassesPage() {
 
       {showCreateModal && (
         <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50">
-          <div className="bg-[#272727] rounded-xl p-6 w-96">
+          <div className="bg-[#272727] rounded-xl p-4 sm:p-6 w-[calc(100vw-2rem)] max-w-96">
             <h2 className="text-xl font-semibold mb-4 text-white">
               Nová třída
             </h2>
@@ -353,7 +345,7 @@ export function ClassesPage() {
 
       {showJoinModal && (
         <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50">
-          <div className="bg-[#272727] rounded-xl p-6 w-96">
+          <div className="bg-[#272727] rounded-xl p-4 sm:p-6 w-[calc(100vw-2rem)] max-w-96">
             <h2 className="text-xl font-semibold mb-4 text-white">
               Připojit se do třídy
             </h2>

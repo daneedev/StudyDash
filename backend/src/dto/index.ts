@@ -3,3 +3,4 @@ export * from './users.dto';
 export * from './classes.dto';
 export * from './assignments.dto';
 export * from './subjects.dto';
+export * from './notes.dto';
