@@ -16,6 +16,7 @@ import { DashboardNotesPage } from "./DashboardNotesPage";
 import { DashboardLoader } from "../components/DashboardLoader";
 import { DashboardNotesProvider } from "../context/DashboardNotesContext";
 import { DashboardAssignmentsPage } from "./DashboardAssignmentsPage";
+import { DashboardNewNotePage } from "./DashboardNewNotePage";
 import {
   getSelectedDashboardId,
   setSelectedDashboardId,
@@ -59,6 +60,11 @@ const notesRoute = createRoute({
   getParentRoute: () => route,
   path: "notes",
   component: DashboardNotesPage, // TODO: Replace with actual Notes component
+});
+const newNoteRoute = createRoute({
+  getParentRoute: () => route,
+  path: "notes/new",
+  component: DashboardNewNotePage,
 });
 const noteRoute = createRoute({
   getParentRoute: () => route,
@@ -186,13 +192,13 @@ function SectionLayout() {
 }
 
 function DashboardSubjectNotesPage() {
-  return (
-    <></>
-  );
+  const { subjectId } = notesSubjectRoute.useParams();
+  return <DashboardNotesPage subjectId={subjectId} />;
 }
 
 function DashboardNotePage() {
-  return <></>;
+  const { noteId } = noteRoute.useParams();
+  return <DashboardNewNotePage noteId={noteId} />;
 }
 
 function ClassDetailLayout() {
@@ -218,6 +224,7 @@ function ClassDetailLayout() {
 export const dashboardRouteTree = route.addChildren([
   overallRoute,
   notesRoute,
+  newNoteRoute,
   noteRoute,
   notesSubjectRoute,
   profileRoute,
