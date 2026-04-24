@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 
 import { useNavigate } from "@tanstack/react-router";
 
@@ -83,6 +83,27 @@ function getDueDateStatus(
   return "future";
 }
 
+function pad2(value: number) {
+  return String(value).padStart(2, "0");
+}
+
+function utcDayKeyFromDate(date: Date) {
+  return `${date.getUTCFullYear()}-${pad2(date.getUTCMonth() + 1)}-${pad2(date.getUTCDate())}`;
+}
+
+function utcDayKeyFromIso(value: string) {
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) {
+    return null;
+  }
+  return utcDayKeyFromDate(date);
+}
+
+function utcDayKeyFromCalendarParts(year: number, monthIndex: number, day: number) {
+  const date = new Date(Date.UTC(year, monthIndex, day));
+  return utcDayKeyFromDate(date);
+}
+
 export function DashboardOverview({
   username,
   classId,
@@ -90,6 +111,9 @@ export function DashboardOverview({
 }: DashboardOverviewProps) {
   const navigate = useNavigate({ from: "/dashboard/$classId" });
   const { notes, subjects } = useDashboardNotes();
+
+  const notesListRef = useRef<HTMLDivElement | null>(null);
+  const [notesPreviewCount, setNotesPreviewCount] = useState(2);
 
   const usernameVocative = username
     ? capitalizeFirstLetter(vocative(username, isWoman(username)))
@@ -120,26 +144,92 @@ export function DashboardOverview({
     () => new Map(subjects.map((subject) => [subject.id, subject])),
     [subjects],
   );
-  const latestNotes = useMemo(() => notes.slice(0, 2), [notes]);
+  const latestNotes = useMemo(
+    () => notes.slice(0, notesPreviewCount),
+    [notes, notesPreviewCount],
+  );
+
+  const [assignments, setAssignments] = useState<OverviewAssignment[]>([]);
+  const [assignmentsLoading, setAssignmentsLoading] = useState(false);
+  const [assignmentsError, setAssignmentsError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const element = notesListRef.current;
+    if (!element || typeof ResizeObserver === "undefined") {
+      return;
+    }
+
+    const computeCount = (height: number) => {
+      if (height >= 640) return 6;
+      if (height >= 460) return 4;
+      return 2;
+    };
+
+    const observer = new ResizeObserver((entries) => {
+      const entry = entries[0];
+      if (!entry) return;
+      const nextCount = computeCount(entry.contentRect.height);
+      setNotesPreviewCount((current) => (current === nextCount ? current : nextCount));
+    });
+
+    observer.observe(element);
+    return () => observer.disconnect();
+  }, []);
+
+  const calendarActivityKeys = useMemo(() => {
+    const keys = new Set<string>();
+
+    for (const assignment of assignments) {
+      const key = utcDayKeyFromIso(assignment.dueDate);
+      if (key) keys.add(key);
+    }
+
+    for (const note of notes) {
+      const key = utcDayKeyFromIso(note.updatedAt || note.createdAt);
+      if (key) keys.add(key);
+    }
+
+    return keys;
+  }, [assignments, notes]);
 
   // Build 6x7 grid (42 cells) and include previous/next month days.
-  type Cell = { day: number; inMonth: boolean };
+  type Cell = {
+    day: number;
+    inMonth: boolean;
+    utcKey: string;
+  };
   const cells: Cell[] = [];
 
   // previous month last day
   const prevLastDay = new Date(displayedYear, displayedMonth, 0).getDate();
   // fill with previous month's trailing days (grayed)
   const prevStart = prevLastDay - startingDayOfWeek + 1;
-  for (let d = prevStart; d <= prevLastDay; d++)
-    cells.push({ day: d, inMonth: false });
+  for (let d = prevStart; d <= prevLastDay; d++) {
+    cells.push({
+      day: d,
+      inMonth: false,
+      utcKey: utcDayKeyFromCalendarParts(displayedYear, displayedMonth - 1, d),
+    });
+  }
 
   // current month days
-  for (let d = 1; d <= daysInMonth; d++) cells.push({ day: d, inMonth: true });
+  for (let d = 1; d <= daysInMonth; d++) {
+    cells.push({
+      day: d,
+      inMonth: true,
+      utcKey: utcDayKeyFromCalendarParts(displayedYear, displayedMonth, d),
+    });
+  }
 
   // next month leading days
   let nextDay = 1;
   while (cells.length < 42) {
-    cells.push({ day: nextDay++, inMonth: false });
+    const day = nextDay++;
+    cells.push({
+      day,
+      inMonth: false,
+      utcKey: utcDayKeyFromCalendarParts(displayedYear, displayedMonth + 1, day),
+    });
   }
 
   function prevMonth() {
@@ -149,10 +239,6 @@ export function DashboardOverview({
   function nextMonth() {
     setDisplayedDate((d) => new Date(d.getFullYear(), d.getMonth() + 1, 1));
   }
-
-  const [assignments, setAssignments] = useState<OverviewAssignment[]>([]);
-  const [assignmentsLoading, setAssignmentsLoading] = useState(false);
-  const [assignmentsError, setAssignmentsError] = useState<string | null>(null);
 
   useEffect(() => {
     if (!classId) {
@@ -282,6 +368,7 @@ export function DashboardOverview({
                 cell.day === now.getDate() &&
                 displayedMonth === now.getMonth() &&
                 displayedYear === now.getFullYear();
+              const hasActivity = calendarActivityKeys.has(cell.utcKey);
               return (
                 <div
                   key={i}
@@ -295,12 +382,20 @@ export function DashboardOverview({
                 >
                   <span
                     className={`${
-                      cell.inMonth
-                        ? "font-bold text-base sm:text-xl lg:text-3xl leading-none"
-                        : "text-xs sm:text-sm lg:text-base leading-none"
+                      "relative inline-block" +
+                      (cell.inMonth
+                        ? " font-bold text-base sm:text-xl lg:text-3xl leading-none"
+                        : " text-xs sm:text-sm lg:text-base leading-none")
                     }`}
                   >
                     {cell.day}
+                    {hasActivity && (
+                      <span
+                        className={`absolute -top-1 -right-2 h-1.5 w-1.5 rounded-full ${
+                          isToday ? "bg-white" : "bg-[#18b4a6]"
+                        }`}
+                      />
+                    )}
                   </span>
                 </div>
               );
@@ -382,59 +477,68 @@ export function DashboardOverview({
           </div>
         </section>
 
-        <section className="xl:col-span-2 min-h-0 bg-[var(--card-bg)] rounded-xl border border-[#18b4a6] grid grid-cols-1 md:grid-cols-2 grid-rows-[auto_auto_auto_auto] md:grid-rows-[1fr_3fr] gap-4 overflow-hidden">
-          <h2 className="font-bold text-3xl capitalize p-4">Poznámky</h2>
-          <div className="flex justify-end items-start p-6">
-            <FontAwesomeIcon
-              icon={faSquarePlus}
-              className="text-[#18b4a6] scale-200 hover:scale-190 cursor-pointer transition-transform duration-100"
-            />
-          </div>
+        <section className="xl:col-span-2 min-h-0 bg-[var(--card-bg)] rounded-xl border border-[#18b4a6] flex flex-col overflow-hidden">
+          <header className="flex items-start justify-between gap-4 p-4">
+            <h2 className="font-bold text-3xl capitalize">Poznámky</h2>
+            <button
+              type="button"
+              aria-label="Vytvořit novou poznámku"
+              onClick={() => navigate({ to: "/dashboard/notes/new" })}
+              className="flex items-center gap-2 rounded-lg px-3 py-2 text-[#18b4a6] hover:bg-black/5 transition-colors"
+            >
+              <FontAwesomeIcon
+                icon={faSquarePlus}
+                className="text-[#18b4a6] scale-200 hover:scale-190 cursor-pointer transition-transform duration-100"
+              />
+            </button>
+          </header>
+
           {latestNotes.length === 0 ? (
-            <div className="col-span-2 flex items-center px-4 pb-6 text-[var(--text-darkgray)]">
+            <div className="flex items-center px-4 pb-6 text-[var(--text-darkgray)]">
               Zatím tu nejsou žádné poznámky.
             </div>
           ) : (
-            latestNotes.map((note, index) => {
-              const subject = subjectMap.get(note.subjectId);
+            <div ref={notesListRef} className="flex-1 min-h-0 overflow-y-auto px-4 pb-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {latestNotes.map((note) => {
+                  const subject = subjectMap.get(note.subjectId);
 
-              return (
-                <article
-                  key={note.id}
-                  onClick={() =>
-                    navigate({
-                      to: "/dashboard/notes/$noteId",
-                      params: { noteId: note.id },
-                    })
-                  }
-                  className={[
-                    "flex flex-col flex-1 mb-4 border border-[#353535] rounded-lg cursor-pointer",
-                    index === 0 ? "ml-4" : "mr-4",
-                  ].join(" ")}
-                >
-                  <section className="flex justify-between items-center m-4 gap-4">
-                    <h4 className="font-semibold text-xl truncate">{note.name}</h4>
-                    <FontAwesomeIcon
-                      icon={faDna}
-                      className="text-[#18b4a6] scale-200 hover:scale-190 cursor-pointer transition-transform duration-100"
-                    />
-                  </section>
-                  <section className="m-4 pt-2 flex-1">
-                    <p className="line-clamp-4">
-                      {createContentPreview(note.content)}
-                    </p>
-                  </section>
-                  <section className="flex flex-1 justify-between items-center px-4 pb-4 text-md text-[var(--text-darkgray)]">
-                    <p>{subject?.name ?? "Bez předmětu"}</p>
-                    <p>
-                      {note.updatedAt
-                        ? new Date(note.updatedAt).toLocaleDateString("cs-CZ")
-                        : ""}
-                    </p>
-                  </section>
-                </article>
-              );
-            })
+                  return (
+                    <article
+                      key={note.id}
+                      onClick={() =>
+                        navigate({
+                          to: "/dashboard/notes/$noteId",
+                          params: { noteId: note.id },
+                        })
+                      }
+                      className="flex flex-col border border-[#353535] rounded-lg cursor-pointer"
+                    >
+                      <section className="flex justify-between items-center m-4 gap-4">
+                        <h4 className="font-semibold text-xl truncate">{note.name}</h4>
+                        <FontAwesomeIcon
+                          icon={faDna}
+                          className="text-[#18b4a6] scale-200 hover:scale-190 cursor-pointer transition-transform duration-100"
+                        />
+                      </section>
+                      <section className="m-4 pt-2 flex-1">
+                        <p className="line-clamp-4">
+                          {createContentPreview(note.content)}
+                        </p>
+                      </section>
+                      <section className="flex justify-between items-center mx-4 mb-4 text-md text-[var(--text-darkgray)]">
+                        <p>{subject?.name ?? "Bez předmětu"}</p>
+                        <p>
+                          {note.updatedAt
+                            ? new Date(note.updatedAt).toLocaleDateString("cs-CZ")
+                            : ""}
+                        </p>
+                      </section>
+                    </article>
+                  );
+                })}
+              </div>
+            </div>
           )}
         </section>
       </article>
