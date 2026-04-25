@@ -102,6 +102,14 @@ function utcDayKeyFromCalendarParts(year: number, monthIndex: number, day: numbe
   return utcDayKeyFromDate(date);
 }
 
+function dateFromUtcDayKey(key: string) {
+  const [y, m, d] = key.split("-").map((value) => Number(value));
+  if (!y || !m || !d) return null;
+  const date = new Date(Date.UTC(y, m - 1, d));
+  if (Number.isNaN(date.getTime())) return null;
+  return date;
+}
+
 export function DashboardOverview({
   username,
   classId,
@@ -151,6 +159,8 @@ export function DashboardOverview({
   const [assignmentsLoading, setAssignmentsLoading] = useState(false);
   const [assignmentsError, setAssignmentsError] = useState<string | null>(null);
 
+  const [activityDialogDayKey, setActivityDialogDayKey] = useState<string | null>(null);
+
   useEffect(() => {
     const element = notesListRef.current;
     if (!element || typeof ResizeObserver === "undefined") {
@@ -189,6 +199,37 @@ export function DashboardOverview({
 
     return keys;
   }, [assignments, notes]);
+
+  const activityDialogItems = useMemo(() => {
+    if (!activityDialogDayKey) {
+      return { notes: [], assignments: [] };
+    }
+
+    const dayKey = activityDialogDayKey;
+    const dayNotes = notes.filter((note) => {
+      const key = utcDayKeyFromIso(note.updatedAt || note.createdAt);
+      return key === dayKey;
+    });
+    const dayAssignments = assignments.filter((assignment) => {
+      const key = utcDayKeyFromIso(assignment.dueDate);
+      return key === dayKey;
+    });
+
+    return { notes: dayNotes, assignments: dayAssignments };
+  }, [activityDialogDayKey, assignments, notes]);
+
+  useEffect(() => {
+    if (!activityDialogDayKey) return;
+
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        setActivityDialogDayKey(null);
+      }
+    };
+
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
+  }, [activityDialogDayKey]);
 
   // Build 6x7 grid (42 cells) and include previous/next month days.
   type Cell = {
@@ -306,6 +347,114 @@ export function DashboardOverview({
 
   return (
     <main className="w-full max-w-400 flex flex-col min-h-0 h-[calc(100dvh-48px)] overflow-y-auto pb-6">
+      {activityDialogDayKey && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm p-4"
+          onClick={() => setActivityDialogDayKey(null)}
+        >
+          <div
+            role="dialog"
+            aria-modal="true"
+            aria-label="Aktivita dne"
+            className="w-full max-w-[720px] max-h-[80dvh] bg-[var(--card-bg)] rounded-xl border border-[#18b4a6] shadow-2xl overflow-hidden flex flex-col"
+            onClick={(event) => event.stopPropagation()}
+          >
+            <header className="flex items-start justify-between gap-4 p-4 border-b border-[#353535]">
+              <div className="min-w-0">
+                <h2 className="font-bold text-2xl text-[var(--text-white)] truncate">Aktivita</h2>
+                <p className="text-sm text-[var(--text-darkgray)]">
+                  {(() => {
+                    const date = dateFromUtcDayKey(activityDialogDayKey);
+                    return date
+                      ? date.toLocaleDateString("cs-CZ", {
+                          weekday: "long",
+                          day: "numeric",
+                          month: "long",
+                          year: "numeric",
+                          timeZone: "UTC",
+                        })
+                      : activityDialogDayKey;
+                  })()}
+                </p>
+              </div>
+              <button
+                type="button"
+                aria-label="Zavřít"
+                className="shrink-0 rounded-lg px-3 py-2 text-[#18b4a6] cursor-pointer hover:bg-black/5 transition-colors transition-transform hover:scale-95"
+                onClick={() => setActivityDialogDayKey(null)}
+              >
+                ✕
+              </button>
+            </header>
+
+            <div className="flex-1 min-h-0 overflow-y-auto p-4 space-y-4">
+              {activityDialogItems.assignments.length > 0 && (
+                <section>
+                  <h3 className="font-semibold text-lg text-[var(--text-semiwhite)] mb-2">Deadliny</h3>
+                  <ul className="divide-y divide-[#353535] rounded-lg border border-[#353535] overflow-hidden">
+                    {activityDialogItems.assignments.map((assignment) => (
+                      <li key={assignment.id}>
+                        <button
+                          type="button"
+                          className="w-full text-left px-3 py-3 cursor-pointer hover:bg-black/5 transition-colors"
+                          onClick={() => {
+                            setActivityDialogDayKey(null);
+                            navigate({
+                              to: "/dashboard/todo",
+                              search: { open: String(assignment.id) },
+                            });
+                          }}
+                        >
+                          <p className="font-semibold text-[var(--text-white)] truncate">
+                            {assignment.name}
+                          </p>
+                          <p className="text-sm text-[var(--text-darkgray)] truncate">
+                            {assignment.subjectName || "—"} • {formatAssignmentDate(assignment.dueDate)}
+                          </p>
+                        </button>
+                      </li>
+                    ))}
+                  </ul>
+                </section>
+              )}
+
+              {activityDialogItems.notes.length > 0 && (
+                <section>
+                  <h3 className="font-semibold text-lg text-[var(--text-semiwhite)] mb-2">Poznámky</h3>
+                  <ul className="divide-y divide-[#353535] rounded-lg border border-[#353535] overflow-hidden">
+                    {activityDialogItems.notes.map((note) => {
+                      const subject = subjectMap.get(note.subjectId);
+                      const stamp = note.updatedAt || note.createdAt;
+                      return (
+                        <li key={note.id}>
+                          <button
+                            type="button"
+                            className="w-full text-left px-3 py-3 cursor-pointer hover:bg-black/5 transition-colors"
+                            onClick={() => {
+                              setActivityDialogDayKey(null);
+                              navigate({
+                                to: "/dashboard/notes/$noteId",
+                                params: { noteId: note.id },
+                              });
+                            }}
+                          >
+                            <p className="font-semibold text-[var(--text-white)] truncate">{note.name}</p>
+                            <p className="text-sm text-[var(--text-darkgray)] truncate">
+                              {subject?.name ?? "Bez předmětu"}
+                              {stamp ? ` • ${new Date(stamp).toLocaleDateString("cs-CZ")}` : ""}
+                            </p>
+                          </button>
+                        </li>
+                      );
+                    })}
+                  </ul>
+                </section>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
+
       <h1 className="text-3xl shrink-0 mb-1 font-semibold">
         Ahoj {usernameVocative}
         {className && ` - ${className}`},
@@ -370,7 +519,13 @@ export function DashboardOverview({
               return (
                 <div
                   key={i}
-                  className={`aspect-square w-full flex items-center justify-center rounded-md cursor-pointer ${
+                  onClick={() => {
+                    if (!hasActivity) return;
+                    setActivityDialogDayKey(cell.utcKey);
+                  }}
+                  className={`aspect-square w-full flex items-center justify-center rounded-md ${
+                    hasActivity ? "cursor-pointer" : "cursor-default"
+                  } ${
                     isToday
                       ? "bg-[#18b4a6] text-white transition-colors duration-150 "
                       : cell.inMonth
