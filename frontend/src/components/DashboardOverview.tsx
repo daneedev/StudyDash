@@ -9,9 +9,7 @@ import { faGreaterThan } from "@fortawesome/free-solid-svg-icons";
 import { faLessThan } from "@fortawesome/free-solid-svg-icons";
 import { faSquarePlus } from "@fortawesome/free-solid-svg-icons";
 
-import { faDna } from "@fortawesome/free-solid-svg-icons";
-
-library.add(faGreaterThan, faLessThan, faSquarePlus, faDna);
+library.add(faGreaterThan, faLessThan, faSquarePlus);
 
 import { isWoman, vocative } from "czech-vocative";
 import { useDashboardNotes } from "../context/DashboardNotesContext";
@@ -494,11 +492,11 @@ export function DashboardOverview({
           </header>
 
           {latestNotes.length === 0 ? (
-            <div className="flex items-center px-4 pb-6 text-[var(--text-darkgray)]">
+            <div className="flex items-center p-4 text-[var(--text-darkgray)]">
               Zatím tu nejsou žádné poznámky.
             </div>
           ) : (
-            <div ref={notesListRef} className="flex-1 min-h-0 overflow-y-auto px-4 pb-4">
+            <div ref={notesListRef} className="flex-1 min-h-0 overflow-y-auto p-4">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {latestNotes.map((note) => {
                   const subject = subjectMap.get(note.subjectId);
@@ -516,9 +514,10 @@ export function DashboardOverview({
                     >
                       <section className="flex justify-between items-center m-4 gap-4">
                         <h4 className="font-semibold text-xl truncate">{note.name}</h4>
-                        <FontAwesomeIcon
-                          icon={faDna}
-                          className="text-[#18b4a6] scale-200 hover:scale-190 cursor-pointer transition-transform duration-100"
+                        <img
+                          src="/web_images/subjIcons/jazyky.svg"
+                          alt=""
+                          className="h-6 w-6 sm:h-7 sm:w-7 scale-125 hover:scale-110 cursor-pointer transition-transform duration-100"
                         />
                       </section>
                       <section className="m-4 pt-2 flex-1">

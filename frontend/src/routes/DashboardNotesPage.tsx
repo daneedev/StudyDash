@@ -253,7 +253,7 @@ export function DashboardNotesPage({ subjectId }: DashboardNotesPageProps) {
                     : "border-[var(--color-primary)]",
                 ].join(" ")}
               >
-                <img className="pt-2" src="/web_images/Notebook2.svg" alt="Poznámky" />
+                <img className="pt-2" src="/web_images/subjIcons/jazyky.svg" alt="Poznámky" />
                 <h3 className="text-[var(--text-semiwhite)] font-semibold text-base pt-2 w-full text-center truncate">
                   Všechny poznámky
                 </h3>
