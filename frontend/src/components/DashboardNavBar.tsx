@@ -53,9 +53,9 @@ export const DashboardNavBar = ({
     const navItems = [
         { to: "/classes", icon: "/web_images/Academic.svg", alt: "classes", label: "Třídy" },
         { to: dashboardLink, icon: "/web_images/Home.svg", alt: "home", label: "Dashboard" },
-        { to: "/dashboard/notes", icon: "/web_images/subjIcons/jazyky.svg", alt: "notes", label: "Poznámky" },
+        { to: "/dashboard/notes", icon: "/web_images/jazyky.svg", alt: "notes", label: "Poznámky" },
         { to: "/dashboard/todo", icon: "/web_images/Checklist.svg", alt: "to-do", label: "To-do list" },
-        { to: "/dashboard/calendar", icon: "/web_images/Calendar.svg", alt: "calendar", label: "Kalendář" },
+        { to: `${dashboardLink}#calendar`, icon: "/web_images/Calendar.svg", alt: "calendar", label: "Kalendář" },
         { to: "/dashboard/settings", icon: "/web_images/Settings.svg", alt: "settings", label: "Nastavení" },
     ];
     const primaryNavItems = navItems.filter((item) =>

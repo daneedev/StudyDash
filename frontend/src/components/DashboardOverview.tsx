@@ -469,7 +469,7 @@ export function DashboardOverview({
       </p>
 
       <article className="grid min-h-0 flex-1 w-full gap-6 grid-cols-1 xl:grid-cols-[minmax(0,460px)_minmax(0,1fr)] 2xl:grid-cols-[minmax(0,520px)_minmax(0,1fr)] xl:grid-rows-[minmax(0,1.9fr)_minmax(0,1.2fr)]">
-        <section className="min-h-0 min-w-0 bg-[var(--card-bg)] rounded-xl border border-[#18b4a6] flex flex-col p-3 sm:p-4 overflow-hidden">
+        <section className="min-h-0 min-w-0 bg-[var(--card-bg)] rounded-xl border border-[#18b4a6] flex flex-col p-3 sm:p-4 overflow-hidden" id="calendar">
           <article className="flex items-center justify-between gap-2">
             <h3 className="font-bold capitalize text-xl sm:text-2xl lg:text-3xl truncate">{monthName}</h3>
             <section className="flex items-center gap-1 sm:gap-2 shrink-0">
