@@ -10,6 +10,13 @@ import { Link } from "@tanstack/react-router";
 import { Alert, Input, Spinner } from "@heroui/react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faLink } from "@fortawesome/free-solid-svg-icons";
+import type { ClassItem } from "../features/classes/types/classes.types";
+import {
+  createClass as createClassRequest,
+  deleteClass as deleteClassRequest,
+  getClasses,
+  joinClass as joinClassRequest,
+} from "../features/classes/services/classes.service";
 
 const route = createRoute({
   getParentRoute: () => rootRoute,
@@ -26,13 +33,6 @@ const route = createRoute({
     return { userData: authResult.userData };
   },
 });
-
-type ClassItem = {
-  id: string;
-  name: string;
-  inviteCode: string;
-  isAdmin: boolean;
-};
 
 export function ClassesPage() {
   const { userData } = route.useRouteContext();
@@ -63,46 +63,13 @@ export function ClassesPage() {
     setAlerts((prev) => prev.filter((alert) => alert.id !== id));
   };
 
-  const getToken = () => localStorage.getItem("auth_token");
-
   const loadClasses = async () => {
-    const token = localStorage.getItem("auth_token");
-    if (!token) {
-      setIsLoadingClasses(false);
-      return;
-    }
+    setIsLoadingClasses(true);
 
     try {
-      const res = await fetch(`${import.meta.env.VITE_API_BASE_URL}/classes`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-
-      if (!res.ok) {
-        return;
-      }
-
-      const json = await res.json();
-
-      const list = Array.isArray(json)
-        ? json
-        : Array.isArray(json.data)
-          ? json.data
-          : Array.isArray(json.data?.classes)
-            ? json.data.classes
-            : [];
-
-      const mappedClasses = list.map((item: any) => {
-        const mapped = {
-          id: item.class?.id || item.id,
-          name: item.class?.name || item.name,
-          inviteCode: item.class?.inviteCode || item.inviteCode,
-          isAdmin: item.role === "admin",
-        };
-        return mapped;
-      });
-
-      setClasses(mappedClasses);
+      setClasses(await getClasses());
     } catch (error) {
+      console.error("Failed to load classes", error);
     } finally {
       setIsLoadingClasses(false);
     }
@@ -113,26 +80,12 @@ export function ClassesPage() {
   }, []);
 
   const createClass = async () => {
-    const token = localStorage.getItem("auth_token");
-    if (!token || !name.trim()) return;
+    if (!name.trim()) return;
 
     setLoading(true);
 
     try {
-      const res = await fetch(`${import.meta.env.VITE_API_BASE_URL}/classes`, {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ name: name.trim() }),
-      });
-
-      if (!res.ok) {
-        showAlert("Chyba", "Nepodařilo se vytvořit třídu");
-        return;
-      }
-
+      await createClassRequest(name);
       showAlert("Úspěch", "Třída byla úspěšně vytvořena");
 
       setName("");
@@ -146,25 +99,8 @@ export function ClassesPage() {
   };
 
   const deleteClass = async (id: string) => {
-    const token = getToken();
-    if (!token) {
-      return;
-    }
-
     try {
-      const res = await fetch(
-        `${import.meta.env.VITE_API_BASE_URL}/classes/${id}`,
-        {
-          method: "DELETE",
-          headers: { Authorization: `Bearer ${token}` },
-        },
-      );
-
-      if (!res.ok) {
-        showAlert("Chyba", "Nepodařilo se smazat třídu");
-        return;
-      }
-
+      await deleteClassRequest(id);
       showAlert("Úspěch", "Třída byla úspěšně smazána");
 
       await loadClasses();
@@ -174,31 +110,12 @@ export function ClassesPage() {
   };
 
   const joinClass = async () => {
-    const token = localStorage.getItem("auth_token");
-    if (!token || !inviteCode.trim()) return;
+    if (!inviteCode.trim()) return;
 
     setLoading(true);
 
     try {
-      const res = await fetch(
-        `${import.meta.env.VITE_API_BASE_URL}/classes/join/${inviteCode.trim()}`,
-        {
-          method: "POST",
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        },
-      );
-
-      if (!res.ok) {
-        if (res.status === 404) {
-          showAlert("Chyba", "Neplatný pozvánkový kód");
-        } else {
-          showAlert("Chyba", "Nepodařilo se připojit do třídy");
-        }
-        return;
-      }
-
+      await joinClassRequest(inviteCode);
       showAlert("Úspěch", "Úspěšně jste se připojili do třídy");
 
       setInviteCode("");
@@ -252,11 +169,6 @@ export function ClassesPage() {
         />
         <header className="flex items-center justify-between p-6 pt-4">
           <h1 className="text-4xl font-semibold text-text">Třídy</h1>
-
-          
-
-          
-          
         </header>
 
         <main
